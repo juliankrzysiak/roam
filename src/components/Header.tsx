@@ -1,7 +1,7 @@
 export default function Header() {
   return (
-    <header className="flex bg-emerald-600 text-gray-200">
-      <h2>Journey</h2>
+    <header className="flex justify-between bg-emerald-600 p-4 text-gray-200">
+      <h2 className="text-xl">Journey</h2>
       <button>Login</button>
     </header>
   );

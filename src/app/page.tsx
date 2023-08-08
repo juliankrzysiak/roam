@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 
 export default function Home() {
   return (
@@ -11,6 +10,7 @@ export default function Home() {
         </h2>
         <Button className="text-2xl">Get started</Button>
       </section>
+      <section></section>
     </main>
   );
 }

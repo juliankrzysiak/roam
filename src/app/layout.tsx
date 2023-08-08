@@ -1,10 +1,10 @@
 import Header from "@/components/Header";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Nunito_Sans } from "next/font/google";
+import { Nunito } from "next/font/google";
 import Footer from "@/components/Footer";
 
-const nunito = Nunito_Sans({ subsets: ["latin"] });
+const nunito = Nunito({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Journey",

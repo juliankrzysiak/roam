@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Feature from "@/features/landing/components/Feature";
+import Link from "next/link";
 
 export default function Home() {
   const features = [
@@ -15,7 +16,12 @@ export default function Home() {
         <h2 className="mb-8 text-4xl">
           Simplicity and ease in planning your adventures.
         </h2>
-        <Button className="text-2xl">Get started</Button>
+        <Link
+          href={"/map"}
+          className="rounded-lg bg-emerald-600 px-2 py-3 text-2xl font-bold text-gray-100"
+        >
+          Get Started
+        </Link>
       </section>
       <section className="flex flex-col gap-20">
         {features.map((content) => (

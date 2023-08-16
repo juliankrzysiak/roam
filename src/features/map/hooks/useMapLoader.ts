@@ -6,18 +6,14 @@ const loader = new Loader({
   version: "weekly",
 });
 
-export default function useMapLoader() {
+export default function useMapLoader(config: google.maps.MapOptions) {
   useEffect(() => {
     loader.load().then(async () => {
       const { Map } = (await google.maps.importLibrary(
         "maps",
       )) as google.maps.MapsLibrary;
 
-      new Map(document.getElementById("map") as HTMLElement, {
-        center: { lat: 34.052, lng: -118.243 },
-        zoom: 10,
-        mapId: process.env.NEXT_PROCESS_MAP_ID,
-      });
+      new Map(document.getElementById("map") as HTMLElement, config);
     });
-  }, []);
+  }, [config]);
 }

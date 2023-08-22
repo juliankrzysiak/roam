@@ -19,7 +19,10 @@ export default function Login() {
   };
 
   return (
-    <section>
+    <form
+      className="fixed left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col gap-4"
+      onSubmit={handleSignIn}
+    >
       <input
         type="email"
         name="email"
@@ -32,7 +35,7 @@ export default function Login() {
         onChange={(e) => setPassword(e.target.value)}
         value={password}
       />
-      <button onClick={handleSignIn}>Sign In</button>
-    </section>
+      <button>Sign In</button>
+    </form>
   );
 }

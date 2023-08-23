@@ -1,5 +1,4 @@
 import Login from "@/features/auth/components/Login";
-import { useRef } from "react";
 
 export default function Header() {
   return (

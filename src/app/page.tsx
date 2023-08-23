@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
 import Feature from "@/features/landing/components/Feature";
 import Link from "next/link";
+import { useRef } from "react";
 
 export default function Home() {
   const features = [
@@ -9,8 +11,10 @@ export default function Home() {
     "Free to use, no account required. Or create one to save everything for future inspiration!",
   ];
 
+  const loginModal = useRef<HTMLDialogElement>(null);
+
   return (
-    <main className="flex flex-col items-center gap-36 p-20">
+    <main className="relative flex flex-col items-center gap-36 p-20">
       <section className=" w-fit text-center">
         <h1 className="my-6 text-7xl">Explore the World</h1>
         <h2 className="mb-8 text-4xl">
@@ -35,6 +39,10 @@ export default function Home() {
         <p>Awesome</p>
         <p>Really good stuff mate, keep it up!</p>
       </section>
+      <button onClick={() => loginModal.current?.showModal()}>Test</button>
+      <dialog ref={loginModal} className="bg-red-600">
+        stuff
+      </dialog>
     </main>
   );
 }

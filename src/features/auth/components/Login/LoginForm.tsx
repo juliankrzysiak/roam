@@ -33,10 +33,17 @@ export default function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
+
+    if (error) {
+      form.setError("root", {
+        type: "custom",
+        message: error.message,
+      });
+    }
   }
 
   return (
@@ -68,7 +75,14 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <div className="flex items-center space-x-8">
+          <Button type="submit">Submit</Button>
+          {form.formState.errors.root && (
+            <p className="text-sm font-medium text-destructive">
+              {form.formState.errors.root.message}
+            </p>
+          )}
+        </div>
       </form>
     </Form>
   );

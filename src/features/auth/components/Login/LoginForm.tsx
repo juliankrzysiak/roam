@@ -66,7 +66,11 @@ export default function LoginForm({ setOpen }: Props) {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="your email address" {...field} />
+                <Input
+                  placeholder="Enter your email address"
+                  required
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -80,7 +84,11 @@ export default function LoginForm({ setOpen }: Props) {
               <FormLabel>Password</FormLabel>
 
               <FormControl>
-                <Input placeholder="your password" type="password" {...field} />
+                <Input
+                  placeholder="Enter your password"
+                  type="password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

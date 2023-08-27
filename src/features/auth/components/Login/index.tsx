@@ -14,7 +14,7 @@ export default function Login() {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="text-2xl font-semibold">Sign In</DialogTrigger>
+      <DialogTrigger className="text-2xl font-semibold">Log In</DialogTrigger>
       <DialogContent className="flex flex-col gap-8">
         <DialogHeader>
           <DialogTitle className="text-2xl">

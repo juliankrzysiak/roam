@@ -39,10 +39,6 @@ export default function Home() {
         <p>Awesome</p>
         <p>Really good stuff mate, keep it up!</p>
       </section>
-      <button onClick={() => loginModal.current?.showModal()}>Test</button>
-      <dialog ref={loginModal} className="bg-red-600">
-        stuff
-      </dialog>
     </main>
   );
 }

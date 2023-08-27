@@ -1,20 +1,20 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Must be a valid email address." }),
@@ -24,6 +24,7 @@ const formSchema = z.object({
 
 export default function LoginForm() {
   const supabase = createClientComponentClient<any>();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,6 +44,10 @@ export default function LoginForm() {
         type: "custom",
         message: error.message,
       });
+    }
+
+    if (data) {
+      router.push("/map");
     }
   }
 
@@ -68,6 +73,7 @@ export default function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
+
               <FormControl>
                 <Input placeholder="your password" type="password" {...field} />
               </FormControl>

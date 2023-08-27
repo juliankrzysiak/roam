@@ -22,7 +22,11 @@ const formSchema = z.object({
   password: z.string().min(6).max(20),
 });
 
-export default function LoginForm() {
+interface Props {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function LoginForm({ setOpen }: Props) {
   const supabase = createClientComponentClient<any>();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,7 +50,8 @@ export default function LoginForm() {
       });
     }
 
-    if (data) {
+    if (data && !error) {
+      setOpen(false);
       router.push("/map");
     }
   }

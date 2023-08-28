@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useForm } from "react-hook-form";
@@ -35,6 +36,7 @@ export default function SignUpForm({ setOpen }: Props) {
       password: "",
     },
   });
+  const { toast } = useToast();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { name, email, password } = values;
@@ -42,6 +44,7 @@ export default function SignUpForm({ setOpen }: Props) {
       email,
       password,
       options: {
+        emailRedirectTo: "http://localhost:3000/map",
         data: {
           name,
         },
@@ -57,6 +60,10 @@ export default function SignUpForm({ setOpen }: Props) {
 
     if (data && !error) {
       setOpen(false);
+      toast({
+        title: "Email sent.",
+        description: "Check your email to confirm your account.",
+      });
     }
   }
 

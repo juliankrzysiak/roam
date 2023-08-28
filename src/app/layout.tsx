@@ -1,4 +1,4 @@
-import "./globals.css";
+import "@/app/globals.css";
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import Header from "@/components/Header";
@@ -21,7 +21,9 @@ export default function RootLayout({
     <html lang="en" className={nunito.className}>
       <body className="relative flex min-h-screen flex-col">
         <Header />
-        {children}
+        <main className="relative flex flex-col items-center gap-36 p-20">
+          {children}
+        </main>
         <Toaster />
         <Footer />
       </body>

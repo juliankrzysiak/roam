@@ -1,20 +1,20 @@
 "use client";
 
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import Feature from "@/features/landing/components/Feature";
 import Link from "next/link";
 import { useRef } from "react";
 
-export default function Home() {
+export default function Landing() {
   const features = [
     "Quickly create a scheduled itinerary for a fun day trip, or an exciting journey across the states",
     "Create lists of your favorite places. When you’re done, simply drag and drop them into your schedule.",
     "Free to use, no account required. Or create one to save everything for future inspiration!",
   ];
 
-  const loginModal = useRef<HTMLDialogElement>(null);
-
   return (
-    <main className="relative flex flex-col items-center gap-36 p-20">
+    <>
       <section className=" w-fit text-center">
         <h1 className="my-6 text-7xl">Explore the World</h1>
         <h2 className="mb-8 text-4xl">
@@ -39,6 +39,6 @@ export default function Home() {
         <p>Awesome</p>
         <p>Really good stuff mate, keep it up!</p>
       </section>
-    </main>
+    </>
   );
 }

@@ -21,11 +21,9 @@ export default function RootLayout({
     <html lang="en" className={nunito.className}>
       <body className="relative flex min-h-screen flex-col">
         <Header />
-        <main className="relative flex flex-col items-center gap-36 p-20">
-          {children}
-        </main>
-        <Toaster />
+        {children}
         <Footer />
+        <Toaster />
       </body>
     </html>
   );

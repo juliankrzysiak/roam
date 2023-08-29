@@ -1,36 +1,42 @@
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import ResetPasswordForm from "./SendEmailForm";
 import { useEffect, useState } from "react";
 import SendEmailForm from "./SendEmailForm";
+import ResetPasswordForm from "./ResetPasswordForm";
 
 export default function ResetPassword() {
-  const [resetPassword, setResetPassword] = useState(false);
+  const [showPasswordResetForm, setShowResetPassword] = useState(false);
 
-  const supabase = createClientComponentClient<any>();
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event) => {
+    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event == "PASSWORD_RECOVERY") {
-        setResetPassword(true);
-      } else setResetPassword(false);
+        setShowResetPassword(true);
+      }
     });
-  }, [supabase.auth]);
+
+    return () => {
+      data.subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   return (
     <section className="max-w-xl flex-col space-y-10 p-20">
       <div className="space-y-6 text-center ">
         <h1 className=" text-4xl">
-          {!resetPassword ? "Forgot your password?" : "Create a new password."}
+          {showPasswordResetForm
+            ? "Create a new password."
+            : "Forgot your password?"}
         </h1>
         <h2 className="text-xl">
-          {!resetPassword
-            ? "Enter your email and we'll send you a link to reset it."
-            : "Enter a strong password you'll remember."}
+          {showPasswordResetForm
+            ? "Enter a strong password you'll remember."
+            : "Enter your email and we'll send you a link to reset it."}
         </h2>
       </div>
-      {resetPassword ? <ResetPasswordForm /> : <SendEmailForm />}
+      {showPasswordResetForm ? <ResetPasswordForm /> : <SendEmailForm />}
     </section>
   );
 }

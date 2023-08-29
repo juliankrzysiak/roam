@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { redirect } from "next/dist/server/api-utils";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -33,7 +34,6 @@ export default function SendEmailForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { email } = values;
     const { data, error } = await supabase.auth.resetPasswordForEmail(email);
-
     if (error) {
       form.setError("root", {
         type: "custom",
@@ -42,11 +42,14 @@ export default function SendEmailForm() {
     }
 
     if (data && !error) {
+      form.reset();
       toast({
         title: "Email sent.",
         description: "Check your email to reset your password.",
       });
     }
+
+    console.log(data, error);
   }
 
   return (
@@ -70,7 +73,7 @@ export default function SendEmailForm() {
           )}
         />
 
-        <div className="flex flex-col items-center space-x-8">
+        <div className="flex flex-col items-center ">
           <Button type="submit">Submit</Button>
           {form.formState.errors.root && (
             <p className="text-sm font-medium text-destructive">

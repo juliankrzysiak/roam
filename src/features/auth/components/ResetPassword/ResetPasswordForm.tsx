@@ -73,7 +73,7 @@ export default function ResetPasswordForm() {
           )}
         />
 
-        <div className="flex flex-col items-center space-x-8">
+        <div className="items-centerz flex flex-col">
           <Button type="submit">Submit</Button>
           {form.formState.errors.root && (
             <p className="text-sm font-medium text-destructive">

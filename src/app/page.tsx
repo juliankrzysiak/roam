@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
 import Feature from "@/features/landing/components/Feature";
 import Link from "next/link";
 
@@ -9,8 +10,9 @@ export default function Home() {
     "Free to use, no account required. Or create one to save everything for future inspiration!",
   ];
 
+
   return (
-    <main className="flex flex-col items-center gap-36 p-20">
+    <main className="relative flex flex-col items-center gap-36 p-20">
       <section className=" w-fit text-center">
         <h1 className="my-6 text-7xl">Explore the World</h1>
         <h2 className="mb-8 text-4xl">

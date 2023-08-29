@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -101,6 +102,7 @@ export default function LoginForm({ setOpen }: Props) {
               {form.formState.errors.root.message}
             </p>
           )}
+          <Link href="/auth/reset-password">Forgot Password?</Link>
         </div>
       </form>
     </Form>

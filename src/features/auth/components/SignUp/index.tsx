@@ -15,7 +15,9 @@ export default function SignUp() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="text-2xl font-semibold">Sign Up</DialogTrigger>
+      <DialogTrigger className="text-xl font-semibold text-emerald-900">
+        Sign up
+      </DialogTrigger>
       <DialogContent className="flex flex-col gap-8">
         <DialogHeader>
           <DialogTitle className="text-2xl">Create a new account.</DialogTitle>

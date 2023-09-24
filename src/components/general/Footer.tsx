@@ -1,8 +1,8 @@
 export default function Footer() {
   return (
-    <footer className="flex justify-between bg-emerald-700 p-4 text-lg font-bold text-gray-100">
-      <h3>Made by Julian Krzysiak</h3>
-      <a href="https://github.com/CastillejaCode/journey">Github</a>
+    <footer className="flex justify-between p-4 text-lg font-bold text-emerald-900">
+      <a href="https://github.com/CastillejaCode">© 2023 Julian Krzysiak</a>
+      <a href="https://github.com/CastillejaCode/roam">Github</a>
     </footer>
   );
 }

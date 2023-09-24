@@ -23,7 +23,7 @@ export default function ResetPassword() {
   }, [supabase]);
 
   return (
-    <section className="max-w-xl flex-col space-y-10 p-20">
+    <section className="max-w-xl flex-col space-y-10 p-10 lg:p-20 ">
       <div className="space-y-6 text-center ">
         <h1 className=" text-4xl">
           {showPasswordResetForm

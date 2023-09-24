@@ -20,7 +20,7 @@ export default function SignUp() {
       </DialogTrigger>
       <DialogContent className="flex flex-col gap-8">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Create a new account.</DialogTitle>
+          <DialogTitle className="text-2xl">Create a new account</DialogTitle>
         </DialogHeader>
         <SignUpForm setOpen={setOpen} />
       </DialogContent>

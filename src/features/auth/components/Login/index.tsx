@@ -20,7 +20,7 @@ export default function Login() {
       <DialogContent className="flex flex-col gap-8">
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            Log in to your account.
+            Log in to your account
           </DialogTitle>
         </DialogHeader>
         <LoginForm setOpen={setOpen} />

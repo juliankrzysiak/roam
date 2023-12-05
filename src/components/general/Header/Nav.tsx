@@ -22,5 +22,5 @@ export default function Nav() {
     }
   };
 
-  return <nav className="flex gap-8">{renderNav()} </nav>;
+  return <nav className="flex gap-4">{renderNav()} </nav>;
 }

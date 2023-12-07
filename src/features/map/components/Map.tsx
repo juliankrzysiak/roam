@@ -1,10 +1,19 @@
 "use client";
 
-import { mapConfig } from "@/config";
-import { loadMap } from "../utils/loadMap";
+import {
+  APIProvider,
+  Map as GoogleMap,
+  InfoWindow,
+} from "@vis.gl/react-google-maps";
+import { useState } from "react";
 
 export default function Map() {
-  loadMap(mapConfig);
+  const [showInfoWindow, setShowInfoWindow] = useState(false);
+  const position = { lat: 34.118, lng: -118.1 };
 
-  return <section className="h-full" id="map"></section>;
+  return (
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+      <GoogleMap center={position} zoom={11}></GoogleMap>
+    </APIProvider>
+  );
 }

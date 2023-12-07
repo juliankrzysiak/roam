@@ -1,10 +1,10 @@
 "use client";
 
 import { mapConfig } from "@/config";
-import useMapLoader from "../hooks/useMapLoader";
+import { loadMap } from "../utils/loadMap";
 
 export default function Map() {
-  useMapLoader(mapConfig);
+  loadMap(mapConfig);
 
-  return <section className="h-full " id="map"></section>;
+  return <section className="h-full" id="map"></section>;
 }

@@ -1,4 +1,5 @@
 import "@/app/globals.css";
+import "mapbox-gl/dist/mapbox-gl.css";
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import Header from "@/components/general/Header";

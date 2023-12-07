@@ -1,19 +1,32 @@
 "use client";
 
-import {
-  APIProvider,
-  Map as GoogleMap,
-  InfoWindow,
-} from "@vis.gl/react-google-maps";
-import { useState } from "react";
+import mapboxgl, { Map } from "mapbox-gl";
+import { useEffect, useRef, useState } from "react";
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY as string;
 
 export default function Map() {
-  const [showInfoWindow, setShowInfoWindow] = useState(false);
-  const position = { lat: 34.118, lng: -118.1 };
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<Map | null>(null);
+  const [lng, setLng] = useState(-118);
+  const [lat, setLat] = useState(34);
+  const [zoom, setZoom] = useState(7);
 
-  return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
-      <GoogleMap center={position} zoom={11}></GoogleMap>
-    </APIProvider>
-  );
+  useEffect(() => {
+    if (map.current) return; // initialize map only once
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current as HTMLElement,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [lng, lat],
+      zoom: zoom,
+    });
+
+    map.current.on("move", () => {
+      if (!map.current) return;
+      setLng(Number(map.current.getCenter().lng.toFixed(4)));
+      setLat(Number(map.current.getCenter().lat.toFixed(4)));
+      setZoom(Number(map.current.getZoom().toFixed(2)));
+    });
+  });
+
+  return <div className="h-full" ref={mapContainer}></div>;
 }

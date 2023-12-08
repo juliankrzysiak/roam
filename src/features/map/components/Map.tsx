@@ -1,12 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Map as MapBox,
-  MapLayerMouseEvent,
-  MapboxEvent,
-  Popup,
-} from "react-map-gl";
+import { useCallback, useRef, useState } from "react";
+import { Map as MapBox, MapLayerMouseEvent, MapRef, Popup } from "react-map-gl";
 
 export default function Map() {
   // const mapContainer = useRef<HTMLDivElement>(null);
@@ -49,19 +44,35 @@ export default function Map() {
   // }
   // });
   // }, []);
-
+  const mapRef = useRef<MapRef>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [lngLat, setLngLat] = useState({ lng: -122.4, lat: 37.8 });
+  const [name, setName] = useState("");
 
   function handlePopup(e: MapLayerMouseEvent) {
-    setShowPopup(true);
     const { lng, lat } = e.lngLat;
-    setLngLat({ lng: +lng.toFixed(5), lat: +lat.toFixed(5) });
+    setLngLat({ lng, lat });
+    setShowPopup(true);
   }
+
+  const onMapLoad = useCallback(() => {
+    if (!mapRef.current) return;
+    mapRef.current.on("click", (e) => {
+      const features = mapRef.current?.queryRenderedFeatures(e.point, {
+        layers: ["poi-label"],
+      });
+      if (features && features.length > 0) {
+        const feature = features[0];
+        setName(feature.properties?.name);
+      } else setShowPopup(false);
+    });
+  }, []);
 
   return (
     <MapBox
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_KEY}
+      ref={mapRef}
+      onLoad={onMapLoad}
       initialViewState={{
         longitude: -122.4,
         latitude: 37.8,
@@ -77,7 +88,7 @@ export default function Map() {
           closeOnClick={false}
           onClose={() => setShowPopup(false)}
         >
-          <h1>sasdasd</h1>
+          <h1>{name}</h1>
         </Popup>
       )}
     </MapBox>

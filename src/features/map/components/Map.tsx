@@ -1,7 +1,8 @@
 "use client";
 
+import mapboxgl from "mapbox-gl";
 import { useCallback, useRef, useState } from "react";
-import { Map as MapBox, MapLayerMouseEvent, MapRef, Popup } from "react-map-gl";
+import { Map as MapBox, MapRef, Popup } from "react-map-gl";
 
 export default function Map() {
   // const mapContainer = useRef<HTMLDivElement>(null);
@@ -46,14 +47,8 @@ export default function Map() {
   // }, []);
   const mapRef = useRef<MapRef>(null);
   const [showPopup, setShowPopup] = useState(false);
-  const [lngLat, setLngLat] = useState({ lng: -122.4, lat: 37.8 });
-  const [name, setName] = useState("");
-
-  function handlePopup(e: MapLayerMouseEvent) {
-    const { lng, lat } = e.lngLat;
-    setLngLat({ lng, lat });
-    setShowPopup(true);
-  }
+  const [lngLat, setLngLat] = useState(new mapboxgl.LngLat(-122.4, 37.8));
+  const [popupInfo, setPopupInfo] = useState({ name: "", category: "" });
 
   const onMapLoad = useCallback(() => {
     if (!mapRef.current) return;
@@ -62,8 +57,15 @@ export default function Map() {
         layers: ["poi-label"],
       });
       if (features && features.length > 0) {
+        setLngLat(e.lngLat);
+
         const feature = features[0];
-        setName(feature.properties?.name);
+        setPopupInfo({
+          name: feature.properties?.name,
+          category: feature.properties?.category_en,
+        });
+        setShowPopup(true);
+        mapRef.current?.panTo(e.lngLat);
       } else setShowPopup(false);
     });
   }, []);
@@ -74,21 +76,25 @@ export default function Map() {
       ref={mapRef}
       onLoad={onMapLoad}
       initialViewState={{
-        longitude: -122.4,
-        latitude: 37.8,
+        longitude: -118.11,
+        latitude: 34.57,
         zoom: 14,
       }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
-      onClick={handlePopup}
     >
       {showPopup && (
         <Popup
           longitude={lngLat.lng}
           latitude={lngLat.lat}
+          offset={10}
           closeOnClick={false}
           onClose={() => setShowPopup(false)}
         >
-          <h1>{name}</h1>
+          <div className="w-fit">
+            <h1 className="text-lg">{popupInfo.name}</h1>
+            <h2>{popupInfo.category}</h2>
+            <button onClick={() => console.log(123)}>Add +</button>
+          </div>
         </Popup>
       )}
     </MapBox>

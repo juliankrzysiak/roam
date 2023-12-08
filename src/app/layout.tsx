@@ -1,4 +1,5 @@
 import "@/app/globals.css";
+import "mapbox-gl/dist/mapbox-gl.css";
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import Header from "@/components/general/Header";
@@ -22,7 +23,6 @@ export default function RootLayout({
       <body className="relative flex min-h-screen flex-col bg-gray-100">
         <Header />
         {children}
-        <Footer />
         <Toaster />
       </body>
     </html>

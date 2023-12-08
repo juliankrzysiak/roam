@@ -10,7 +10,7 @@ export default function MapPage() {
   return (
     <main className="relative h-20 flex-grow">
       <Map places={places} setPlaces={setPlaces} />
-      <Planner places={places} setPLaces={setPlaces} />
+      <Planner places={places} setPlaces={setPlaces} />
     </main>
   );
 }

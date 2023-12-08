@@ -1,20 +1,23 @@
 "use client";
 
-import { Place } from "@/types/types";
+import { PlaceT } from "@/types";
 import mapboxgl from "mapbox-gl";
 import { SetStateAction, useCallback, useRef, useState } from "react";
 import { Map as MapBox, MapRef, Popup } from "react-map-gl";
 
 interface Props {
-  places: Place[];
-  setPlaces: React.Dispatch<SetStateAction<Place[]>>;
+  places: PlaceT[];
+  setPlaces: React.Dispatch<SetStateAction<PlaceT[]>>;
 }
 
 export default function Map({ places, setPlaces }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [lngLat, setLngLat] = useState(new mapboxgl.LngLat(-122.4, 37.8));
-  const [popupInfo, setPopupInfo] = useState<Place>({ name: "", category: "" });
+  const [popupInfo, setPopupInfo] = useState<PlaceT>({
+    name: "",
+    category: "",
+  });
 
   const onMapLoad = useCallback(() => {
     if (!mapRef.current) return;
@@ -38,6 +41,7 @@ export default function Map({ places, setPlaces }: Props) {
 
   function handlePlaces() {
     setPlaces([...places, popupInfo]);
+    setShowPopup(false);
   }
 
   return (

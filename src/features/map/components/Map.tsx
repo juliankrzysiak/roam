@@ -1,54 +1,20 @@
 "use client";
 
+import { Place } from "@/types/types";
 import mapboxgl from "mapbox-gl";
-import { useCallback, useRef, useState } from "react";
+import { SetStateAction, useCallback, useRef, useState } from "react";
 import { Map as MapBox, MapRef, Popup } from "react-map-gl";
 
-export default function Map() {
-  // const mapContainer = useRef<HTMLDivElement>(null);
-  // const map = useRef<MapType | null>(null);
-  // const popupRef = useRef(new mapboxgl.Popup({ offset: 15 }));
-  // const [lng, setLng] = useState(-118);
-  // const [lat, setLat] = useState(34);
-  // const [zoom, setZoom] = useState(12);
-  //
-  // useEffect(() => {
-  // if (map.current) return; // initialize map only once
-  // const map = new mapboxgl.Map({
-  // container: mapContainer.current as HTMLElement,
-  // style: "mapbox://styles/mapbox/outdoors-v12",
-  // center: [lng, lat],
-  // zoom: zoom,
-  // });
-  //
-  // map.current.on("move", () => {
-  //   if (!map.current) return;
-  //   setLng(Number(map.current.getCenter().lng.toFixed(4)));
-  //   setLat(Number(map.current.getCenter().lat.toFixed(4)));
-  //   setZoom(Number(map.current.getZoom().toFixed(2)));
-  // });
-  //
-  // map.on("click", (e) => {
-  // const features = map.queryRenderedFeatures(e.point, {
-  // layers: ["poi-label"],
-  // });
-  // if (features.length > 0) {
-  // const feature = features[0];
-  // const popupNode = document.createElement("div");
-  // const popupRoot = createRoot(popupNode);
-  // popupRoot.render(<Popup name={feature.properties} />);
-  //
-  // popupRef.current
-  // .setLngLat(e.lngLat)
-  // .setDOMContent(popupNode)
-  // .addTo(map);
-  // }
-  // });
-  // }, []);
+interface Props {
+  places: Place[];
+  setPlaces: React.Dispatch<SetStateAction<Place[]>>;
+}
+
+export default function Map({ places, setPlaces }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [lngLat, setLngLat] = useState(new mapboxgl.LngLat(-122.4, 37.8));
-  const [popupInfo, setPopupInfo] = useState({ name: "", category: "" });
+  const [popupInfo, setPopupInfo] = useState<Place>({ name: "", category: "" });
 
   const onMapLoad = useCallback(() => {
     if (!mapRef.current) return;
@@ -69,6 +35,10 @@ export default function Map() {
       } else setShowPopup(false);
     });
   }, []);
+
+  function handlePlaces() {
+    setPlaces([...places, popupInfo]);
+  }
 
   return (
     <MapBox
@@ -93,10 +63,51 @@ export default function Map() {
           <div className="w-fit">
             <h1 className="text-lg">{popupInfo.name}</h1>
             <h2>{popupInfo.category}</h2>
-            <button onClick={() => console.log(123)}>Add +</button>
+            <button onClick={handlePlaces}>Add +</button>
           </div>
         </Popup>
       )}
     </MapBox>
   );
 }
+
+// const mapContainer = useRef<HTMLDivElement>(null);
+// const map = useRef<MapType | null>(null);
+// const popupRef = useRef(new mapboxgl.Popup({ offset: 15 }));
+// const [lng, setLng] = useState(-118);
+// const [lat, setLat] = useState(34);
+// const [zoom, setZoom] = useState(12);
+//
+// useEffect(() => {
+// if (map.current) return; // initialize map only once
+// const map = new mapboxgl.Map({
+// container: mapContainer.current as HTMLElement,
+// style: "mapbox://styles/mapbox/outdoors-v12",
+// center: [lng, lat],
+// zoom: zoom,
+// });
+//
+// map.current.on("move", () => {
+//   if (!map.current) return;
+//   setLng(Number(map.current.getCenter().lng.toFixed(4)));
+//   setLat(Number(map.current.getCenter().lat.toFixed(4)));
+//   setZoom(Number(map.current.getZoom().toFixed(2)));
+// });
+//
+// map.on("click", (e) => {
+// const features = map.queryRenderedFeatures(e.point, {
+// layers: ["poi-label"],
+// });
+// if (features.length > 0) {
+// const feature = features[0];
+// const popupNode = document.createElement("div");
+// const popupRoot = createRoot(popupNode);
+// popupRoot.render(<Popup name={feature.properties} />);
+//
+// popupRef.current
+// .setLngLat(e.lngLat)
+// .setDOMContent(popupNode)
+// .addTo(map);
+// }
+// });
+// }, []);

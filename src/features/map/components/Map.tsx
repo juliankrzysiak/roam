@@ -1,9 +1,8 @@
 "use client";
 
 import { PlaceT } from "@/types";
-import mapboxgl from "mapbox-gl";
 import { SetStateAction, useCallback, useRef, useState } from "react";
-import { Map as MapBox, MapRef, Popup } from "react-map-gl";
+import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 
 interface Props {
   places: PlaceT[];
@@ -12,12 +11,7 @@ interface Props {
 
 export default function Map({ places, setPlaces }: Props) {
   const mapRef = useRef<MapRef>(null);
-  const [showPopup, setShowPopup] = useState(false);
-  const [lngLat, setLngLat] = useState(new mapboxgl.LngLat(-122.4, 37.8));
-  const [popupInfo, setPopupInfo] = useState<PlaceT>({
-    name: "",
-    category: "",
-  });
+  const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
   const onMapLoad = useCallback(() => {
     if (!mapRef.current) return;
@@ -26,26 +20,26 @@ export default function Map({ places, setPlaces }: Props) {
         layers: ["poi-label"],
       });
       if (features && features.length > 0) {
-        setLngLat(e.lngLat);
-
         const feature = features[0];
         setPopupInfo({
           name: feature.properties?.name,
           category: feature.properties?.category_en,
+          lngLat: e.lngLat,
         });
-        setShowPopup(true);
         mapRef.current?.panTo(e.lngLat);
-      } else setShowPopup(false);
+      } else setPopupInfo(null);
     });
   }, []);
 
   function handlePlaces() {
+    if (!popupInfo) return;
     setPlaces([...places, popupInfo]);
-    setShowPopup(false);
+    setPopupInfo(null);
   }
 
   return (
     <MapBox
+      reuseMaps
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_KEY}
       ref={mapRef}
       onLoad={onMapLoad}
@@ -56,17 +50,30 @@ export default function Map({ places, setPlaces }: Props) {
       }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
     >
-      {showPopup && (
+      {places.map((place) => {
+        return (
+          <Marker
+            key={place.name}
+            longitude={place.lngLat.lng}
+            latitude={place.lngLat.lat}
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+            }}
+          />
+        );
+      })}
+
+      {popupInfo && (
         <Popup
-          longitude={lngLat.lng}
-          latitude={lngLat.lat}
+          longitude={popupInfo.lngLat.lng}
+          latitude={popupInfo.lngLat.lat}
           offset={10}
           closeOnClick={false}
-          onClose={() => setShowPopup(false)}
+          onClose={() => setPopupInfo(null)}
         >
           <div className="w-fit">
-            <h1 className="text-lg">{popupInfo.name}</h1>
-            <h2>{popupInfo.category}</h2>
+            <h1 className="text-lg">{popupInfo?.name}</h1>
+            <h2>{popupInfo?.category}</h2>
             <button onClick={handlePlaces}>Add +</button>
           </div>
         </Popup>

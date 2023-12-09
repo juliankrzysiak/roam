@@ -57,6 +57,11 @@ export default function Map({ places, setPlaces }: Props) {
             longitude={place.lngLat.lng}
             latitude={place.lngLat.lat}
             onClick={(e) => {
+              setPopupInfo({
+                name: place.name,
+                category: place.category,
+                lngLat: place.lngLat,
+              });
               e.originalEvent.stopPropagation();
             }}
           />

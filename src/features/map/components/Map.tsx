@@ -12,6 +12,7 @@ interface Props {
 export default function Map({ places, setPlaces }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
+  const [marker, setMarker] = useState(false);
 
   const onMapLoad = useCallback(() => {
     if (!mapRef.current) return;
@@ -62,6 +63,8 @@ export default function Map({ places, setPlaces }: Props) {
                 category: place.category,
                 lngLat: place.lngLat,
               });
+              mapRef.current?.panTo(place.lngLat);
+
               e.originalEvent.stopPropagation();
             }}
           />

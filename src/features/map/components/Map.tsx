@@ -32,9 +32,14 @@ export default function Map({ places, setPlaces }: Props) {
     } else setPopupInfo(null);
   }
 
-  function handlePlaces() {
+  function addPlace() {
     if (!popupInfo) return;
     setPlaces([...places, popupInfo]);
+    setPopupInfo(null);
+  }
+
+  function deletePlace() {
+    setPlaces(places.filter((place) => place.id !== popupInfo?.id));
     setPopupInfo(null);
   }
 
@@ -83,7 +88,8 @@ export default function Map({ places, setPlaces }: Props) {
           <div className="w-fit">
             <h1 className="text-lg">{popupInfo?.name}</h1>
             <h2>{popupInfo?.category}</h2>
-            <button onClick={handlePlaces}>Add +</button>
+            <button onClick={addPlace}>Add +</button>
+            <button onClick={deletePlace}>Delete -</button>
           </div>
         </Popup>
       )}

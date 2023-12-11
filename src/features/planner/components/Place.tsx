@@ -17,9 +17,6 @@ export default function Place({
   places,
   setPlaces,
 }: Time) {
-  const [hours, setHours] = useState(place.duration.hours);
-  const [minutes, setMinute] = useState(place.duration.minutes);
-
   const timeFormat = "HH:mm a";
 
   function handleChange(e: ChangeEvent<HTMLFormElement>) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { PlaceT } from "@/types";
+import mapboxgl from "mapbox-gl";
 import { SetStateAction, useCallback, useRef, useState } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 
@@ -12,25 +13,24 @@ interface Props {
 export default function Map({ places, setPlaces }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
-  const [marker, setMarker] = useState(false);
 
-  const onMapLoad = useCallback(() => {
+  function handleClickMap(e: mapboxgl.MapMouseEvent) {
     if (!mapRef.current) return;
-    mapRef.current.on("click", (e) => {
-      const features = mapRef.current?.queryRenderedFeatures(e.point, {
-        layers: ["poi-label"],
-      });
-      if (features && features.length > 0) {
-        const feature = features[0];
-        setPopupInfo({
-          name: feature.properties?.name,
-          category: feature.properties?.category_en,
-          lngLat: e.lngLat,
-        });
-        mapRef.current?.panTo(e.lngLat);
-      } else setPopupInfo(null);
+    const features = mapRef.current?.queryRenderedFeatures(e.point, {
+      layers: ["poi-label"],
     });
-  }, []);
+    if (features && features.length > 0) {
+      const feature = features[0];
+      if (places.some((place) => place.id === feature.id)) return;
+      setPopupInfo({
+        id: Number(feature.id),
+        name: feature.properties?.name,
+        category: feature.properties?.category_en,
+        lngLat: e.lngLat,
+      });
+      mapRef.current?.panTo(e.lngLat);
+    } else setPopupInfo(null);
+  }
 
   function handlePlaces() {
     if (!popupInfo) return;
@@ -43,7 +43,7 @@ export default function Map({ places, setPlaces }: Props) {
       reuseMaps
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_KEY}
       ref={mapRef}
-      onLoad={onMapLoad}
+      onClick={handleClickMap}
       initialViewState={{
         longitude: -118.11,
         latitude: 34.57,
@@ -59,6 +59,7 @@ export default function Map({ places, setPlaces }: Props) {
             latitude={place.lngLat.lat}
             onClick={(e) => {
               setPopupInfo({
+                id: place.id,
                 name: place.name,
                 category: place.category,
                 lngLat: place.lngLat,

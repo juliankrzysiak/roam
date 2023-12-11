@@ -27,6 +27,7 @@ export default function Map({ places, setPlaces }: Props) {
         name: feature.properties?.name,
         category: feature.properties?.category_en,
         lngLat: e.lngLat,
+        duration: 0
       });
       mapRef.current?.panTo(e.lngLat);
     } else setPopupInfo(null);
@@ -68,6 +69,7 @@ export default function Map({ places, setPlaces }: Props) {
                 name: place.name,
                 category: place.category,
                 lngLat: place.lngLat,
+                duration: 0,
               });
               mapRef.current?.panTo(place.lngLat);
 

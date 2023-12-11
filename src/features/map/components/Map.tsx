@@ -2,7 +2,7 @@
 
 import { PlaceT } from "@/types";
 import mapboxgl from "mapbox-gl";
-import { SetStateAction, useCallback, useRef, useState } from "react";
+import { SetStateAction, useRef, useState } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 
 interface Props {
@@ -27,7 +27,10 @@ export default function Map({ places, setPlaces }: Props) {
         name: feature.properties?.name,
         category: feature.properties?.category_en,
         lngLat: e.lngLat,
-        duration: 0
+        duration: {
+          hours: 0,
+          minutes: 0,
+        },
       });
       mapRef.current?.panTo(e.lngLat);
     } else setPopupInfo(null);
@@ -64,13 +67,7 @@ export default function Map({ places, setPlaces }: Props) {
             longitude={place.lngLat.lng}
             latitude={place.lngLat.lat}
             onClick={(e) => {
-              setPopupInfo({
-                id: place.id,
-                name: place.name,
-                category: place.category,
-                lngLat: place.lngLat,
-                duration: 0,
-              });
+              setPopupInfo(place);
               mapRef.current?.panTo(place.lngLat);
 
               e.originalEvent.stopPropagation();

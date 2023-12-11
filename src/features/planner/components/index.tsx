@@ -1,5 +1,5 @@
 import { PlaceT } from "@/types";
-import { addMinutes, format, parse } from "date-fns";
+import { add, format, parse } from "date-fns";
 import { SetStateAction, useState } from "react";
 import Place from "./Place";
 
@@ -26,7 +26,9 @@ export default function Planner({ places, setPlaces }: Props) {
       </label>
       {places.map((place, i, arr) => {
         const arrival = prev;
-        const departure = addMinutes(arrival, place.duration);
+        const hours = place.duration.hours;
+        const minutes = place.duration.minutes;
+        const departure = add(arrival, { hours, minutes });
         prev = departure;
         if (i === arr.length - 1) endTime = format(departure, "HH:mm a");
         return (

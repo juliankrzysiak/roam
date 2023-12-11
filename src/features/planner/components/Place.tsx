@@ -1,6 +1,6 @@
 import { PlaceT } from "@/types";
 import { format } from "date-fns";
-import { ChangeEvent, SetStateAction } from "react";
+import { ChangeEvent, SetStateAction, useState } from "react";
 
 interface Time {
   place: PlaceT;
@@ -17,28 +17,35 @@ export default function Place({
   places,
   setPlaces,
 }: Time) {
+  const [hours, setHours] = useState(place.duration.hours);
+  const [minutes, setMinute] = useState(place.duration.minutes);
+
   const timeFormat = "HH:mm a";
 
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const duration = Number(event?.target.value);
+  function handleChange(e: ChangeEvent<HTMLFormElement>) {
+    const hours = e.currentTarget.hours.value;
+    const minutes = e.currentTarget.minutes.value;
     const arr = places.map((e) =>
-      e.id === place.id ? { ...place, duration } : e,
+      e.id === place.id ? { ...place, duration: { hours, minutes } } : e,
     );
     setPlaces(arr);
   }
+
   return (
     <div className="my-4 flex ">
       <div>
         <div>Arrival {format(arrival, timeFormat)}</div>
-        <label className="flex">
+        <form className="flex flex-col" onChange={handleChange}>
           Duration
-          <input
-            type="number"
-            defaultValue={place.duration}
-            step={5}
-            onChange={handleChange}
-          />
-        </label>
+          <label>
+            Hours
+            <input type="number" name="hours" min={0} max={12} />
+          </label>
+          <label>
+            Minutes
+            <input type="number" name="minutes" min={0} step={5} max={55} />
+          </label>
+        </form>
         <div>Departure {format(departure, timeFormat)}</div>
       </div>
       <h1>{place.name}</h1>

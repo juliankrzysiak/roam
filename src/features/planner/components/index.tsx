@@ -1,7 +1,7 @@
-import { ChangeEvent, SetStateAction, useState } from "react";
 import { PlaceT } from "@/types";
+import { addMinutes, format, parse } from "date-fns";
+import { SetStateAction, useState } from "react";
 import Place from "./Place";
-import { add, parse, format, addMinutes } from "date-fns";
 
 interface Props {
   places: PlaceT[];
@@ -32,9 +32,11 @@ export default function Planner({ places, setPlaces }: Props) {
         return (
           <Place
             key={place.id}
-            {...place}
-            arrival={format(arrival, "HH:mm a")}
-            departure={format(departure, "HH:mm a")}
+            place={place}
+            arrival={arrival}
+            departure={departure}
+            places={places}
+            setPlaces={setPlaces}
           />
         );
       })}

@@ -1,24 +1,47 @@
-import { useState } from "react";
-import { add, addMinutes } from "date-fns";
+import { PlaceT } from "@/types";
+import { format } from "date-fns";
+import { ChangeEvent, SetStateAction } from "react";
 
-export default function Place({ name, arrival, departure }: any) {
-  const [duration, setDuration] = useState("00:00");
+interface Time {
+  place: PlaceT;
+  arrival: Date;
+  departure: Date;
+  places: PlaceT[];
+  setPlaces: React.Dispatch<SetStateAction<PlaceT[]>>;
+}
+
+export default function Place({
+  place,
+  arrival,
+  departure,
+  places,
+  setPlaces,
+}: Time) {
+  const timeFormat = "HH:mm a";
+
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    const duration = Number(event?.target.value);
+    const arr = places.map((e) =>
+      e.id === place.id ? { ...place, duration } : e,
+    );
+    setPlaces(arr);
+  }
   return (
     <div className="my-4 flex ">
       <div>
-        <div>Arrival {arrival}</div>
+        <div>Arrival {format(arrival, timeFormat)}</div>
         <label className="flex">
           Duration
           <input
             type="number"
-            value={duration}
+            defaultValue={place.duration}
             step={5}
-            onChange={(event) => setDuration(event.target.value)}
+            onChange={handleChange}
           />
         </label>
-        <div>Departure {departure}</div>
+        <div>Departure {format(departure, timeFormat)}</div>
       </div>
-      <h1>{name}</h1>
+      <h1>{place.name}</h1>
     </div>
   );
 }

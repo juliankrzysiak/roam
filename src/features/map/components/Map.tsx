@@ -1,50 +1,58 @@
 "use client";
 
-import { Place } from "@/types/types";
+import { PlaceT } from "@/types";
 import mapboxgl from "mapbox-gl";
-import { SetStateAction, useCallback, useRef, useState } from "react";
-import { Map as MapBox, MapRef, Popup } from "react-map-gl";
+import { SetStateAction, useRef, useState } from "react";
+import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 
 interface Props {
-  places: Place[];
-  setPlaces: React.Dispatch<SetStateAction<Place[]>>;
+  places: PlaceT[];
+  setPlaces: React.Dispatch<SetStateAction<PlaceT[]>>;
 }
 
 export default function Map({ places, setPlaces }: Props) {
   const mapRef = useRef<MapRef>(null);
-  const [showPopup, setShowPopup] = useState(false);
-  const [lngLat, setLngLat] = useState(new mapboxgl.LngLat(-122.4, 37.8));
-  const [popupInfo, setPopupInfo] = useState<Place>({ name: "", category: "" });
+  const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
-  const onMapLoad = useCallback(() => {
+  function handleClickMap(e: mapboxgl.MapMouseEvent) {
     if (!mapRef.current) return;
-    mapRef.current.on("click", (e) => {
-      const features = mapRef.current?.queryRenderedFeatures(e.point, {
-        layers: ["poi-label"],
-      });
-      if (features && features.length > 0) {
-        setLngLat(e.lngLat);
-
-        const feature = features[0];
-        setPopupInfo({
-          name: feature.properties?.name,
-          category: feature.properties?.category_en,
-        });
-        setShowPopup(true);
-        mapRef.current?.panTo(e.lngLat);
-      } else setShowPopup(false);
+    const features = mapRef.current?.queryRenderedFeatures(e.point, {
+      layers: ["poi-label"],
     });
-  }, []);
+    if (features && features.length > 0) {
+      const feature = features[0];
+      if (places.some((place) => place.id === feature.id)) return;
+      setPopupInfo({
+        id: Number(feature.id),
+        name: feature.properties?.name,
+        category: feature.properties?.category_en,
+        lngLat: e.lngLat,
+        duration: {
+          hours: 0,
+          minutes: 0,
+        },
+      });
+      mapRef.current?.panTo(e.lngLat);
+    } else setPopupInfo(null);
+  }
 
-  function handlePlaces() {
+  function addPlace() {
+    if (!popupInfo) return;
     setPlaces([...places, popupInfo]);
+    setPopupInfo(null);
+  }
+
+  function deletePlace() {
+    setPlaces(places.filter((place) => place.id !== popupInfo?.id));
+    setPopupInfo(null);
   }
 
   return (
     <MapBox
+      reuseMaps
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_KEY}
       ref={mapRef}
-      onLoad={onMapLoad}
+      onClick={handleClickMap}
       initialViewState={{
         longitude: -118.11,
         latitude: 34.57,
@@ -52,18 +60,35 @@ export default function Map({ places, setPlaces }: Props) {
       }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
     >
-      {showPopup && (
+      {places.map((place) => {
+        return (
+          <Marker
+            key={place.name}
+            longitude={place.lngLat.lng}
+            latitude={place.lngLat.lat}
+            onClick={(e) => {
+              setPopupInfo(place);
+              mapRef.current?.panTo(place.lngLat);
+
+              e.originalEvent.stopPropagation();
+            }}
+          />
+        );
+      })}
+
+      {popupInfo && (
         <Popup
-          longitude={lngLat.lng}
-          latitude={lngLat.lat}
+          longitude={popupInfo.lngLat.lng}
+          latitude={popupInfo.lngLat.lat}
           offset={10}
           closeOnClick={false}
-          onClose={() => setShowPopup(false)}
+          onClose={() => setPopupInfo(null)}
         >
           <div className="w-fit">
-            <h1 className="text-lg">{popupInfo.name}</h1>
-            <h2>{popupInfo.category}</h2>
-            <button onClick={handlePlaces}>Add +</button>
+            <h1 className="text-lg">{popupInfo?.name}</h1>
+            <h2>{popupInfo?.category}</h2>
+            <button onClick={addPlace}>Add +</button>
+            <button onClick={deletePlace}>Delete -</button>
           </div>
         </Popup>
       )}

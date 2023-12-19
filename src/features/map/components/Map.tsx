@@ -1,16 +1,19 @@
 "use client";
 
 import { PlaceT } from "@/types";
+import { createSupabaseBrowserClient } from "@/utils/supabaseBroswerClient";
 import mapboxgl from "mapbox-gl";
 import { SetStateAction, useRef, useState } from "react";
-import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
+import { Map as MapBox, MapRef, Popup } from "react-map-gl";
 
 interface Props {
   places: PlaceT[];
   setPlaces: React.Dispatch<SetStateAction<PlaceT[]>>;
 }
 
-export default function Map({ places, setPlaces }: Props) {
+export default function Map() {
+  const supabase = createSupabaseBrowserClient();
+
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
@@ -21,7 +24,9 @@ export default function Map({ places, setPlaces }: Props) {
     });
     if (features && features.length > 0) {
       const feature = features[0];
-      if (places.some((place) => place.id === feature.id)) return;
+
+      // if (places.some((place) => place.id === feature.id)) return;
+
       setPopupInfo({
         id: Number(feature.id),
         name: feature.properties?.name,
@@ -36,9 +41,11 @@ export default function Map({ places, setPlaces }: Props) {
     } else setPopupInfo(null);
   }
 
-  function addPlace() {
+  async function addPlace() {
     if (!popupInfo) return;
-    setPlaces([...places, popupInfo]);
+    const { name } = popupInfo;
+    const { data, error } = await supabase.from("places").insert({ name });
+    console.log(data);
     setPopupInfo(null);
   }
 

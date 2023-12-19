@@ -3,6 +3,8 @@ import { add, format, parse } from "date-fns";
 import { SetStateAction, useState } from "react";
 import Place from "./Place";
 import { cookies } from "next/headers";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createSupabaseServerClient } from "@/utils/supabase";
 
 interface Props {
   places: PlaceT[];
@@ -21,7 +23,11 @@ interface Props {
 // return res.json();
 // }
 
-export default function Planner({ places, setPlaces }: Props) {
+export default async function Planner({ places, setPlaces }: Props) {
+  const supabase = createSupabaseServerClient();
+
+  const { data, error } = await supabase.from("places").select("name");
+
   // const [startTime, setStartTime] = useState("08:00");
   // let prev = parse(startTime, "HH:mm", new Date());
   let endTime;

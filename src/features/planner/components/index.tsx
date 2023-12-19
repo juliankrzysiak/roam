@@ -4,7 +4,7 @@ import { SetStateAction, useState } from "react";
 import Place from "./Place";
 import { cookies } from "next/headers";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { createSupabaseServerClient } from "@/utils/supabase";
+import { createSupabaseServerClient } from "@/utils/supabaseServerClient";
 
 interface Props {
   places: PlaceT[];
@@ -23,10 +23,12 @@ interface Props {
 // return res.json();
 // }
 
-export default async function Planner({ places, setPlaces }: Props) {
+export default async function Planner() {
   const supabase = createSupabaseServerClient();
 
-  const { data, error } = await supabase.from("places").select("name");
+  const { data: places, error } = await supabase
+    .from("places")
+    .select("id, name");
 
   // const [startTime, setStartTime] = useState("08:00");
   // let prev = parse(startTime, "HH:mm", new Date());
@@ -61,6 +63,9 @@ export default async function Planner({ places, setPlaces }: Props) {
           />
         );
       })} */}
+      {places?.map((place) => {
+        return <Place key={place.id} place={place} />;
+      })}
       <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
     </section>
   );

@@ -60,7 +60,7 @@ export default function Map({ places, setPlaces }: Props) {
       }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
     >
-      {places.map((place) => {
+      {/* {places.map((place) => {
         return (
           <Marker
             key={place.name}
@@ -74,7 +74,7 @@ export default function Map({ places, setPlaces }: Props) {
             }}
           />
         );
-      })}
+      })} */}
 
       {popupInfo && (
         <Popup

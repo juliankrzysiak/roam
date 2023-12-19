@@ -2,15 +2,28 @@ import { PlaceT } from "@/types";
 import { add, format, parse } from "date-fns";
 import { SetStateAction, useState } from "react";
 import Place from "./Place";
+import { cookies } from "next/headers";
 
 interface Props {
   places: PlaceT[];
   setPlaces: React.Dispatch<SetStateAction<PlaceT[]>>;
 }
 
+// async function getRoute(places: PlaceT[]) {
+// const coordinates = places
+// .map((place) => `${place.lngLat.lng},${place.lngLat.lat}`)
+// .join(";");
+//
+// const profile = "mapbox/driving";
+// const res = await fetch(
+// `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?annotations=distance,duration&overview=full&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`,
+// );
+// return res.json();
+// }
+
 export default function Planner({ places, setPlaces }: Props) {
-  const [startTime, setStartTime] = useState("08:00");
-  let prev = parse(startTime, "HH:mm", new Date());
+  // const [startTime, setStartTime] = useState("08:00");
+  // let prev = parse(startTime, "HH:mm", new Date());
   let endTime;
 
   return (
@@ -18,13 +31,13 @@ export default function Planner({ places, setPlaces }: Props) {
       <div className="h-20 border-4 border-b"></div>
       <label className="flex w-fit flex-col">
         Start time
-        <input
+        {/* <input
           type="time"
           value={startTime}
           onChange={(event) => setStartTime(event.target.value)}
-        />
+        /> */}
       </label>
-      {places.map((place, i, arr) => {
+      {/* {places.map((place, i, arr) => {
         const arrival = prev;
         const hours = place.duration.hours;
         const minutes = place.duration.minutes;
@@ -41,7 +54,7 @@ export default function Planner({ places, setPlaces }: Props) {
             setPlaces={setPlaces}
           />
         );
-      })}
+      })} */}
       <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
     </section>
   );

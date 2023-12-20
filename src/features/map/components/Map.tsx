@@ -1,21 +1,16 @@
 "use client";
 
-import { createPlace } from "@/utils/actions";
 import { PlaceT } from "@/types";
-import { createSupabaseBrowserClient } from "@/utils/supabaseBroswerClient";
+import { createPlace } from "@/utils/actions";
 import mapboxgl from "mapbox-gl";
-import { revalidatePath, revalidateTag } from "next/cache";
-import { SetStateAction, useRef, useState } from "react";
-import { Map as MapBox, MapRef, Popup } from "react-map-gl";
+import { useRef, useState } from "react";
+import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 
 interface Props {
   places: PlaceT[];
-  setPlaces: React.Dispatch<SetStateAction<PlaceT[]>>;
 }
 
-export default function Map() {
-  const supabase = createSupabaseBrowserClient();
-
+export default function Map({ places }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
@@ -30,8 +25,10 @@ export default function Map() {
       // if (places.some((place) => place.id === feature.id)) return;
 
       setPopupInfo({
+        id: Number(feature.id),
         name: feature.properties?.name,
         category: feature.properties?.category_en,
+        duration: 0,
         lng: e.lngLat.lng,
         lat: e.lngLat.lat,
       });
@@ -46,7 +43,6 @@ export default function Map() {
   }
 
   function deletePlace() {
-    setPlaces(places.filter((place) => place.id !== popupInfo?.id));
     setPopupInfo(null);
   }
 
@@ -63,21 +59,20 @@ export default function Map() {
       }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
     >
-      {/* {places.map((place) => {
+      {places.map((place) => {
         return (
           <Marker
-            key={place.name}
-            longitude={place.lngLat.lng}
-            latitude={place.lngLat.lat}
+            key={place.id}
+            longitude={place.lng}
+            latitude={place.lat}
             onClick={(e) => {
               setPopupInfo(place);
-              mapRef.current?.panTo(place.lngLat);
-
+              mapRef.current?.panTo([place.lng, place.lat]);
               e.originalEvent.stopPropagation();
             }}
           />
         );
-      })} */}
+      })}
 
       {popupInfo && (
         <Popup

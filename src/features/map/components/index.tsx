@@ -1,7 +1,7 @@
 "use client";
 
 import { PlaceT } from "@/types";
-import { createPlace } from "@/utils/actions";
+import { createPlace, deletePlace } from "@/utils/actions";
 import mapboxgl from "mapbox-gl";
 import { useRef, useState } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
@@ -36,13 +36,15 @@ export default function Map({ places }: Props) {
     } else setPopupInfo(null);
   }
 
-  async function addPlace() {
+  async function handleAddPlace() {
     if (!popupInfo) return;
     await createPlace(JSON.parse(JSON.stringify(popupInfo)));
     setPopupInfo(null);
   }
 
-  function deletePlace() {
+  async function handleDeletePlace() {
+    if (!popupInfo) return;
+    await deletePlace(JSON.parse(JSON.stringify(popupInfo)));
     setPopupInfo(null);
   }
 
@@ -83,10 +85,10 @@ export default function Map({ places }: Props) {
           onClose={() => setPopupInfo(null)}
         >
           <div className="w-fit">
-            <h1 className="text-lg">{popupInfo?.name}</h1>
-            <h2>{popupInfo?.category}</h2>
-            <button onClick={addPlace}>Add +</button>
-            <button onClick={deletePlace}>Delete -</button>
+            <h1 className="text-lg">{popupInfo.name}</h1>
+            <h2>{popupInfo.category}</h2>
+            <button onClick={handleAddPlace}>Add +</button>
+            <button onClick={handleDeletePlace}>Delete -</button>
           </div>
         </Popup>
       )}

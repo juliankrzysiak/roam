@@ -6,11 +6,9 @@ import { ChangeEvent, SetStateAction, useState } from "react";
 
 interface Time {
   place: PlaceT;
-  arrival: Date;
-  departure: Date;
 }
 
-export default function Place({ place, arrival, departure }: Time) {
+export default function Place({ place }: Time) {
   const timeFormat = "HH:mm a";
 
   function handleChange(e: ChangeEvent<HTMLFormElement>) {

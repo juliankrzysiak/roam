@@ -7,8 +7,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { createSupabaseServerClient } from "@/utils/supabaseServerClient";
 
 interface Props {
-  places: PlaceT[];
-  setPlaces: React.Dispatch<SetStateAction<PlaceT[]>>;
+  places: any;
 }
 
 // async function getRoute(places: PlaceT[]) {
@@ -23,16 +22,11 @@ interface Props {
 // return res.json();
 // }
 
-export default async function Planner() {
-  const supabase = createSupabaseServerClient();
-
-  const { data: places, error } = await supabase
-    .from("places")
-    .select("id, name");
-
+export default async function Planner({ places }: Props) {
   // const [startTime, setStartTime] = useState("08:00");
   // let prev = parse(startTime, "HH:mm", new Date());
   let endTime;
+  console.log(places);
 
   return (
     <section className="absolute inset-4 left-10 top-1/2 h-5/6 w-4/12  -translate-y-1/2 rounded-xl border-4 border-emerald-600 bg-gray-100 shadow-lg ">
@@ -63,7 +57,7 @@ export default async function Planner() {
           />
         );
       })} */}
-      {places?.map((place) => {
+      {places.map((place) => {
         return <Place key={place.id} place={place} />;
       })}
       <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>

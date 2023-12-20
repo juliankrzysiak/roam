@@ -1,8 +1,10 @@
 "use client";
 
+import { createPlace } from "@/utils/actions";
 import { PlaceT } from "@/types";
 import { createSupabaseBrowserClient } from "@/utils/supabaseBroswerClient";
 import mapboxgl from "mapbox-gl";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { SetStateAction, useRef, useState } from "react";
 import { Map as MapBox, MapRef, Popup } from "react-map-gl";
 
@@ -28,14 +30,10 @@ export default function Map() {
       // if (places.some((place) => place.id === feature.id)) return;
 
       setPopupInfo({
-        id: Number(feature.id),
         name: feature.properties?.name,
         category: feature.properties?.category_en,
-        lngLat: e.lngLat,
-        duration: {
-          hours: 0,
-          minutes: 0,
-        },
+        lng: e.lngLat.lng,
+        lat: e.lngLat.lat,
       });
       mapRef.current?.panTo(e.lngLat);
     } else setPopupInfo(null);
@@ -43,9 +41,7 @@ export default function Map() {
 
   async function addPlace() {
     if (!popupInfo) return;
-    const { name } = popupInfo;
-    const { data, error } = await supabase.from("places").insert({ name });
-    console.log(data);
+    await createPlace(JSON.parse(JSON.stringify(popupInfo)));
     setPopupInfo(null);
   }
 
@@ -85,8 +81,8 @@ export default function Map() {
 
       {popupInfo && (
         <Popup
-          longitude={popupInfo.lngLat.lng}
-          latitude={popupInfo.lngLat.lat}
+          longitude={popupInfo.lng}
+          latitude={popupInfo.lat}
           offset={10}
           closeOnClick={false}
           onClose={() => setPopupInfo(null)}

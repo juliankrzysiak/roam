@@ -4,19 +4,10 @@ import { unstable_cache } from "next/cache";
 
 import { createSupabaseServerClient } from "@/utils/supabaseServerClient";
 
-const getPlaces = unstable_cache(async () => {
-  const supabase = createSupabaseServerClient();
-  try {
-    const { data, error } = await supabase.from("places").select("id, name");
-    if (error) throw new Error(`Supabase error: ${error.message}`);
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-}, ["places"]);
-
 export default async function MapPage() {
-  const places = await getPlaces();
+  const supabase = createSupabaseServerClient();
+  const { data: places, error } = await supabase.from("places").select("name");
+
   return (
     <main className="relative h-20 flex-grow">
       <Map />

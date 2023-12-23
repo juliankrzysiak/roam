@@ -10,10 +10,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { Router } from "next/router";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -28,7 +29,7 @@ interface Props {
 }
 
 export default function LoginForm({ setOpen }: Props) {
-  const supabase = createClientComponentClient<any>();
+  const supabase = createClient();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

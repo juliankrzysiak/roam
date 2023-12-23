@@ -19,7 +19,7 @@ import * as z from "zod";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Must be a valid email address." }),
-  // Can implement strong password integer using validator.js
+  // TODO: validator.js for strong password checking
   password: z.string().min(6).max(20),
 });
 
@@ -53,7 +53,7 @@ export default function LoginForm({ setOpen }: Props) {
 
     if (data && !error) {
       setOpen(false);
-      router.push("/map");
+      router.push("/trips");
     }
   }
 

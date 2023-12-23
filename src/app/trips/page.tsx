@@ -12,7 +12,7 @@ export default async function Trips() {
     <div className="flex flex-col items-center">
       <h1>Trips</h1>
       {trips.map((trip) => {
-        return <Trip key={trip.id} name={trip.name} />;
+        return <Trip key={trip.id} name={trip.name} id={trip.id} />;
       })}
     </div>
   );

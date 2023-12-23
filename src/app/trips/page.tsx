@@ -7,10 +7,6 @@ export default async function Trips() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   const { data: trips, error } = await supabase.from("trips").select();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  console.log(user);
   if (error) return <div>error</div>;
 
   return (

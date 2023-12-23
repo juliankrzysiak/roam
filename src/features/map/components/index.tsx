@@ -21,9 +21,6 @@ export default function Map({ places }: Props) {
     });
     if (features && features.length > 0) {
       const feature = features[0];
-
-      // if (places.some((place) => place.id === feature.id)) return;
-
       setPopupInfo({
         id: Number(feature.id),
         name: feature.properties?.name,

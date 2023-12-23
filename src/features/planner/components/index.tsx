@@ -3,6 +3,7 @@ import { add, format, parse } from "date-fns";
 import Place from "./Place";
 import { createSupabaseServerClient } from "@/utils/supabaseServerClient";
 import { updateStartTime } from "@/utils/actions";
+import { cookies } from "next/headers";
 
 interface Props {
   places: PlaceT[];
@@ -21,7 +22,8 @@ interface Props {
 // }
 
 export default async function Planner({ places }: Props) {
-  const supabase = createSupabaseServerClient();
+  const cookieStore = cookies();
+  const supabase = createSupabaseServerClient(cookieStore);
   const { data, error } = await supabase
     .from("days")
     .select("start_time")

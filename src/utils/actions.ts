@@ -3,10 +3,11 @@
 import { PlaceT } from "@/types";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "./supabaseServerClient";
-
-const supabase = createSupabaseServerClient();
+import { cookies } from "next/headers";
 
 export async function createPlace(place: PlaceT) {
+  const cookieStore = cookies();
+  const supabase = createSupabaseServerClient(cookieStore);
   try {
     const { error } = await supabase.from("places").insert(place);
     if (error) throw new Error(`Supabase error: ${error.message}`);
@@ -17,6 +18,8 @@ export async function createPlace(place: PlaceT) {
 }
 
 export async function deletePlace(place: PlaceT) {
+  const cookieStore = cookies();
+  const supabase = createSupabaseServerClient(cookieStore);
   try {
     const { error } = await supabase.from("places").delete().eq("id", place.id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
@@ -27,6 +30,8 @@ export async function deletePlace(place: PlaceT) {
 }
 
 export async function updateDuration(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createSupabaseServerClient(cookieStore);
   const id = formData.get("id");
   const rawFormData = {
     duration: formData.get("duration"),
@@ -44,6 +49,8 @@ export async function updateDuration(formData: FormData) {
 }
 
 export async function updateStartTime(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createSupabaseServerClient(cookieStore);
   const rawFormData = {
     start_time: formData.get("startTime"),
   };

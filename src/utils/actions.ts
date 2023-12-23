@@ -5,12 +5,11 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 
-const cookieStore = cookies();
-const supabase = createClient(cookieStore);
-
 // Create //
 
 export async function createPlace(place: PlaceT) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   try {
     const { error } = await supabase.from("places").insert(place);
     if (error) throw new Error(`Supabase error: ${error.message}`);
@@ -39,6 +38,8 @@ export async function createTrip(formData: FormData) {
 // Update //
 
 export async function updateDuration(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   const id = formData.get("id");
   const rawFormData = {
     duration: formData.get("duration"),
@@ -56,6 +57,8 @@ export async function updateDuration(formData: FormData) {
 }
 
 export async function updateStartTime(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   const rawFormData = {
     start_time: formData.get("startTime"),
   };
@@ -74,6 +77,8 @@ export async function updateStartTime(formData: FormData) {
 // Delete //
 
 export async function deletePlace(place: PlaceT) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   try {
     const { error } = await supabase.from("places").delete().eq("id", place.id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
@@ -84,6 +89,8 @@ export async function deletePlace(place: PlaceT) {
 }
 
 export async function deleteTrip(id: number) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   const { error } = await supabase.from("trips").delete().eq("id", id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
   revalidatePath("/trips");

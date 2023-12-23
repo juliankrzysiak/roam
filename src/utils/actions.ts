@@ -42,3 +42,19 @@ export async function updateDuration(formData: FormData) {
     console.log(error);
   }
 }
+
+export async function updateStartTime(formData: FormData) {
+  const rawFormData = {
+    start_time: formData.get("startTime"),
+  };
+  try {
+    const { error } = await supabase
+      .from("days")
+      .update(rawFormData)
+      .eq("id", 3);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/map");
+  } catch (error) {
+    console.log(error);
+  }
+}

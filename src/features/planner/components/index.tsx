@@ -1,6 +1,8 @@
 import { PlaceT } from "@/types";
 import { add, format, parse } from "date-fns";
 import Place from "./Place";
+import { createSupabaseServerClient } from "@/utils/supabaseServerClient";
+import { updateStartTime } from "@/utils/actions";
 
 interface Props {
   places: PlaceT[];
@@ -19,20 +21,34 @@ interface Props {
 // }
 
 export default async function Planner({ places }: Props) {
-  let prev = parse("08:00", "HH:mm", new Date());
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("days")
+    .select("start_time")
+    .eq("id", 3)
+    .single();
+
+  let startTime = parse(data?.start_time, "HH:mm", new Date());
   let endTime;
 
   return (
     <section className="absolute inset-4 left-10 top-1/2 h-5/6 w-4/12  -translate-y-1/2 rounded-xl border-4 border-emerald-600 bg-gray-100 shadow-lg ">
       <div className="h-20 border-4 border-b"></div>
-      <label className="flex w-fit flex-col">
-        Start time
-        <input type="time" defaultValue={format(prev, "HH:mm")} />
-      </label>
+      <form action={updateStartTime}>
+        <label className="flex w-fit flex-col">
+          Start time
+          <input
+            type="time"
+            name="startTime"
+            defaultValue={format(startTime, "HH:mm")}
+          />
+          <button>Submit</button>
+        </label>
+      </form>
       {places.map((place, i, arr) => {
-        const arrival = prev;
+        const arrival = startTime;
         const departure = add(arrival, { minutes: place.duration });
-        prev = departure;
+        startTime = departure;
         if (i === arr.length - 1) endTime = format(departure, "HH:mm");
         return (
           <Place

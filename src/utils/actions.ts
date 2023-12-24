@@ -76,11 +76,11 @@ export async function updateStartTime(formData: FormData) {
 
 // Delete //
 
-export async function deletePlace(place: PlaceT) {
+export async function deletePlace(id: number) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
-    const { error } = await supabase.from("places").delete().eq("id", place.id);
+    const { error } = await supabase.from("places").delete().eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {

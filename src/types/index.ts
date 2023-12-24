@@ -1,7 +1,7 @@
 import mapboxgl from "mapbox-gl";
 
 export interface PlaceT {
-  id: number;
+  id?: number;
   duration: number;
   name: string;
   category: string;

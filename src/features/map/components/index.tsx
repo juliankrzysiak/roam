@@ -8,9 +8,13 @@ import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 
 interface Props {
   places: PlaceT[];
+  params: {
+    trip: number;
+    day: number;
+  };
 }
 
-export default function Map({ places }: Props) {
+export default function Map({ places, params }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
@@ -22,7 +26,6 @@ export default function Map({ places }: Props) {
     if (features && features.length > 0) {
       const feature = features[0];
       setPopupInfo({
-        id: Number(feature.id),
         name: feature.properties?.name,
         category: feature.properties?.category_en,
         duration: 0,
@@ -31,17 +34,20 @@ export default function Map({ places }: Props) {
       });
       mapRef.current?.panTo(e.lngLat);
     } else setPopupInfo(null);
+    console.log(popupInfo);
   }
 
   async function handleAddPlace() {
     if (!popupInfo) return;
-    await createPlace(JSON.parse(JSON.stringify(popupInfo)));
+    await createPlace(
+      JSON.parse(JSON.stringify({ ...popupInfo, day_id: params.day })),
+    );
     setPopupInfo(null);
   }
 
   async function handleDeletePlace() {
-    if (!popupInfo) return;
-    await deletePlace(JSON.parse(JSON.stringify(popupInfo)));
+    if (!popupInfo || !popupInfo.id) return;
+    await deletePlace(popupInfo.id);
     setPopupInfo(null);
   }
 

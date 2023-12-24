@@ -3,7 +3,11 @@ import Planner from "@/features/planner/components";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 
-export default async function MapPage({ params }: { params: { day: number } }) {
+interface Params {
+  params: { trip: number; day: number };
+}
+
+export default async function MapPage({ params }: Params) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -15,7 +19,7 @@ export default async function MapPage({ params }: { params: { day: number } }) {
 
   return (
     <main className="relative h-20 flex-grow">
-      <Map places={places} />
+      <Map places={places} params={params} />
       <Planner places={places} />
     </main>
   );

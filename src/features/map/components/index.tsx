@@ -34,7 +34,6 @@ export default function Map({ places, params }: Props) {
       });
       mapRef.current?.panTo(e.lngLat);
     } else setPopupInfo(null);
-    console.log(popupInfo);
   }
 
   async function handleAddPlace() {

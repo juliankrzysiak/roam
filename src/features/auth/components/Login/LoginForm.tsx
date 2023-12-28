@@ -10,16 +10,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { Router } from "next/router";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Must be a valid email address." }),
-  // Can implement strong password integer using validator.js
+  // TODO: validator.js for strong password checking
   password: z.string().min(6).max(20),
 });
 
@@ -28,7 +29,7 @@ interface Props {
 }
 
 export default function LoginForm({ setOpen }: Props) {
-  const supabase = createClientComponentClient<any>();
+  const supabase = createClient();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,7 +54,7 @@ export default function LoginForm({ setOpen }: Props) {
 
     if (data && !error) {
       setOpen(false);
-      router.push("/map");
+      router.push("/trips");
     }
   }
 

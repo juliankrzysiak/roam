@@ -1,10 +1,9 @@
 import "@/app/globals.css";
+import Header from "@/components/general/Header";
+import { Toaster } from "@/components/ui/toaster";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
-import Header from "@/components/general/Header";
-import Footer from "@/components/general/Footer";
-import { Toaster } from "@/components/ui/toaster";
 
 const nunitoSans = Nunito_Sans({ subsets: ["latin"] });
 

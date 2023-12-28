@@ -1,51 +1,39 @@
 import { PlaceT } from "@/types";
+import { updateDuration } from "@/utils/actions";
 import { format } from "date-fns";
-import { ChangeEvent, SetStateAction, useState } from "react";
 
-interface Time {
+interface Props {
   place: PlaceT;
   arrival: Date;
   departure: Date;
-  places: PlaceT[];
-  setPlaces: React.Dispatch<SetStateAction<PlaceT[]>>;
 }
+const timeFormat = "HH:mm a";
 
-export default function Place({
-  place,
-  arrival,
-  departure,
-  places,
-  setPlaces,
-}: Time) {
-  const timeFormat = "HH:mm a";
-
-  function handleChange(e: ChangeEvent<HTMLFormElement>) {
-    const hours = e.currentTarget.hours.value;
-    const minutes = e.currentTarget.minutes.value;
-    const arr = places.map((e) =>
-      e.id === place.id ? { ...place, duration: { hours, minutes } } : e,
-    );
-    setPlaces(arr);
-  }
-
+export default function Place({ place, arrival, departure }: Props) {
   return (
     <div className="my-4 flex ">
       <div>
         <div>Arrival {format(arrival, timeFormat)}</div>
-        <form className="flex flex-col" onChange={handleChange}>
-          Duration
-          <label>
-            Hours
-            <input type="number" name="hours" min={0} max={12} />
-          </label>
+        <form className="flex flex-col" action={updateDuration}>
           <label>
             Minutes
-            <input type="number" name="minutes" min={0} step={5} max={55} />
+            <input
+              type="number"
+              name="duration"
+              min={0}
+              step={5}
+              defaultValue={place.duration}
+            />
+            <input type="hidden" name="id" defaultValue={place.id} />
           </label>
+          <button>Submit</button>
         </form>
         <div>Departure {format(departure, timeFormat)}</div>
       </div>
-      <h1>{place.name}</h1>
+      <div className="flex flex-col">
+        <h1>{place.name}</h1>
+        <h2>{place.category}</h2>
+      </div>
     </div>
   );
 }

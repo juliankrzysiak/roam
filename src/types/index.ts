@@ -1,12 +1,10 @@
 import mapboxgl from "mapbox-gl";
 
 export interface PlaceT {
-  duration: {
-    hours: number;
-    minutes: number;
-  };
-  id: number;
+  id?: number;
+  duration: number;
   name: string;
   category: string;
-  lngLat: mapboxgl.LngLat;
+  lng: number;
+  lat: number;
 }

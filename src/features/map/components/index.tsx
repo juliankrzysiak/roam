@@ -1,16 +1,20 @@
 "use client";
 
 import { PlaceT } from "@/types";
+import { createPlace, deletePlace } from "@/utils/actions";
 import mapboxgl from "mapbox-gl";
-import { SetStateAction, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 
 interface Props {
   places: PlaceT[];
-  setPlaces: React.Dispatch<SetStateAction<PlaceT[]>>;
+  params: {
+    trip: number;
+    day: number;
+  };
 }
 
-export default function Map({ places, setPlaces }: Props) {
+export default function Map({ places, params }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
@@ -21,29 +25,28 @@ export default function Map({ places, setPlaces }: Props) {
     });
     if (features && features.length > 0) {
       const feature = features[0];
-      if (places.some((place) => place.id === feature.id)) return;
       setPopupInfo({
-        id: Number(feature.id),
         name: feature.properties?.name,
         category: feature.properties?.category_en,
-        lngLat: e.lngLat,
-        duration: {
-          hours: 0,
-          minutes: 0,
-        },
+        duration: 0,
+        lng: e.lngLat.lng,
+        lat: e.lngLat.lat,
       });
       mapRef.current?.panTo(e.lngLat);
     } else setPopupInfo(null);
   }
 
-  function addPlace() {
+  async function handleAddPlace() {
     if (!popupInfo) return;
-    setPlaces([...places, popupInfo]);
+    await createPlace(
+      JSON.parse(JSON.stringify({ ...popupInfo, day_id: params.day })),
+    );
     setPopupInfo(null);
   }
 
-  function deletePlace() {
-    setPlaces(places.filter((place) => place.id !== popupInfo?.id));
+  async function handleDeletePlace() {
+    if (!popupInfo || !popupInfo.id) return;
+    await deletePlace(popupInfo.id);
     setPopupInfo(null);
   }
 
@@ -63,13 +66,12 @@ export default function Map({ places, setPlaces }: Props) {
       {places.map((place) => {
         return (
           <Marker
-            key={place.name}
-            longitude={place.lngLat.lng}
-            latitude={place.lngLat.lat}
+            key={place.id}
+            longitude={place.lng}
+            latitude={place.lat}
             onClick={(e) => {
               setPopupInfo(place);
-              mapRef.current?.panTo(place.lngLat);
-
+              mapRef.current?.panTo([place.lng, place.lat]);
               e.originalEvent.stopPropagation();
             }}
           />
@@ -78,17 +80,17 @@ export default function Map({ places, setPlaces }: Props) {
 
       {popupInfo && (
         <Popup
-          longitude={popupInfo.lngLat.lng}
-          latitude={popupInfo.lngLat.lat}
+          longitude={popupInfo.lng}
+          latitude={popupInfo.lat}
           offset={10}
           closeOnClick={false}
           onClose={() => setPopupInfo(null)}
         >
           <div className="w-fit">
-            <h1 className="text-lg">{popupInfo?.name}</h1>
-            <h2>{popupInfo?.category}</h2>
-            <button onClick={addPlace}>Add +</button>
-            <button onClick={deletePlace}>Delete -</button>
+            <h1 className="text-lg">{popupInfo.name}</h1>
+            <h2>{popupInfo.category}</h2>
+            <button onClick={handleAddPlace}>Add +</button>
+            <button onClick={handleDeletePlace}>Delete -</button>
           </div>
         </Popup>
       )}

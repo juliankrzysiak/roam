@@ -8,13 +8,11 @@ interface Params {
 }
 
 export default async function MapPage({ params }: Params) {
+  const { day } = params;
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { data: places, error } = await supabase
-    .from("places")
-    .select()
-    .eq("day_id", params.day);
+  const { data: places, error } = await supabase.rpc("get_places", { day });
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
   return (

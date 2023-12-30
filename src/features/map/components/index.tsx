@@ -5,16 +5,18 @@ import { createPlace, deletePlace } from "@/utils/actions";
 import mapboxgl from "mapbox-gl";
 import { useRef, useState } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
+import { v4 as uuidv4 } from "uuid";
 
-interface Props {
+type Props = {
   places: PlaceT[];
   params: {
     trip: number;
     day: number;
   };
-}
+  order: string[];
+};
 
-export default function Map({ places, params }: Props) {
+export default function Map({ places, params, order }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
@@ -26,6 +28,7 @@ export default function Map({ places, params }: Props) {
     if (features && features.length > 0) {
       const feature = features[0];
       setPopupInfo({
+        id: uuidv4(),
         name: feature.properties?.name,
         category: feature.properties?.category_en,
         duration: 0,
@@ -38,14 +41,12 @@ export default function Map({ places, params }: Props) {
 
   async function handleAddPlace() {
     if (!popupInfo) return;
-    await createPlace(
-      JSON.parse(JSON.stringify({ ...popupInfo, day_id: params.day })),
-    );
+    await createPlace({ ...popupInfo, day_id: params.day });
     setPopupInfo(null);
   }
 
   async function handleDeletePlace() {
-    if (!popupInfo || !popupInfo.id) return;
+    if (!popupInfo) return;
     await deletePlace(popupInfo.id);
     setPopupInfo(null);
   }

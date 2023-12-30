@@ -75,9 +75,9 @@ export async function updateStartTime(formData: FormData) {
   }
 }
 
+
 export async function updateOrder(order: string[]) {
   const cookieStore = cookies();
-
   const supabase = createClient(cookieStore);
   try {
     const { error } = await supabase

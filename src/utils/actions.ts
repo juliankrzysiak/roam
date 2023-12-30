@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 
 // Create //
 
-export async function createPlace(place: PlaceT) {
+export async function createPlace(place: PlaceT & { day_id: number }) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
@@ -62,6 +62,7 @@ export async function updateStartTime(formData: FormData) {
   const rawFormData = {
     start_time: formData.get("startTime"),
   };
+  // TODO: Add day here
   try {
     const { error } = await supabase
       .from("days")
@@ -74,9 +75,25 @@ export async function updateStartTime(formData: FormData) {
   }
 }
 
+export async function updateOrder(order: string[]) {
+  const cookieStore = cookies();
+
+  const supabase = createClient(cookieStore);
+  try {
+    const { error } = await supabase
+      .from("days")
+      .update({ order_places: order })
+      .eq("id", 3);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/map");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // Delete //
 
-export async function deletePlace(id: number) {
+export async function deletePlace(id: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
@@ -88,7 +105,7 @@ export async function deletePlace(id: number) {
   }
 }
 
-export async function deleteTrip(id: number) {
+export async function deleteTrip(id: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   const { error } = await supabase.from("trips").delete().eq("id", id);

@@ -1,7 +1,7 @@
 "use client";
 
 import { PlaceT } from "@/types";
-import { createPlace, deletePlace } from "@/utils/actions";
+import { createPlace, deletePlace, updateOrder } from "@/utils/actions";
 import mapboxgl from "mapbox-gl";
 import { useRef, useState } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
@@ -42,6 +42,8 @@ export default function Map({ places, params, order }: Props) {
   async function handleAddPlace() {
     if (!popupInfo) return;
     await createPlace({ ...popupInfo, day_id: params.day });
+    const newOrder = [...order, popupInfo.id];
+    await updateOrder(newOrder);
     setPopupInfo(null);
   }
 

@@ -49,7 +49,10 @@ export default function Map({ places, params, order }: Props) {
 
   async function handleDeletePlace() {
     if (!popupInfo) return;
-    await deletePlace(popupInfo.id);
+    const { id } = popupInfo;
+    await deletePlace(id);
+    const newOrder = order.filter((e) => e !== id);
+    await updateOrder(newOrder);
     setPopupInfo(null);
   }
 

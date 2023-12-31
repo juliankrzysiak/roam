@@ -1,17 +1,32 @@
 import { PlaceT } from "@/types";
 import { updateDuration } from "@/utils/actions";
 import { format } from "date-fns";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-interface Props {
+type Props = {
   place: PlaceT;
   arrival: Date;
   departure: Date;
-}
+};
 const timeFormat = "HH:mm a";
 
 export default function Place({ place, arrival, departure }: Props) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: place.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
   return (
-    <div className="my-4 flex ">
+    <div
+      className="my-4 flex"
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <div>
         <div>Arrival {format(arrival, timeFormat)}</div>
         <form className="flex flex-col" action={updateDuration}>

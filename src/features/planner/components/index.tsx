@@ -1,13 +1,30 @@
+"use client";
+
 import { PlaceT } from "@/types";
-import { updateStartTime } from "@/utils/actions";
-import { createClient } from "@/utils/supabase/server";
+import { updateOrder, updateStartTime } from "@/utils/actions";
+import {
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  UniqueIdentifier,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { add, format, parse } from "date-fns";
-import { cookies } from "next/headers";
 import Place from "./Place";
 
-interface Props {
+type Props = {
   places: PlaceT[];
-}
+  order: string[];
+};
 
 // async function getRoute(places: PlaceT[]) {
 // const coordinates = places
@@ -21,47 +38,76 @@ interface Props {
 // return res.json();
 // }
 
-export default async function Planner({ places }: Props) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-  const { data, error } = await supabase
-    .from("days")
-    .select("start_time")
-    .eq("id", 3)
-    .single();
+export default function Planner({ places }: Props) {
+  // const cookieStore = cookies();
+  // const supabase = createClient(cookieStore);
+  // const { data, error } = await supabase
+  //   .from("days")
+  //   .select("start_time")
+  //   .eq("id", 3)
+  //   .single();
 
-  let startTime = parse(data?.start_time, "HH:mm", new Date());
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (active.id !== over?.id && over) {
+      const order = places.map((e) => e.id) as UniqueIdentifier[];
+      const oldIndex = order.indexOf(active.id);
+      const newIndex = order.indexOf(over.id);
+
+      const orderedArr = arrayMove(order, oldIndex, newIndex) as string[];
+      console.log(oldIndex, newIndex, orderedArr);
+      updateOrder(orderedArr);
+    }
+  }
+
+  let startTime = parse("08:00", "HH:mm", new Date());
   let endTime;
 
   return (
-    <section className="absolute inset-4 left-10 top-1/2 h-5/6 w-4/12  -translate-y-1/2 rounded-xl border-4 border-emerald-600 bg-gray-100 shadow-lg ">
-      <div className="h-20 border-4 border-b"></div>
-      <form action={updateStartTime}>
-        <label className="flex w-fit flex-col">
-          Start time
-          <input
-            type="time"
-            name="startTime"
-            defaultValue={format(startTime, "HH:mm")}
-          />
-          <button>Submit</button>
-        </label>
-      </form>
-      {places.map((place, i, arr) => {
-        const arrival = startTime;
-        const departure = add(arrival, { minutes: place.duration });
-        startTime = departure;
-        if (i === arr.length - 1) endTime = format(departure, "HH:mm");
-        return (
-          <Place
-            key={place.id}
-            place={place}
-            arrival={arrival}
-            departure={departure}
-          />
-        );
-      })}
-      <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
-    </section>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext items={places} strategy={verticalListSortingStrategy}>
+        <section className="absolute inset-4 left-10 top-1/2 h-5/6 w-4/12  -translate-y-1/2 rounded-xl border-4 border-emerald-600 bg-gray-100 shadow-lg ">
+          <div className="h-20 border-4 border-b"></div>
+          <form action={updateStartTime}>
+            <label className="flex w-fit flex-col">
+              Start time
+              <input
+                type="time"
+                name="startTime"
+                defaultValue={format(startTime, "HH:mm")}
+              />
+              <button>Submit</button>
+            </label>
+          </form>
+          {places.map((place, i, arr) => {
+            const arrival = startTime;
+            const departure = add(arrival, { minutes: place.duration });
+            startTime = departure;
+            if (i === arr.length - 1) endTime = format(departure, "HH:mm");
+            return (
+              <Place
+                key={place.id}
+                place={place}
+                arrival={arrival}
+                departure={departure}
+              />
+            );
+          })}
+          <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
+        </section>
+      </SortableContext>
+    </DndContext>
   );
 }

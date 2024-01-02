@@ -20,6 +20,7 @@ import {
 } from "@dnd-kit/sortable";
 import { add, format, parse } from "date-fns";
 import Place from "./Place";
+import { startTransition, useOptimistic } from "react";
 
 type Props = {
   places: PlaceT[];
@@ -39,13 +40,10 @@ type Props = {
 // }
 
 export default function Planner({ places }: Props) {
-  // const cookieStore = cookies();
-  // const supabase = createClient(cookieStore);
-  // const { data, error } = await supabase
-  //   .from("days")
-  //   .select("start_time")
-  //   .eq("id", 3)
-  //   .single();
+  const [optimisticPlaces, updateOptimisticPlaces] = useOptimistic<PlaceT[]>(
+    places,
+    (state: PlaceT, newOrder: PlaceT[]) => newOrder,
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -62,14 +60,19 @@ export default function Planner({ places }: Props) {
       const oldIndex = order.indexOf(active.id);
       const newIndex = order.indexOf(over.id);
 
-      const orderedArr = arrayMove(order, oldIndex, newIndex) as string[];
-      console.log(oldIndex, newIndex, orderedArr);
-      updateOrder(orderedArr);
+      const orderedPlaces = arrayMove(places, oldIndex, newIndex);
+      const orderedArr = orderedPlaces.map((e) => e.id);
+      startTransition(() => {
+        updateOptimisticPlaces(orderedPlaces);
+        updateOrder(orderedArr);
+      });
     }
   }
 
   let startTime = parse("08:00", "HH:mm", new Date());
   let endTime;
+
+  //TODO: move order to client side, since i want the order to be updated separately from the content
 
   return (
     <DndContext
@@ -91,7 +94,7 @@ export default function Planner({ places }: Props) {
               <button>Submit</button>
             </label>
           </form>
-          {places.map((place, i, arr) => {
+          {optimisticPlaces.map((place, i, arr) => {
             const arrival = startTime;
             const departure = add(arrival, { minutes: place.duration });
             startTime = departure;

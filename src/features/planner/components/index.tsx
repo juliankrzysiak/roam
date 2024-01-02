@@ -40,12 +40,12 @@ type Props = {
 // }
 
 export default function Planner({ places, order }: Props) {
-  const [optimisticOrder, updateOptimisticOrder] = useOptimistic<PlaceT[]>(
+  const [optimisticOrder, updateOptimisticOrder] = useOptimistic(
     order,
-    (state: PlaceT, newOrder: PlaceT[]) => newOrder,
+    (_state: string[], newOrder: string[]) => newOrder,
   );
   const orderedPlaces = places.sort(
-    (a, b) => order.indexOf(a.id) - order.indexOf(b.id),
+    (a, b) => optimisticOrder.indexOf(a.id) - optimisticOrder.indexOf(b.id),
   );
 
   const sensors = useSensors(
@@ -62,10 +62,10 @@ export default function Planner({ places, order }: Props) {
     if (active.id !== over.id) {
       const oldIndex = order.indexOf(active.id as string);
       const newIndex = order.indexOf(over.id as string);
-
       const newOrder = arrayMove(order, oldIndex, newIndex);
+
       startTransition(() => {
-        // updateOptimisticOrder(newOrder);
+        updateOptimisticOrder(newOrder);
         updateOrder(newOrder);
       });
     }
@@ -73,8 +73,6 @@ export default function Planner({ places, order }: Props) {
 
   let startTime = parse("08:00", "HH:mm", new Date());
   let endTime;
-
-  //TODO: move order to client side, since i want the order to be updated separately from the content
 
   return (
     <DndContext

@@ -39,10 +39,13 @@ type Props = {
 // return res.json();
 // }
 
-export default function Planner({ places }: Props) {
-  const [optimisticPlaces, updateOptimisticPlaces] = useOptimistic<PlaceT[]>(
-    places,
+export default function Planner({ places, order }: Props) {
+  const [optimisticOrder, updateOptimisticOrder] = useOptimistic<PlaceT[]>(
+    order,
     (state: PlaceT, newOrder: PlaceT[]) => newOrder,
+  );
+  const orderedPlaces = places.sort(
+    (a, b) => order.indexOf(a.id) - order.indexOf(b.id),
   );
 
   const sensors = useSensors(
@@ -55,16 +58,15 @@ export default function Planner({ places }: Props) {
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
-    if (active.id !== over?.id && over) {
-      const order = places.map((e) => e.id) as UniqueIdentifier[];
-      const oldIndex = order.indexOf(active.id);
-      const newIndex = order.indexOf(over.id);
+    if (!over) return;
+    if (active.id !== over.id) {
+      const oldIndex = order.indexOf(active.id as string);
+      const newIndex = order.indexOf(over.id as string);
 
-      const orderedPlaces = arrayMove(places, oldIndex, newIndex);
-      const orderedArr = orderedPlaces.map((e) => e.id);
+      const newOrder = arrayMove(order, oldIndex, newIndex);
       startTransition(() => {
-        updateOptimisticPlaces(orderedPlaces);
-        updateOrder(orderedArr);
+        // updateOptimisticOrder(newOrder);
+        updateOrder(newOrder);
       });
     }
   }
@@ -94,7 +96,7 @@ export default function Planner({ places }: Props) {
               <button>Submit</button>
             </label>
           </form>
-          {optimisticPlaces.map((place, i, arr) => {
+          {orderedPlaces.map((place, i, arr) => {
             const arrival = startTime;
             const departure = add(arrival, { minutes: place.duration });
             startTime = departure;

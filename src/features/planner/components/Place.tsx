@@ -19,13 +19,6 @@ export default function Place({
   departure,
   handleDragEnd,
 }: Props) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: place.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
   return (
     <Reorder.Item value={place} id={place.id} onDragEnd={handleDragEnd}>
       <div className="my-4 flex">

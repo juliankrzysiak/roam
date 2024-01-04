@@ -2,30 +2,13 @@
 
 import { PlaceT } from "@/types";
 import { updateOrder, updateStartTime } from "@/utils/actions";
-import {
-  DndContext,
-  DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  UniqueIdentifier,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  arrayMove,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { add, format, parse } from "date-fns";
-import Place from "./Place";
-import { startTransition, useEffect, useOptimistic, useState } from "react";
 import { Reorder } from "framer-motion";
+import { useEffect, useState } from "react";
+import Place from "./Place";
 
 type Props = {
   places: PlaceT[];
-  order: string[];
 };
 
 // async function getRoute(places: PlaceT[]) {
@@ -40,42 +23,12 @@ type Props = {
 // return res.json();
 // }
 
-export default function Planner({ places, order }: Props) {
-  const orderedPlaces = places.sort(
-    (a, b) => order.indexOf(a.id) - order.indexOf(b.id),
-  );
+export default function Planner({ places }: Props) {
   useEffect(() => {
-    setItems(orderedPlaces);
-  }, [orderedPlaces]);
+    setItems(places);
+  }, [places]);
 
   const [items, setItems] = useState(places);
-  const [optimisticOrder, updateOptimisticOrder] = useOptimistic(
-    order,
-    (_state: string[], newOrder: string[]) => newOrder,
-  );
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-
-    if (!over) return;
-    if (active.id !== over.id) {
-      const oldIndex = order.indexOf(active.id as string);
-      const newIndex = order.indexOf(over.id as string);
-      const newOrder = arrayMove(order, oldIndex, newIndex);
-
-      startTransition(() => {
-        updateOptimisticOrder(newOrder);
-        updateOrder(newOrder);
-      });
-    }
-  }
 
   let startTime = parse("08:00", "HH:mm", new Date());
   let endTime;
@@ -115,12 +68,19 @@ export default function Planner({ places, order }: Props) {
     </Reorder.Group>
   );
 
+  function parseOrder(places: PlaceT[]) {
+    return places.map((place) => place.id);
+  }
+
   function reOrderPlaces() {
-    var oldOrder = order;
-    var newOrder = items.map(function getId(place) {
-      return place.id;
-    });
-    if (newOrder.join("") === oldOrder.join("")) return;
+    var oldOrder = parseOrder(places);
+    var newOrder = parseOrder(items);
+
+    function checkEqualArrays(arr1: string[], arr2: string[]) {
+      return arr1.join("") === arr2.join("");
+    }
+    // Don't want to invoke a server action when dragging and dropping to the same position
+    if (checkEqualArrays(oldOrder, newOrder)) return;
     updateOrder(newOrder);
   }
 }

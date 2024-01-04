@@ -1,6 +1,7 @@
 "use client";
 
 import { PlaceT } from "@/types";
+import { parseOrder } from "@/utils";
 import { createPlace, deletePlace, updateOrder } from "@/utils/actions";
 import mapboxgl from "mapbox-gl";
 import { useRef, useState } from "react";
@@ -13,10 +14,9 @@ type Props = {
     trip: number;
     day: number;
   };
-  order: string[];
 };
 
-export default function Map({ places, params, order }: Props) {
+export default function Map({ places, params }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
@@ -41,17 +41,18 @@ export default function Map({ places, params, order }: Props) {
 
   async function handleAddPlace() {
     if (!popupInfo) return;
-    await createPlace({ ...popupInfo, day_id: params.day });
+    const order = parseOrder(places);
     const newOrder = [...order, popupInfo.id];
+    await createPlace({ ...popupInfo, day_id: params.day });
     await updateOrder(newOrder);
     setPopupInfo(null);
   }
 
   async function handleDeletePlace() {
     if (!popupInfo) return;
-    const { id } = popupInfo;
-    await deletePlace(id);
-    const newOrder = order.filter((e) => e !== id);
+    const order = parseOrder(places);
+    const newOrder = order.filter((id) => id !== popupInfo.id);
+    await deletePlace(popupInfo.id);
     await updateOrder(newOrder);
     setPopupInfo(null);
   }
@@ -103,44 +104,3 @@ export default function Map({ places, params, order }: Props) {
     </MapBox>
   );
 }
-
-// const mapContainer = useRef<HTMLDivElement>(null);
-// const map = useRef<MapType | null>(null);
-// const popupRef = useRef(new mapboxgl.Popup({ offset: 15 }));
-// const [lng, setLng] = useState(-118);
-// const [lat, setLat] = useState(34);
-// const [zoom, setZoom] = useState(12);
-//
-// useEffect(() => {
-// if (map.current) return; // initialize map only once
-// const map = new mapboxgl.Map({
-// container: mapContainer.current as HTMLElement,
-// style: "mapbox://styles/mapbox/outdoors-v12",
-// center: [lng, lat],
-// zoom: zoom,
-// });
-//
-// map.current.on("move", () => {
-//   if (!map.current) return;
-//   setLng(Number(map.current.getCenter().lng.toFixed(4)));
-//   setLat(Number(map.current.getCenter().lat.toFixed(4)));
-//   setZoom(Number(map.current.getZoom().toFixed(2)));
-// });
-//
-// map.on("click", (e) => {
-// const features = map.queryRenderedFeatures(e.point, {
-// layers: ["poi-label"],
-// });
-// if (features.length > 0) {
-// const feature = features[0];
-// const popupNode = document.createElement("div");
-// const popupRoot = createRoot(popupNode);
-// popupRoot.render(<Popup name={feature.properties} />);
-//
-// popupRef.current
-// .setLngLat(e.lngLat)
-// .setDOMContent(popupNode)
-// .addTo(map);
-// }
-// });
-// }, []);

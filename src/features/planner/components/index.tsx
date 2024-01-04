@@ -6,6 +6,7 @@ import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import Place from "./Place";
+import { parseOrder } from "@/utils";
 
 type Props = {
   places: PlaceT[];
@@ -68,13 +69,9 @@ export default function Planner({ places }: Props) {
     </Reorder.Group>
   );
 
-  function parseOrder(places: PlaceT[]) {
-    return places.map((place) => place.id);
-  }
-
   function reOrderPlaces() {
-    var oldOrder = parseOrder(places);
-    var newOrder = parseOrder(items);
+    const oldOrder = parseOrder(places);
+    const newOrder = parseOrder(items);
 
     function checkEqualArrays(arr1: string[], arr2: string[]) {
       return arr1.join("") === arr2.join("");

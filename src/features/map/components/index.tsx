@@ -1,6 +1,7 @@
 "use client";
 
 import { PlaceT } from "@/types";
+import { parseOrder } from "@/utils";
 import { createPlace, deletePlace, updateOrder } from "@/utils/actions";
 import mapboxgl from "mapbox-gl";
 import { useRef, useState } from "react";
@@ -13,10 +14,9 @@ type Props = {
     trip: number;
     day: number;
   };
-  order: string[];
 };
 
-export default function Map({ places, params, order }: Props) {
+export default function Map({ places, params }: Props) {
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
@@ -41,17 +41,18 @@ export default function Map({ places, params, order }: Props) {
 
   async function handleAddPlace() {
     if (!popupInfo) return;
-    await createPlace({ ...popupInfo, day_id: params.day });
+    const order = parseOrder(places);
     const newOrder = [...order, popupInfo.id];
+    await createPlace({ ...popupInfo, day_id: params.day });
     await updateOrder(newOrder);
     setPopupInfo(null);
   }
 
   async function handleDeletePlace() {
     if (!popupInfo) return;
-    const { id } = popupInfo;
-    await deletePlace(id);
-    const newOrder = order.filter((e) => e !== id);
+    const order = parseOrder(places);
+    const newOrder = order.filter((id) => id !== popupInfo.id);
+    await deletePlace(popupInfo.id);
     await updateOrder(newOrder);
     setPopupInfo(null);
   }

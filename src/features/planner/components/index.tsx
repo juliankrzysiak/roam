@@ -13,17 +13,6 @@ type Props = {
   start: string;
 };
 
-// async function getRoute(places: PlaceT[]) {
-// const coordinates = places
-// .map((place) => `${place.lngLat.lng},${place.lngLat.lat}`)
-// .join(";");
-//
-// const profile = "mapbox/driving";
-// const res = await fetch(
-// `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?annotations=distance,duration&overview=full&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`,
-// );
-// return res.json();
-// }
 
 export default function Planner({ places, start }: Props) {
   const [items, setItems] = useState(places);

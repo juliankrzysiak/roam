@@ -10,6 +10,7 @@ import { parseOrder } from "@/utils";
 
 type Props = {
   places: PlaceT[];
+  start: string;
 };
 
 // async function getRoute(places: PlaceT[]) {
@@ -24,15 +25,14 @@ type Props = {
 // return res.json();
 // }
 
-export default function Planner({ places }: Props) {
+export default function Planner({ places, start }: Props) {
+  const [items, setItems] = useState(places);
+  let startTime = parse(start, "HH:mm", new Date());
+  let endTime;
+
   useEffect(() => {
     setItems(places);
   }, [places]);
-
-  const [items, setItems] = useState(places);
-
-  let startTime = parse("08:00", "HH:mm", new Date());
-  let endTime;
 
   return (
     <Reorder.Group axis="y" values={items} onReorder={setItems}>

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Place from "./Card/Place";
 import { parseOrder } from "@/utils";
 import Trip from "./Card/Trip";
+import Card from "./Card";
 
 type Props = {
   places: PlaceT[];
@@ -41,15 +42,15 @@ export default function Planner({ places, start }: Props) {
         {items.map((place, i, arr) => {
           const arrival = startTime;
           const departure = add(arrival, { minutes: place.duration });
+          const time = { arrival, departure };
           startTime = departure;
           if (i === arr.length - 1) endTime = format(departure, "HH:mm");
           return (
-            <Place
+            <Card
               key={place.id}
               place={place}
-              arrival={arrival}
-              departure={departure}
-              handleDragEnd={reOrderPlaces}
+              time={time}
+              handleDragEnd={reorderPlaces}
             />
           );
         })}
@@ -58,7 +59,7 @@ export default function Planner({ places, start }: Props) {
     </Reorder.Group>
   );
 
-  function reOrderPlaces() {
+  function reorderPlaces() {
     const oldOrder = parseOrder(places);
     const newOrder = parseOrder(items);
 

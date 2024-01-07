@@ -1,29 +1,21 @@
-import { PlaceT } from "@/types";
+import { PlaceT, Time } from "@/types";
 import { updateDuration } from "@/utils/actions";
 import { format } from "date-fns";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { Reorder } from "framer-motion";
 
 type Props = {
   place: PlaceT;
-  arrival: Date;
-  departure: Date;
+  time: Time;
   handleDragEnd: () => void;
 };
 const timeFormat = "HH:mm a";
 
-export default function Place({
-  place,
-  arrival,
-  departure,
-  handleDragEnd,
-}: Props) {
+export default function Place({ place, time, handleDragEnd }: Props) {
   return (
     <Reorder.Item value={place} id={place.id} onDragEnd={handleDragEnd}>
       <div className="my-4 flex">
         <div>
-          <div>Arrival {format(arrival, timeFormat)}</div>
+          <div>Arrival {format(time.arrival, timeFormat)}</div>
           <form className="flex flex-col" action={updateDuration}>
             <label>
               Minutes
@@ -38,7 +30,7 @@ export default function Place({
             </label>
             <button>Submit</button>
           </form>
-          <div>Departure {format(departure, timeFormat)}</div>
+          <div>Departure {format(time.departure, timeFormat)}</div>
         </div>
         <div className="flex flex-col">
           <h1>{place.name}</h1>

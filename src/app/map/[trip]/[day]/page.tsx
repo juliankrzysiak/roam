@@ -2,15 +2,10 @@ import Map from "@/features/map/components";
 import Planner from "@/features/planner/components";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
-import { PlaceT } from "@/types";
+import { PlaceT, TripInfo } from "@/types";
 
 type Params = {
   params: { trip: number; day: number };
-};
-
-type TripInfo = {
-  distance: number;
-  duration: number;
 };
 
 export default async function MapPage({ params }: Params) {
@@ -40,7 +35,7 @@ export default async function MapPage({ params }: Params) {
   return (
     <main className="relative h-20 flex-grow">
       <Map places={places} params={params} />
-      <Planner places={places} start={startTime?.start_time} />
+      <Planner places={placesWithTripInfo} start={startTime?.start_time} />
     </main>
   );
 

@@ -1,14 +1,11 @@
-import "./styles.module.css";
+import { TripInfo } from "@/types";
+import styles from "./styles.module.css";
 
-type Props = {
-  distance: number;
-  duration: number;
-};
-export default function Trip({ distance, duration }: Props) {
+export default function Trip({ distance, duration }: TripInfo) {
   return (
-    <div>
-      <span>Distance {distance}</span>
-      <span>Duration {duration}</span>
+    <div className={styles.container}>
+      <span>Duration: {duration} minutes</span>
+      <span>Distance: {distance} miles</span>
     </div>
   );
 }

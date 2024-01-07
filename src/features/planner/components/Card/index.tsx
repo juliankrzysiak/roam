@@ -1,6 +1,7 @@
 import { PlaceT, Time } from "@/types";
 import Place from "./Place";
 import Trip from "./Trip";
+import { Reorder } from "framer-motion";
 
 type Props = {
   place: PlaceT;
@@ -10,9 +11,9 @@ type Props = {
 
 export default function Card({ place, time, handleDragEnd }: Props) {
   return (
-    <div>
-      <Place place={place} time={time} handleDragEnd={handleDragEnd} />
+    <Reorder.Item value={place} id={place.id} onDragEnd={handleDragEnd}>
+      <Place place={place} time={time} />
       <Trip tripInfo={place.tripInfo} />
-    </div>
+    </Reorder.Item>
   );
 }

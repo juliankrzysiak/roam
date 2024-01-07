@@ -5,14 +5,14 @@ import { updateOrder, updateStartTime } from "@/utils/actions";
 import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
-import Place from "./Place";
+import Place from "./Card/Place";
 import { parseOrder } from "@/utils";
+import Trip from "./Card/Trip";
 
 type Props = {
   places: PlaceT[];
   start: string;
 };
-
 
 export default function Planner({ places, start }: Props) {
   const [items, setItems] = useState(places);

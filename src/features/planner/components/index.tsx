@@ -1,13 +1,11 @@
 "use client";
 
 import { PlaceT } from "@/types";
+import { parseOrder } from "@/utils";
 import { updateOrder, updateStartTime } from "@/utils/actions";
 import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
-import Place from "./Card/Place";
-import { parseOrder } from "@/utils";
-import Trip from "./Card/Trip";
 import Card from "./Card";
 
 type Props = {
@@ -42,8 +40,12 @@ export default function Planner({ places, start }: Props) {
         {items.map((place, i, arr) => {
           const arrival = startTime;
           const departure = add(arrival, { minutes: place.duration });
+
           const time = { arrival, departure };
-          startTime = departure;
+
+          startTime = add(departure, {
+            minutes: place.tripInfo?.duration ?? 0,
+          });
           if (i === arr.length - 1) endTime = format(departure, "HH:mm");
           return (
             <Card

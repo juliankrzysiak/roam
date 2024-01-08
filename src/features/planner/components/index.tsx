@@ -23,20 +23,20 @@ export default function Planner({ places, start }: Props) {
   }, [places]);
 
   return (
-    <Reorder.Group axis="y" values={items} onReorder={setItems}>
-      <section className="absolute inset-4 left-10 top-1/2 h-5/6 w-4/12  -translate-y-1/2 rounded-xl border-4 border-emerald-600 bg-gray-100 shadow-lg ">
-        <div className="h-20 border-4 border-b"></div>
-        <form action={updateStartTime}>
-          <label className="flex w-fit flex-col">
-            Start time
-            <input
-              type="time"
-              name="startTime"
-              defaultValue={format(startTime, "HH:mm")}
-            />
-            <button>Submit</button>
-          </label>
-        </form>
+    <section className="absolute inset-4 left-10 top-1/2 h-5/6 w-4/12  -translate-y-1/2 rounded-xl border-4 border-emerald-600 bg-gray-100 shadow-lg ">
+      <div className="h-20 border-4 border-b"></div>
+      <form action={updateStartTime}>
+        <label className="flex w-fit flex-col">
+          Start time
+          <input
+            type="time"
+            name="startTime"
+            defaultValue={format(startTime, "HH:mm")}
+          />
+          <button>Submit</button>
+        </label>
+      </form>
+      <Reorder.Group axis="y" values={items} onReorder={setItems}>
         {items.map((place, i, arr) => {
           const arrival = startTime;
           const departure = add(arrival, { minutes: place.duration });
@@ -56,9 +56,9 @@ export default function Planner({ places, start }: Props) {
             />
           );
         })}
-        <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
-      </section>
-    </Reorder.Group>
+      </Reorder.Group>
+      <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
+    </section>
   );
 
   function reorderPlaces() {

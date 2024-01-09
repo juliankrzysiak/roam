@@ -43,14 +43,16 @@ export default async function MapPage({ params }: Params) {
   );
 }
 
-function combineTripInfo(places: PlaceT[], trips: Trip[]) {
+function combineTripInfo(places: PlaceT[], trips: Trip[] | null) {
+  if (!trips) return places;
   return places.map((place, i) => {
     const tripInfo = trips[i];
     return { ...place, tripInfo };
   });
 }
 
-async function getTrips(places: PlaceT[]): Promise<Trip[]> {
+async function getTrips(places: PlaceT[]): Promise<Trip[] | null> {
+  if (places.length < 2) return null;
   const coordinates = places
     .map((place) => `${place.lng},${place.lat}`)
     .join(";");

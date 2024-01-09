@@ -12,6 +12,7 @@ import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import Card from "./Card";
+import { useRouter } from "next/navigation";
 
 type Props = {
   places: PlaceT[];
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export default function Planner({ places, start, params, orderDays }: Props) {
+  const router = useRouter();
   const [items, setItems] = useState(places);
   let startTime = parse(start, "HH:mm", new Date());
   let endTime;
@@ -75,6 +77,7 @@ export default function Planner({ places, start, params, orderDays }: Props) {
     const { id } = (await createDay(formData)) || {};
     const newOrder = [...orderDays, id];
     await updateDayOrder(formData, newOrder);
+    router.push(`${id}`);
   }
 
   function reorderPlaces() {

@@ -13,6 +13,7 @@ export default async function MapPage({ params }: Params) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
+  // TODO: Combine these into one query
   const { data: places, error } = await supabase.rpc("get_places", { day });
   const { data: startTime } = await supabase
     .from("days")
@@ -26,7 +27,11 @@ export default async function MapPage({ params }: Params) {
   return (
     <main className="relative h-20 flex-grow">
       <Map places={places} params={params} />
-      <Planner places={placesWithTripInfo} start={startTime?.start_time} />
+      <Planner
+        places={placesWithTripInfo}
+        start={startTime?.start_time}
+        params={params}
+      />
     </main>
   );
 }

@@ -4,6 +4,7 @@ import { PlaceT } from "@/types";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
+import { v4 as uuidv4 } from "uuid";
 
 // Create //
 
@@ -30,6 +31,23 @@ export async function createTrip(formData: FormData) {
     const { error } = await supabase.from("trips").insert(rawFormData);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/trips");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function createDay(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const rawFormData = {
+    trip_id: formData.get("trip"),
+  };
+
+  try {
+    const { data, error } = await supabase.from("days").insert(rawFormData);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/maps");
   } catch (error) {
     console.log(error);
   }
@@ -74,7 +92,6 @@ export async function updateStartTime(formData: FormData) {
     console.log(error);
   }
 }
-
 
 export async function updateOrder(order: string[]) {
   const cookieStore = cookies();

@@ -2,7 +2,7 @@
 
 import { PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
-import { updateOrder, updateStartTime } from "@/utils/actions";
+import { createDay, updateOrder, updateStartTime } from "@/utils/actions";
 import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -11,9 +11,10 @@ import Card from "./Card";
 type Props = {
   places: PlaceT[];
   start: string;
+  params: { trip: number; day: number };
 };
 
-export default function Planner({ places, start }: Props) {
+export default function Planner({ places, start, params }: Props) {
   const [items, setItems] = useState(places);
   let startTime = parse(start, "HH:mm", new Date());
   let endTime;
@@ -24,7 +25,6 @@ export default function Planner({ places, start }: Props) {
 
   return (
     <section className="absolute inset-4 left-10 top-1/2 h-5/6 w-4/12  -translate-y-1/2 rounded-xl border-4 border-emerald-600 bg-gray-100 shadow-lg ">
-      <div className="h-20 border-4 border-b"></div>
       <form action={updateStartTime}>
         <label className="flex w-fit flex-col">
           Start time
@@ -58,6 +58,10 @@ export default function Planner({ places, start }: Props) {
         })}
       </Reorder.Group>
       <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
+      <form action={createDay}>
+        <input type="hidden" name="trip" value={params.trip} />
+        <button>Add Day</button>
+      </form>
     </section>
   );
 

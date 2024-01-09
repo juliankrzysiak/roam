@@ -13,12 +13,13 @@ import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import Card from "./Card";
 import { useRouter } from "next/navigation";
+import NavigateDays from "./NavigateDays";
 
 type Props = {
   places: PlaceT[];
   orderDays: string[];
   start: string;
-  params: { trip: number; day: number };
+  params: { trip: number; day: string };
 };
 
 export default function Planner({ places, start, params, orderDays }: Props) {
@@ -66,10 +67,11 @@ export default function Planner({ places, start, params, orderDays }: Props) {
         })}
       </Reorder.Group>
       <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
-      <form action={addDay}>
+      <NavigateDays orderDays={orderDays} dayId={params.day} />
+      {/* <form action={addDay}>
         <input type="hidden" name="trip" value={params.trip} />
         <button>Add Day</button>
-      </form>
+      </form> */}
     </section>
   );
 

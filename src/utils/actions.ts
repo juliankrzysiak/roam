@@ -1,10 +1,9 @@
 "use server";
 
 import { PlaceT } from "@/types";
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { v4 as uuidv4 } from "uuid";
 
 // Create //
 
@@ -122,9 +121,12 @@ export async function deletePlace(id: string) {
   }
 }
 
-export async function deleteTrip(id: string) {
+export async function deleteTrip(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+
+  const id = formData.get("tripId");
+
   const { error } = await supabase.from("trips").delete().eq("id", id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
   revalidatePath("/trips");

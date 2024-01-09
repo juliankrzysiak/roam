@@ -2,7 +2,12 @@
 
 import { PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
-import { createDay, updateOrder, updateStartTime } from "@/utils/actions";
+import {
+  createDay,
+  updateDayOrder,
+  updatePlaceOrder,
+  updateStartTime,
+} from "@/utils/actions";
 import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -10,11 +15,12 @@ import Card from "./Card";
 
 type Props = {
   places: PlaceT[];
+  orderDays: string[];
   start: string;
   params: { trip: number; day: number };
 };
 
-export default function Planner({ places, start, params }: Props) {
+export default function Planner({ places, start, params, orderDays }: Props) {
   const [items, setItems] = useState(places);
   let startTime = parse(start, "HH:mm", new Date());
   let endTime;
@@ -58,12 +64,18 @@ export default function Planner({ places, start, params }: Props) {
         })}
       </Reorder.Group>
       <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
-      <form action={createDay}>
+      <form action={addDay}>
         <input type="hidden" name="trip" value={params.trip} />
         <button>Add Day</button>
       </form>
     </section>
   );
+
+  async function addDay(formData: FormData) {
+    const { id } = (await createDay(formData)) || {};
+    const newOrder = [...orderDays, id];
+    await updateDayOrder(formData, newOrder);
+  }
 
   function reorderPlaces() {
     const oldOrder = parseOrder(places);
@@ -74,6 +86,6 @@ export default function Planner({ places, start, params }: Props) {
     }
     // Don't want to invoke a server action when dragging and dropping to the same position
     if (checkEqualArrays(oldOrder, newOrder)) return;
-    updateOrder(newOrder);
+    updatePlaceOrder(newOrder, params.day);
   }
 }

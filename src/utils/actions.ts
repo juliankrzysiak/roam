@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 
 // Create //
 
-export async function createPlace(place: PlaceT & { day_id: number }) {
+export async function createPlace(place: PlaceT & { day_id: string }) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
@@ -98,7 +98,7 @@ export async function updateStartTime(formData: FormData) {
   }
 }
 
-export async function updatePlaceOrder(order: string[], dayId: number) {
+export async function updatePlaceOrder(order: string[], dayId: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 

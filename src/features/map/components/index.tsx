@@ -12,7 +12,7 @@ type Props = {
   places: PlaceT[];
   params: {
     trip: number;
-    day: number;
+    day: string;
   };
 };
 

@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { PlaceT, Trip } from "@/types";
 
 type Params = {
-  params: { trip: number; day: number };
+  params: { trip: number; day: string };
 };
 
 export default async function MapPage({ params }: Params) {

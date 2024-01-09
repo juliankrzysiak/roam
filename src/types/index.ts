@@ -5,10 +5,10 @@ export type PlaceT = {
   category: string;
   lng: number;
   lat: number;
-  tripInfo?: TripInfo;
+  tripInfo?: Trip;
 };
 
-export type TripInfo = {
+export type Trip = {
   distance: number;
   duration: number;
 };

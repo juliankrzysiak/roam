@@ -2,7 +2,7 @@
 
 import { PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
-import { createPlace, deletePlace, updateOrder } from "@/utils/actions";
+import { createPlace, deletePlace, updatePlaceOrder } from "@/utils/actions";
 import mapboxgl from "mapbox-gl";
 import { useRef, useState } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
@@ -43,8 +43,9 @@ export default function Map({ places, params }: Props) {
     if (!popupInfo) return;
     const order = parseOrder(places);
     const newOrder = [...order, popupInfo.id];
+    // TODO: add updating order inside creation
     await createPlace({ ...popupInfo, day_id: params.day });
-    await updateOrder(newOrder);
+    await updatePlaceOrder(newOrder, params.day);
     setPopupInfo(null);
   }
 
@@ -53,7 +54,7 @@ export default function Map({ places, params }: Props) {
     const order = parseOrder(places);
     const newOrder = order.filter((id) => id !== popupInfo.id);
     await deletePlace(popupInfo.id);
-    await updateOrder(newOrder);
+    await updatePlaceOrder(newOrder, params.day);
     setPopupInfo(null);
   }
 

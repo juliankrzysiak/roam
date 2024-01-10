@@ -98,6 +98,26 @@ export async function updateStartTime(formData: FormData) {
   }
 }
 
+export async function updateDay(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const rawFormData = {
+    day_id: formData.get("dayId"),
+  };
+
+  try {
+    const { error } = await supabase
+      .from("trips")
+      .update(rawFormData)
+      .eq("id", formData.get("tripId"));
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/map");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function updatePlaceOrder(order: string[], dayId: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);

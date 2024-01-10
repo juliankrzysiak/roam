@@ -67,7 +67,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
         })}
       </Reorder.Group>
       <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
-      <NavigateDays orderDays={orderDays} dayId={dayId} />
+      <NavigateDays dayInfo={dayInfo} tripId={tripId} />
       {/* <form action={addDay}>
         <input type="hidden" name="trip" value={params.trip} />
         <button>Add Day</button>

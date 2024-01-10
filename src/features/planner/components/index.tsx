@@ -1,6 +1,6 @@
 "use client";
 
-import { PlaceT } from "@/types";
+import { DayInfo, PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
 import {
   createDay,
@@ -17,15 +17,15 @@ import NavigateDays from "./NavigateDays";
 
 type Props = {
   places: PlaceT[];
-  orderDays: string[];
-  start: string;
-  params: { trip: number; day: string };
+  dayInfo: DayInfo;
+  tripId: number;
 };
 
-export default function Planner({ places, start, params, orderDays }: Props) {
+export default function Planner({ places, dayInfo, tripId }: Props) {
   const router = useRouter();
   const [items, setItems] = useState(places);
-  let startTime = parse(start, "HH:mm", new Date());
+  const { orderDays, dayId } = dayInfo;
+  let startTime = parse(dayInfo.startTime, "HH:mm", new Date());
   let endTime;
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Planner({ places, start, params, orderDays }: Props) {
         })}
       </Reorder.Group>
       <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
-      <NavigateDays orderDays={orderDays} dayId={params.day} />
+      <NavigateDays orderDays={orderDays} dayId={dayId} />
       {/* <form action={addDay}>
         <input type="hidden" name="trip" value={params.trip} />
         <button>Add Day</button>
@@ -75,12 +75,12 @@ export default function Planner({ places, start, params, orderDays }: Props) {
     </section>
   );
 
-  async function addDay(formData: FormData) {
-    const { id } = (await createDay(formData)) || {};
-    const newOrder = [...orderDays, id];
-    await updateDayOrder(formData, newOrder);
-    router.push(`${id}`);
-  }
+  // async function addDay(formData: FormData) {
+  //   const { id } = (await createDay(formData)) || {};
+  //   const newOrder = [...orderDays, id];
+  //   await updateDayOrder(formData, newOrder);
+  //   router.push(`${id}`);
+  // }
 
   function reorderPlaces() {
     const oldOrder = parseOrder(places);
@@ -91,6 +91,6 @@ export default function Planner({ places, start, params, orderDays }: Props) {
     }
     // Don't want to invoke a server action when dragging and dropping to the same position
     if (checkEqualArrays(oldOrder, newOrder)) return;
-    updatePlaceOrder(newOrder, params.day);
+    updatePlaceOrder(newOrder, dayId);
   }
 }

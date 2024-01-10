@@ -17,3 +17,13 @@ export type Time = {
   arrival: Date;
   departure: Date;
 };
+
+export type TripInfo = {
+  trip: number;
+};
+
+export type DayInfo = {
+  orderDays: string[];
+  dayId: string;
+  startTime: string;
+};

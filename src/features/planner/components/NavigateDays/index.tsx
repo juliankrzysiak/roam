@@ -1,5 +1,6 @@
 import { DayInfo } from "@/types";
 import { updateDay } from "@/utils/actions";
+import styles from "../styles.module.css";
 
 type Props = {
   dayInfo: DayInfo;
@@ -15,13 +16,13 @@ export default function NavigateDays({
   const previousDay = orderDays[currentIndex - 1];
 
   return (
-    <div>
+    <div className={styles["navigate-days"]}>
       <form action={updateDay}>
         <input type="hidden" name="tripId" value={tripId} />
         <input type="hidden" name="dayId" value={previousDay} />
         <button>Previous</button>
       </form>
-      <span>Day: {currentIndex}</span>
+      <span>Day: {currentIndex + 1}</span>
       <form action={updateDay}>
         <input type="hidden" name="tripId" value={tripId} />
         <input type="hidden" name="dayId" value={nextDay} />

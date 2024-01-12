@@ -4,10 +4,9 @@ import Link from "next/link";
 interface Props {
   name: string;
   id: number;
-  day: number;
 }
 
-export default async function Trip({ id, name, day }: Props) {
+export default async function Trip({ id, name }: Props) {
   return (
     <article className="flex flex-col border ">
       <h1>{name}</h1>

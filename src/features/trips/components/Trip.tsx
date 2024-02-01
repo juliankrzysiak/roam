@@ -8,12 +8,12 @@ interface Props {
 
 export default async function Trip({ id, name }: Props) {
   return (
-    <article className="flex flex-col border ">
-      <h1>{name}</h1>
+    <article className="flex flex-col gap-4 border bg-slate-100 p-4 shadow-lg">
+      <h1 className="text-center text-2xl">{name}</h1>
       <Link href={`/map/${id}`}>Check out trip</Link>
       <form action={deleteTrip}>
         <input type="hidden" name="tripId" value={id} />
-        <button>delete trip</button>
+        <button>X</button>
       </form>
     </article>
   );

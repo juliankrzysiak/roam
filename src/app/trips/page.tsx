@@ -13,10 +13,12 @@ export default async function Trips() {
 
   return (
     <div className="flex flex-col items-center">
-      <h1>Trips</h1>
-      {trips.map((trip) => {
-        return <Trip key={trip.id} name={trip.name} id={trip.id} />;
-      })}
+      <h1 className="text-4xl">Trips</h1>
+      <div className="grid grid-flow-col gap-4">
+        {trips.map((trip) => {
+          return <Trip key={trip.id} name={trip.name} id={trip.id} />;
+        })}
+      </div>
       <form action={createTrip}>
         <h2>Create new trip</h2>
         <input type="text" name="name" />

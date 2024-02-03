@@ -1,12 +1,16 @@
 {
-  "name": "journey",
+  "name": "roam",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate": "drizzle-kit generate:pg",
+    "pull": "drizzle-kit introspect:pg",
+    "migrate": "pnpm tsx ./src/db/migrate.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -59,6 +63,7 @@
     "@types/uuid": "^9.0.7",
     "drizzle-kit": "^0.20.14",
     "prettier": "^3.0.1",
-    "prettier-plugin-tailwindcss": "^0.4.1"
+    "prettier-plugin-tailwindcss": "^0.4.1",
+    "tsx": "^4.7.0"
   }
 }

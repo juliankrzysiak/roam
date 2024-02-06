@@ -1,10 +1,8 @@
+import { Trip } from "@/types/supabase";
 import { deleteTrip } from "@/utils/actions";
 import Link from "next/link";
 
-interface Props {
-  name: string;
-  id: number;
-}
+type Props = Pick<Trip, "id" | "name">;
 
 export default async function Trip({ id, name }: Props) {
   return (

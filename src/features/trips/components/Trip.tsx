@@ -1,23 +1,41 @@
 import { Button } from "@/components/ui/button";
 import { Trip } from "@/types/supabase";
-import { deleteTrip } from "@/utils/actions";
-import Link from "next/link";
+
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import TripOptions from "./TripOptions";
 
 type Props = Pick<Trip, "id" | "name">;
 
 export default async function Trip({ id, name }: Props) {
   return (
-    <article className="flex flex-col items-center gap-4 rounded-lg border bg-slate-100 p-4 shadow-lg">
-      <h1 className="text-center text-2xl font-bold">{name}</h1>
-      <p>Date</p>
-      <p>Miles</p>
-      <Link href={`/map/${id}`}>
-        <Button>Schedule</Button>
-      </Link>
+    <Card className="relative flex flex-col items-center">
+      <TripOptions />
+      <CardHeader>
+        <CardTitle className="w-fit">{name}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Date</p>
+        <p>Miles</p>
+      </CardContent>
+      <CardFooter>
+        <Button>
+          Schedule
+          {/* <Link href={`/map/${id}`}>Schedule</Link> */}
+        </Button>
+      </CardFooter>
       {/* <form action={deleteTrip}>
         <input type="hidden" name="tripId" value={id} />
         <button>Delete</button>
       </form> */}
-    </article>
+    </Card>
   );
 }
+
+// className =
+//   "flex flex-col items-center gap-4 rounded-lg border bg-slate-100 p-4 shadow-lg";

@@ -14,13 +14,15 @@ import {
 export default function TripForm() {
   return (
     <Dialog>
-      <DialogTrigger>+</DialogTrigger>
+      <DialogTrigger>
+        <Button>Add Trip</Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Trip</DialogTitle>
         </DialogHeader>
         <form action={createTrip} className="flex flex-col items-center gap-2">
-          <label className="flex w-full flex-col items-start">
+          <label className="flex w-full flex-col items-start gap-1">
             Name
             <Input type="text" name="name" placeholder="Palmdale" />
           </label>

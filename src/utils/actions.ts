@@ -23,11 +23,31 @@ export async function createTrip(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const rawFormData = {
-    name: formData.get("name"),
-  };
+  const name = formData.get("name");
+
   try {
-    const { error } = await supabase.from("trips").insert(rawFormData);
+    if (typeof name !== "string") return;
+    const { error } = await supabase.from("trips").insert({ name });
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/trips");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateTrip(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const name = formData.get("name");
+  const tripId = formData.get("tripId");
+
+  try {
+    if (typeof name !== "string") return;
+    const { error } = await supabase
+      .from("trips")
+      .update({ name })
+      .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/trips");
   } catch (error) {

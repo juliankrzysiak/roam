@@ -4,6 +4,20 @@ import { PlaceT } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+export async function signOut() {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw new Error(`${error.message}`);
+  } catch (error) {
+    console.log(error);
+  }
+  redirect("/");
+}
 
 // Create //
 

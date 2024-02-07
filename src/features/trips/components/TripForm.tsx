@@ -23,7 +23,9 @@ export default function TripForm() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>Add Trip</DialogTrigger>
+      <DialogTrigger asChild>
+        <Button variant="secondary">Add Trip</Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Trip</DialogTitle>

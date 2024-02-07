@@ -23,20 +23,27 @@ import {
 
 import MoreSVG from "@/assets/more-vertical.svg";
 import { deleteTrip } from "@/utils/actions";
+import EditTrip from "./EditTrip";
 
 type Props = {
   id: number;
 };
 
 export default function TripOptions({ id }: Props) {
-  const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
 
-  async function handleSubmit(formData: FormData) {
+  async function handleEdit(formData: FormData) {
     await updateTrip(formData);
-    setOpen(false);
+    setOpenEdit(false);
+  }
+
+  async function handleDelete(formData: FormData) {
+    await deleteTrip(formData);
+    setOpenEdit(false);
   }
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
           className="absolute right-2 top-2"
@@ -45,39 +52,16 @@ export default function TripOptions({ id }: Props) {
           <MoreSVG />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DialogTrigger asChild>
-            <DropdownMenuItem>
-              <span>Edit Trip</span>
-            </DropdownMenuItem>
-          </DialogTrigger>
+          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+            <span>Edit</span>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <form action={deleteTrip}>
-              <input type="hidden" name="tripId" value={id} />
-              <button>Delete</button>
-            </form>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+            <span>Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Trip</DialogTitle>
-        </DialogHeader>
-        <form
-          action={handleSubmit}
-          id="createTrip"
-          className="flex flex-col items-center gap-2"
-        >
-          <input type="hidden" name="tripId" value={id} />
-          <label className="flex w-full flex-col items-start gap-1">
-            Name
-            <Input type="text" name="name" placeholder="Palmdale" required />
-          </label>
-        </form>
-        <DialogFooter>
-          <Button form="createTrip">Submit</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <EditTrip open={openEdit} setOpen={setOpenEdit} id={id} />
+    </>
   );
 }

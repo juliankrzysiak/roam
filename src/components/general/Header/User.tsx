@@ -3,19 +3,33 @@
 import SignOutSVG from "@/assets/sign-out.svg";
 import UserSVG from "@/assets/user.svg";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
 import { signOut } from "@/utils/actions";
+import Link from "next/link";
 
-export default function User() {
+
+type Props = {
+  name: string;
+};
+
+export default function User({ name }: Props) {
+  const letter = name.substring(0, 1).toUpperCase();
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>User</DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        className="text-emerald-50"
+        aria-label="Open dropdown menu for account"
+      >
+        <div className="border-slate-00 grid aspect-square h-8 place-content-center  rounded-full border ">
+          <p>{letter ?? ":)"}</p>
+        </div>
+      </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
           <Link

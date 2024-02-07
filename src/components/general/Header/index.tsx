@@ -10,7 +10,7 @@ export default async function Header() {
   const supabase = createClient(cookieStore);
   const { data, error } = await supabase.auth.getSession();
   const user = data.session?.user;
-
+  
   return (
     <header className="flex justify-between bg-emerald-800 p-4">
       <nav className="flex items-baseline gap-4">
@@ -28,7 +28,7 @@ export default async function Header() {
           </>
         )}
       </nav>
-      {user ? <User /> : <SignIn />}
+      {user ? <User name={user?.user_metadata.name} /> : <SignIn />}
     </header>
   );
 }

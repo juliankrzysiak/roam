@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Trip } from "@/types/supabase";
-
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -15,27 +15,22 @@ type Props = Pick<Trip, "id" | "name">;
 export default async function Trip({ id, name }: Props) {
   return (
     <Card className="relative flex flex-col items-center">
-      <TripOptions />
+      <TripOptions id={id} />
       <CardHeader>
-        <CardTitle className="w-fit">{name}</CardTitle>
+        <CardTitle className="w-fit">
+          {name}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <p>Date</p>
         <p>Miles</p>
       </CardContent>
       <CardFooter>
-        <Button>
-          Schedule
-          {/* <Link href={`/map/${id}`}>Schedule</Link> */}
+        <Button asChild>
+          <Link href={`/map/${id}`}>Go To Schedule</Link>
         </Button>
       </CardFooter>
-      {/* <form action={deleteTrip}>
-        <input type="hidden" name="tripId" value={id} />
-        <button>Delete</button>
-      </form> */}
     </Card>
   );
 }
 
-// className =
-//   "flex flex-col items-center gap-4 rounded-lg border bg-slate-100 p-4 shadow-lg";

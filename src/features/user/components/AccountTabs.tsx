@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChangeEvent, ChangeEventHandler, useState } from "react";
 
 type Props = {
   name: string;
@@ -17,6 +20,14 @@ type Props = {
 };
 
 export default function AccountTabs({ name, email }: Props) {
+  const [disabled, setDisabled] = useState(true);
+
+  function checkSameValue(event: ChangeEvent<HTMLInputElement>) {
+    const e = event.target;
+    if (e.defaultValue !== e.value) setDisabled(false);
+    else setDisabled(true);
+  }
+
   return (
     <Tabs defaultValue="account" className="">
       <TabsList className="grid w-full grid-cols-2">
@@ -35,16 +46,28 @@ export default function AccountTabs({ name, email }: Props) {
             <form action="">
               <div className="space-y-1">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" defaultValue={name} />
+                <Input
+                  id="name"
+                  defaultValue={name}
+                  onChange={checkSameValue}
+                  maxLength={20}
+                />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="username">Username</Label>
-                <Input id="username" defaultValue={email} />
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  type="email"
+                  id="email"
+                  defaultValue={email}
+                  onChange={checkSameValue}
+                />
               </div>
             </form>
           </CardContent>
           <CardFooter>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit" variant="default" disabled={disabled}>
+              Save changes
+            </Button>
           </CardFooter>
         </Card>
       </TabsContent>

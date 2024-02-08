@@ -35,11 +35,11 @@ export default function AccountTabs({ name, email }: Props) {
             <form action="">
               <div className="space-y-1">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" defaultValue="Pedro Duarte" />
+                <Input id="name" defaultValue={name} />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="username">Username</Label>
-                <Input id="username" defaultValue="" />
+                <Input id="username" defaultValue={email} />
               </div>
             </form>
           </CardContent>

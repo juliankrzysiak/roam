@@ -12,7 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { updateAccount } from "@/utils/actions";
+import { ChangeEvent, useState } from "react";
 
 type Props = {
   name: string;
@@ -39,15 +40,17 @@ export default function AccountTabs({ name, email }: Props) {
           <CardHeader>
             <CardTitle>Account</CardTitle>
             <CardDescription>
-              Make changes to your account here. Click save when you're done.
+              Make changes to your account here. Click save when you&apos;re
+              done.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <form action="">
+            <form action={updateAccount} id="updateAccount">
               <div className="space-y-1">
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
+                  name="name"
                   defaultValue={name}
                   onChange={checkSameValue}
                   maxLength={20}
@@ -58,6 +61,7 @@ export default function AccountTabs({ name, email }: Props) {
                 <Input
                   type="email"
                   id="email"
+                  name="email"
                   defaultValue={email}
                   onChange={checkSameValue}
                 />
@@ -65,7 +69,12 @@ export default function AccountTabs({ name, email }: Props) {
             </form>
           </CardContent>
           <CardFooter>
-            <Button type="submit" variant="default" disabled={disabled}>
+            <Button
+              type="submit"
+              form="updateAccount"
+              variant="default"
+              disabled={disabled}
+            >
               Save changes
             </Button>
           </CardFooter>

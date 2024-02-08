@@ -6,6 +6,32 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+// Auth //
+
+type Payload = {
+  email: string;
+  data: {
+    name: string;
+  };
+};
+
+export async function updateAccount(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const payload = {
+    email: formData.get("email"),
+    data: { name: formData.get("name") },
+  } as Payload;
+
+  try {
+    const { error } = await supabase.auth.updateUser(payload);
+    if (error) throw new Error(`${error.message}`);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function signOut() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);

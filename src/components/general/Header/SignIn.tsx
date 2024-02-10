@@ -3,7 +3,7 @@ import SignUp from "@/features/auth/components/SignUp";
 
 export default function SignIn() {
   return (
-    <div>
+    <div className="flex gap-2 ">
       <Login />
       <SignUp />
     </div>

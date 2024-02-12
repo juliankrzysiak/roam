@@ -12,8 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { updateAccount } from "@/utils/actions";
+import { updateAccount, updatePassword } from "@/utils/actions";
 import { ChangeEvent, useState } from "react";
+import AccountForm from "./AccountForm";
 
 type Props = {
   name: string;
@@ -44,40 +45,9 @@ export default function AccountTabs({ name, email }: Props) {
               done.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <form action={updateAccount} id="updateAccount">
-              <div className="space-y-1">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  defaultValue={name}
-                  onChange={checkSameValue}
-                  maxLength={20}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  type="email"
-                  id="email"
-                  name="email"
-                  defaultValue={email}
-                  onChange={checkSameValue}
-                />
-              </div>
-            </form>
+          <CardContent>
+            <AccountForm name={name} email={email} />
           </CardContent>
-          <CardFooter>
-            <Button
-              type="submit"
-              form="updateAccount"
-              variant="default"
-              disabled={disabled}
-            >
-              Save changes
-            </Button>
-          </CardFooter>
         </Card>
       </TabsContent>
       <TabsContent value="password">
@@ -85,18 +55,21 @@ export default function AccountTabs({ name, email }: Props) {
           <CardHeader>
             <CardTitle>Password</CardTitle>
             <CardDescription>
-              Change your password here. After saving, you'll be logged out.
+              Change your password here. After saving, you&apos;ll be logged
+              out.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="space-y-1">
-              <Label htmlFor="current">Current password</Label>
-              <Input id="current" type="password" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="new">New password</Label>
-              <Input id="new" type="password" />
-            </div>
+          <CardContent>
+            <form action={updatePassword} className="">
+              <div className="space-y-1">
+                <Label htmlFor="current">Current password</Label>
+                <Input id="current" name="current" type="password" />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="new">New password</Label>
+                <Input id="new" name="new" type="password" />
+              </div>
+            </form>
           </CardContent>
           <CardFooter>
             <Button>Save password</Button>

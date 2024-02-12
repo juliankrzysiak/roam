@@ -1,19 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { updateAccount, updatePassword } from "@/utils/actions";
-import { ChangeEvent, useState } from "react";
 import AccountForm from "./AccountForm";
 import PasswordForm from "./PasswordForm";
 
@@ -23,14 +17,6 @@ type Props = {
 };
 
 export default function AccountTabs({ name, email }: Props) {
-  const [disabled, setDisabled] = useState(true);
-
-  function checkSameValue(event: ChangeEvent<HTMLInputElement>) {
-    const e = event.target;
-    if (e.defaultValue !== e.value) setDisabled(false);
-    else setDisabled(true);
-  }
-
   return (
     <Tabs defaultValue="account" className="">
       <TabsList className="grid w-full grid-cols-2">

@@ -8,22 +8,23 @@ import { redirect } from "next/navigation";
 
 // Auth //
 
-type Payload = {
+type Args = {
   name: string;
   email: string;
+  emailChanged: boolean;
 };
 
-export async function updateAccount({
-  name,
-  email,
-}: Payload): Promise<string | void> {
+export async function updateAccount({ name, email, emailChanged }: Args) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const payload = {
-    email,
+  const payload: { [k: string]: any } = {
     data: { name },
   };
+
+  if (emailChanged) {
+    payload.email = email;
+  }
 
   const { error } = await supabase.auth.updateUser(payload);
   if (error) return error.message;

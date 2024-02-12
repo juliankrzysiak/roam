@@ -35,7 +35,8 @@ export default function AccountForm({ name, email }: Props) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const error = await updateAccount(values);
+    const emailChanged = email !== values.email;
+    const error = await updateAccount({ ...values, emailChanged });
     if (error) {
       form.setError("root", {
         type: "custom",

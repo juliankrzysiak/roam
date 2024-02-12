@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { updateAccount, updatePassword } from "@/utils/actions";
 import { ChangeEvent, useState } from "react";
 import AccountForm from "./AccountForm";
+import PasswordForm from "./PasswordForm";
 
 type Props = {
   name: string;
@@ -41,8 +42,8 @@ export default function AccountTabs({ name, email }: Props) {
           <CardHeader>
             <CardTitle>Account</CardTitle>
             <CardDescription>
-              Make changes to your account here. Click save when you&apos;re
-              done.
+              Make changes to your account here. If you change your email a
+              confirmation email will be sent to the provided address.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -55,25 +56,12 @@ export default function AccountTabs({ name, email }: Props) {
           <CardHeader>
             <CardTitle>Password</CardTitle>
             <CardDescription>
-              Change your password here. After saving, you&apos;ll be logged
-              out.
+              Change your password here. You will be signed out.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form action={updatePassword} className="">
-              <div className="space-y-1">
-                <Label htmlFor="current">Current password</Label>
-                <Input id="current" name="current" type="password" />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="new">New password</Label>
-                <Input id="new" name="new" type="password" />
-              </div>
-            </form>
+            <PasswordForm />
           </CardContent>
-          <CardFooter>
-            <Button>Save password</Button>
-          </CardFooter>
         </Card>
       </TabsContent>
     </Tabs>

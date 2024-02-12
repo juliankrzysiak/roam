@@ -3,15 +3,14 @@
 import SignOutSVG from "@/assets/sign-out.svg";
 import UserSVG from "@/assets/user.svg";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/utils/actions";
 import Link from "next/link";
-
 
 type Props = {
   name: string;
@@ -31,7 +30,7 @@ export default function User({ name }: Props) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link
             href="/user"
             className="flex items-center justify-between gap-2"

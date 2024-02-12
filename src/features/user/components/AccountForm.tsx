@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { updateAccount } from "@/utils/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -33,14 +34,17 @@ export default function AccountForm({ name, email }: Props) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    form.setError("root", {
-      type: "custom",
-      message: "testing asd asd asd as dasd as d",
-    });
-    setTimeout(() => {
-      form.clearErrors();
-    }, 3000);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const error = await updateAccount(values);
+    if (error) {
+      form.setError("root", {
+        type: "custom",
+        message: error,
+      });
+      setTimeout(() => {
+        form.clearErrors();
+      }, 3000);
+    }
   }
 
   return (

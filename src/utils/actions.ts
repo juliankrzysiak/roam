@@ -9,20 +9,32 @@ import { redirect } from "next/navigation";
 // Auth //
 
 type Payload = {
+  name: string;
   email: string;
-  data: {
-    name: string;
-  };
 };
 
-export async function updateAccount(formData: FormData) {
+export async function updateAccount({
+  name,
+  email,
+}: Payload): Promise<string | void> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
   const payload = {
-    email: formData.get("email"),
-    data: { name: formData.get("name") },
-  } as Payload;
+    email,
+    data: { name },
+  };
+
+  const { error } = await supabase.auth.updateUser(payload);
+  if (error) return error.message;
+}
+
+export async function updatePassword(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const currentPassword = formData.get("current");
+  const newPassword = formData.get("new");
 
   try {
     const { error } = await supabase.auth.updateUser(payload);

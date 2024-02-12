@@ -8,13 +8,17 @@ import { redirect } from "next/navigation";
 
 // Auth //
 
-type Args = {
+type AccountArgs = {
   name: string;
   email: string;
   emailChanged: boolean;
 };
 
-export async function updateAccount({ name, email, emailChanged }: Args) {
+export async function updateAccount({
+  name,
+  email,
+  emailChanged,
+}: AccountArgs) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -27,21 +31,20 @@ export async function updateAccount({ name, email, emailChanged }: Args) {
   }
 
   const { error } = await supabase.auth.updateUser(payload);
-  if (error) return error.message;
+  if (error) {
+    console.log(error);
+    return error.message;
+  }
 }
 
-export async function updatePassword(formData: FormData) {
+export async function updatePassword(password: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const currentPassword = formData.get("current");
-  const newPassword = formData.get("new");
-
-  try {
-    const { error } = await supabase.auth.updateUser(payload);
-    if (error) throw new Error(`${error.message}`);
-  } catch (error) {
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
     console.log(error);
+    return error.message;
   }
 }
 
@@ -49,12 +52,8 @@ export async function signOut() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  try {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw new Error(`${error.message}`);
-  } catch (error) {
-    console.log(error);
-  }
+  const { error } = await supabase.auth.signOut();
+  if (error) console.log(error);
   redirect("/");
 }
 

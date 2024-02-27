@@ -14,12 +14,10 @@ type Props = Pick<Trip, "id" | "name">;
 
 export default async function Trip({ id, name }: Props) {
   return (
-    <Card className="relative flex flex-col items-center">
+    <Card className="relative flex flex-col items-center justify-between">
       <TripOptions id={id} />
       <CardHeader>
-        <CardTitle className="w-fit">
-          {name}
-        </CardTitle>
+        <CardTitle className="w-fit">{name}</CardTitle>
       </CardHeader>
       <CardContent>
         <p>Date</p>
@@ -33,4 +31,3 @@ export default async function Trip({ id, name }: Props) {
     </Card>
   );
 }
-

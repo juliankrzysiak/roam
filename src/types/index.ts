@@ -24,6 +24,6 @@ export type TripInfo = {
 
 export type DayInfo = {
   orderDays: string[];
-  dayId: string;
+  currentDay: string;
   startTime: string;
 };

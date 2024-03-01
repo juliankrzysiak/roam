@@ -1,6 +1,6 @@
 import Map from "@/features/map/components";
 import Planner from "@/features/planner/components";
-import { DayInfo, PlaceT, Trip } from "@/types";
+import { PlaceT, Trip } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
@@ -15,7 +15,7 @@ export default async function MapPage({ params }: Props) {
   const supabase = createClient(cookieStore);
 
   const dayInfo = await getDayInfo(supabase, tripId);
-  const orderedPlaces = await getOrderedPlaces(supabase, dayInfo.dayId);
+  const orderedPlaces = await getOrderedPlaces(supabase, dayInfo.currentDay);
   const trips = await getTrips(orderedPlaces);
   const places = combineTripInfo(orderedPlaces, trips);
 
@@ -36,24 +36,21 @@ async function getOrderedPlaces(
   return places;
 }
 
-async function getDayInfo(
-  supabase: SupabaseClient,
-  tripId: number,
-): Promise<DayInfo> {
+async function getDayInfo(supabase: SupabaseClient, tripId: number) {
   const { data, error } = await supabase
     .from("trips")
-    .select("order_days, day_id, days (start_time)")
+    .select("order_days, current_day, days (start_time)")
     .eq("id", tripId)
     .limit(1)
     .single();
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
-  const { order_days: orderDays, day_id: dayId, days } = data;
+  const { order_days: orderDays, current_day: currentDay, days } = data;
   const { start_time: startTime } = days[0];
 
   return {
     orderDays,
-    dayId,
+    currentDay,
     startTime,
   };
 }

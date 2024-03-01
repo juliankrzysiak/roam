@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Trip } from "@/types/supabase";
+import { Trip } from "@/types";
 import Link from "next/link";
 import {
   Card,
@@ -10,7 +10,10 @@ import {
 } from "@/components/ui/card";
 import TripOptions from "./TripOptions";
 
-type Props = Pick<Trip, "id" | "name">;
+type Props = {
+  id: number;
+  name: string;
+};
 
 export default async function Trip({ id, name }: Props) {
   return (

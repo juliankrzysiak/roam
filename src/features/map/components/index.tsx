@@ -14,7 +14,6 @@ type Props = {
 };
 
 export default function Map({ places, dayInfo }: Props) {
-  console.log(123);
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
@@ -41,9 +40,8 @@ export default function Map({ places, dayInfo }: Props) {
     if (!popupInfo) return;
     const order = parseOrder(places);
     const newOrder = [...order, popupInfo.id];
-    // TODO: add updating order inside creation
-    await createPlace({ ...popupInfo, day_id: dayInfo.dayId });
-    await updatePlaceOrder(newOrder, dayInfo.dayId);
+    await createPlace({ ...popupInfo, day_id: dayInfo.currentDay });
+    await updatePlaceOrder(newOrder, dayInfo.currentDay);
     setPopupInfo(null);
   }
 
@@ -52,7 +50,7 @@ export default function Map({ places, dayInfo }: Props) {
     const order = parseOrder(places);
     const newOrder = order.filter((id) => id !== popupInfo.id);
     await deletePlace(popupInfo.id);
-    await updatePlaceOrder(newOrder, dayInfo.dayId);
+    await updatePlaceOrder(newOrder, dayInfo.currentDay);
     setPopupInfo(null);
   }
 

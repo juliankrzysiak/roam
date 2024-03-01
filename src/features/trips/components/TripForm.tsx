@@ -10,14 +10,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { createTrip } from "@/utils/actions";
+import { createDay, createTrip, updateDayOrder } from "@/utils/actions";
 import { useState } from "react";
 
 export default function TripForm() {
   const [open, setOpen] = useState(false);
 
   async function handleSubmit(formData: FormData) {
-    await createTrip(formData);
+    // TODO: Tidy this up it's ugly
+    const tripId = await createTrip(formData);
+    if (!tripId) return;
+    const dayId = await createDay(tripId);
+    if (!dayId) return;
+    await updateDayOrder(tripId, [dayId]);
     setOpen(false);
   }
 

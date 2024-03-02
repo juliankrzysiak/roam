@@ -227,6 +227,22 @@ export async function updateDayOrder(tripId: number, order: string[]) {
   }
 }
 
+export async function updateCurrentDay(tripId: number, dayId: string) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  try {
+    const { error } = await supabase
+      .from("trips")
+      .update({ current_day: dayId })
+      .eq("id", tripId);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/map");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // Delete //
 
 export async function deletePlace(id: string) {

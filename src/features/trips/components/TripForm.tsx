@@ -10,7 +10,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { createDay, createTrip, updateDayOrder } from "@/utils/actions";
+import {
+  createDay,
+  createTrip,
+  updateCurrentDay,
+  updateDayOrder,
+} from "@/utils/actions";
 import { useState } from "react";
 
 export default function TripForm() {
@@ -23,6 +28,7 @@ export default function TripForm() {
     const dayId = await createDay(tripId);
     if (!dayId) return;
     await updateDayOrder(tripId, [dayId]);
+    await updateCurrentDay(tripId, dayId);
     setOpen(false);
   }
 

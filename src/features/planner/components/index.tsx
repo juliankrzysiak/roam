@@ -90,6 +90,6 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
     }
     // Don't want to invoke a server action when dragging and dropping to the same position
     if (checkEqualArrays(oldOrder, newOrder)) return;
-    updatePlaceOrder(newOrder, dayInfo.dayId);
+    updatePlaceOrder(newOrder, dayInfo.currentDay);
   }
 }

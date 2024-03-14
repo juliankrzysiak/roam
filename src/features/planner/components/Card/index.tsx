@@ -1,7 +1,10 @@
 import { PlaceT, Time } from "@/types";
-import Place from "./Place";
-import Trip from "./Trip";
+import { format } from "date-fns";
 import { Reorder } from "framer-motion";
+import PlaceForm from "./PlaceForm";
+import TripForm from "./TripForm";
+
+const timeFormat = "HH:mm a";
 
 type Props = {
   place: PlaceT;
@@ -15,10 +18,12 @@ export default function Card({ place, time, handleDragEnd }: Props) {
       value={place}
       id={place.id}
       onDragEnd={handleDragEnd}
-      className="rounded-lg bg-slate-300 p-4 shadow-lg"
+      className="flex flex-col gap-2 rounded-lg bg-slate-300 p-4 shadow-lg"
     >
-      <Place place={place} time={time} />
-      <Trip tripInfo={place.tripInfo} />
+      <h1 className="font-bold underline">{place.name}</h1>
+      <p>&gt; {format(time.arrival, timeFormat)}</p>
+      <PlaceForm place={place} />
+      <TripForm tripInfo={place.tripInfo} />
     </Reorder.Item>
   );
 }

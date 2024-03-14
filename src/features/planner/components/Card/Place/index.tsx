@@ -1,5 +1,5 @@
 import { PlaceT, Time } from "@/types";
-import { updateDuration } from "@/utils/actions";
+import { updateDuration } from "@/utils/actions/crud/update";
 import { format } from "date-fns";
 
 type Props = {
@@ -10,7 +10,7 @@ const timeFormat = "HH:mm a";
 
 export default function Place({ place, time }: Props) {
   return (
-    <li className="flex">
+    <div className="flex">
       <div>
         <div>Arrival {format(time.arrival, timeFormat)}</div>
         <form
@@ -37,6 +37,6 @@ export default function Place({ place, time }: Props) {
         <h1>{place.name}</h1>
         <h2>{place.category}</h2>
       </div>
-    </li>
+    </div>
   );
 }

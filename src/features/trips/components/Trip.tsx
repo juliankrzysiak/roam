@@ -1,22 +1,36 @@
-import { deleteTrip } from "@/utils/actions";
+import { Button } from "@/components/ui/button";
+import { Trip } from "@/types";
 import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import TripOptions from "./TripOptions";
 
-interface Props {
-  name: string;
+type Props = {
   id: number;
-  day: number;
-}
+  name: string;
+};
 
-export default async function Trip({ id, name, day }: Props) {
-  const deleteTripWithId = deleteTrip.bind(null, id);
-
+export default async function Trip({ id, name }: Props) {
   return (
-    <article className="flex flex-col border ">
-      <h1>{name}</h1>
-      <Link href={`/map/${id}/${day}`}>Check out trip</Link>
-      <form action={deleteTripWithId}>
-        <button>delete trip</button>
-      </form>
-    </article>
+    <Card className="relative flex flex-col items-center justify-between">
+      <TripOptions id={id} />
+      <CardHeader>
+        <CardTitle className="w-fit">{name}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Date</p>
+        <p>Miles</p>
+      </CardContent>
+      <CardFooter>
+        <Button asChild>
+          <Link href={`/map/${id}`}>Go To Schedule</Link>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

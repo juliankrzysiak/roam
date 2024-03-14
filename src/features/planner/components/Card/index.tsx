@@ -11,7 +11,12 @@ type Props = {
 
 export default function Card({ place, time, handleDragEnd }: Props) {
   return (
-    <Reorder.Item value={place} id={place.id} onDragEnd={handleDragEnd}>
+    <Reorder.Item
+      value={place}
+      id={place.id}
+      onDragEnd={handleDragEnd}
+      className="rounded-lg bg-slate-300 p-4 shadow-lg"
+    >
       <Place place={place} time={time} />
       <Trip tripInfo={place.tripInfo} />
     </Reorder.Item>

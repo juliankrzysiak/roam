@@ -55,6 +55,7 @@ export default function LoginForm({ setOpen }: Props) {
     if (data && !error) {
       setOpen(false);
       router.push("/trips");
+      router.refresh();
     }
   }
 

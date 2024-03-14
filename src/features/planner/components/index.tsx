@@ -1,21 +1,31 @@
 "use client";
 
-import { PlaceT } from "@/types";
+import { DayInfo, PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
-import { updateOrder, updateStartTime } from "@/utils/actions";
+import {
+  createDay,
+  updateDay,
+  updateDayOrder,
+  updatePlaceOrder,
+  updateStartTime,
+} from "@/utils/actions";
 import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import Card from "./Card";
+import { useRouter } from "next/navigation";
+import NavigateDays from "./NavigateDays";
 
 type Props = {
   places: PlaceT[];
-  start: string;
+  dayInfo: DayInfo;
+  tripId: number;
 };
 
-export default function Planner({ places, start }: Props) {
+export default function Planner({ places, dayInfo, tripId }: Props) {
+  const router = useRouter();
   const [items, setItems] = useState(places);
-  let startTime = parse(start, "HH:mm", new Date());
+  let startTime = parse(dayInfo.startTime ?? "08:00", "HH:mm", new Date());
   let endTime;
 
   useEffect(() => {
@@ -23,10 +33,10 @@ export default function Planner({ places, start }: Props) {
   }, [places]);
 
   return (
-    <Reorder.Group axis="y" values={items} onReorder={setItems}>
-      <section className="absolute inset-4 left-10 top-1/2 h-5/6 w-4/12  -translate-y-1/2 rounded-xl border-4 border-emerald-600 bg-gray-100 shadow-lg ">
-        <div className="h-20 border-4 border-b"></div>
-        <form action={updateStartTime}>
+    <section className="absolute inset-1 left-10 top-1/2 h-5/6 w-4/12 -translate-y-1/2 overflow-scroll rounded-xl border-4 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
+      <NavigateDays dayInfo={dayInfo} tripId={tripId} />
+      <div className="flex items-center justify-around">
+        <form action={updateStartTime} className="flex flex-col text-center">
           <label className="flex w-fit flex-col">
             Start time
             <input
@@ -37,6 +47,17 @@ export default function Planner({ places, start }: Props) {
             <button>Submit</button>
           </label>
         </form>
+        <div className="flex flex-col text-center">
+          <p>End Time</p>
+          <p>{endTime ?? 0}</p>
+        </div>
+      </div>
+      <Reorder.Group
+        axis="y"
+        values={items}
+        onReorder={setItems}
+        className="flex flex-col gap-4"
+      >
         {items.map((place, i, arr) => {
           const arrival = startTime;
           const departure = add(arrival, { minutes: place.duration });
@@ -56,9 +77,8 @@ export default function Planner({ places, start }: Props) {
             />
           );
         })}
-        <span className="flex w-fit flex-col">End Time {endTime ?? 0}</span>
-      </section>
-    </Reorder.Group>
+      </Reorder.Group>
+    </section>
   );
 
   function reorderPlaces() {
@@ -70,6 +90,6 @@ export default function Planner({ places, start }: Props) {
     }
     // Don't want to invoke a server action when dragging and dropping to the same position
     if (checkEqualArrays(oldOrder, newOrder)) return;
-    updateOrder(newOrder);
+    updatePlaceOrder(newOrder, dayInfo.currentDay);
   }
 }

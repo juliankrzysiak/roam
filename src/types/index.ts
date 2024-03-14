@@ -5,10 +5,10 @@ export type PlaceT = {
   category: string;
   lng: number;
   lat: number;
-  tripInfo?: TripInfo;
+  tripInfo?: Trip;
 };
 
-export type TripInfo = {
+export type Trip = {
   distance: number;
   duration: number;
 };
@@ -16,4 +16,14 @@ export type TripInfo = {
 export type Time = {
   arrival: Date;
   departure: Date;
+};
+
+export type TripInfo = {
+  trip: number;
+};
+
+export type DayInfo = {
+  orderDays: string[];
+  currentDay: string;
+  startTime: string;
 };

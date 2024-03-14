@@ -1,7 +1,7 @@
-import { TripInfo } from "@/types";
+import { Trip } from "@/types";
 
 type Props = {
-  tripInfo: TripInfo | undefined;
+  tripInfo: Trip | undefined;
 };
 
 export default function Trip({ tripInfo }: Props) {

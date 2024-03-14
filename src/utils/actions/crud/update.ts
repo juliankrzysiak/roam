@@ -1,41 +1,29 @@
 "use server";
 
-import { PlaceT } from "@/types";
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
-// Create //
 
-export async function createPlace(place: PlaceT & { day_id: number }) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-  try {
-    const { error } = await supabase.from("places").insert(place);
-    if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function createTrip(formData: FormData) {
+export async function updateTrip(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const rawFormData = {
-    name: formData.get("name"),
-  };
+  const name = formData.get("name");
+  const tripId = formData.get("tripId");
+
   try {
-    const { error } = await supabase.from("trips").insert(rawFormData);
+    if (typeof name !== "string") return;
+    const { error } = await supabase
+      .from("trips")
+      .update({ name })
+      .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/trips");
   } catch (error) {
     console.log(error);
   }
 }
-
-// Update //
 
 export async function updateDuration(formData: FormData) {
   const cookieStore = cookies();
@@ -75,15 +63,35 @@ export async function updateStartTime(formData: FormData) {
   }
 }
 
-
-export async function updateOrder(order: string[]) {
+export async function updateDay(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+
+  const rawFormData = {
+    day_id: formData.get("dayId"),
+  };
+
+  try {
+    const { error } = await supabase
+      .from("trips")
+      .update(rawFormData)
+      .eq("id", formData.get("tripId"));
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/map");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updatePlaceOrder(order: string[], dayId: string) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
   try {
     const { error } = await supabase
       .from("days")
       .update({ order_places: order })
-      .eq("id", 3);
+      .eq("id", dayId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {
@@ -91,13 +99,19 @@ export async function updateOrder(order: string[]) {
   }
 }
 
-// Delete //
-
-export async function deletePlace(id: string) {
+export async function updateDayOrder(tripId: number, order: string[]) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+
+  // const rawFormData = {
+  //   trip_id: formData.get("trip"),
+  // };
+
   try {
-    const { error } = await supabase.from("places").delete().eq("id", id);
+    const { error } = await supabase
+      .from("trips")
+      .update({ order_days: order })
+      .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {
@@ -105,10 +119,18 @@ export async function deletePlace(id: string) {
   }
 }
 
-export async function deleteTrip(id: string) {
+export async function updateCurrentDay(tripId: number, dayId: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  const { error } = await supabase.from("trips").delete().eq("id", id);
-  if (error) throw new Error(`Supabase error: ${error.message}`);
-  revalidatePath("/trips");
+
+  try {
+    const { error } = await supabase
+      .from("trips")
+      .update({ current_day: dayId })
+      .eq("id", tripId);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/map");
+  } catch (error) {
+    console.log(error);
+  }
 }

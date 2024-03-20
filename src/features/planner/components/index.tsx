@@ -53,6 +53,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
         className="flex flex-col gap-4"
       >
         {items.map((place, i, arr) => {
+          console.log(place);
           const arrival = startTime;
           const departure = add(arrival, { minutes: place.duration });
 
@@ -67,6 +68,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
               key={place.id}
               place={place}
               time={time}
+              tripInfo={place.tripInfo}
               handleDragEnd={reorderPlaces}
             />
           );

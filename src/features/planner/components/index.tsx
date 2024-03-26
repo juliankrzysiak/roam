@@ -56,9 +56,6 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
           console.log(place);
           const arrival = startTime;
           const departure = add(arrival, { minutes: place.duration });
-
-          const time = { arrival, departure };
-
           startTime = add(departure, {
             minutes: place.tripInfo?.duration ?? 0,
           });
@@ -67,7 +64,8 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
             <Card
               key={place.id}
               place={place}
-              time={time}
+              arrival={arrival}
+              duration={place.duration}
               tripInfo={place.tripInfo}
               handleDragEnd={reorderPlaces}
             />

@@ -4,7 +4,6 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
-
 export async function updateTrip(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
@@ -28,14 +27,15 @@ export async function updateTrip(formData: FormData) {
 export async function updateDuration(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+
   const id = formData.get("id");
-  const rawFormData = {
-    duration: formData.get("duration"),
-  };
+  const hours = formData.get("hours");
+  const minutes = formData.get("minutes");
+
   try {
     const { error } = await supabase
       .from("places")
-      .update(rawFormData)
+      .update({ hours, minutes })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");

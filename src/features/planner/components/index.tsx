@@ -20,30 +20,38 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
   const router = useRouter();
   let startTime = parse(dayInfo.startTime ?? "08:00", "HH:mm", new Date());
   const [items, setItems] = useState(() => calcItinerary(places));
+  console.log(items);
 
   function calcItinerary(places: PlaceT[]) {
     let arrival = startTime;
     let departure = null;
 
     const calculatedPlaces = places.map((place) => {
-      departure = addDuration(arrival, place.duration);
-      const updatedPlace = { ...place, arrival, departure };
-      arrival = addDuration(departure, place.tripInfo?.duration ?? 0);
+      const { hours, minutes } = place;
+      const duration = { hours, minutes };
+
+      departure = addDuration(arrival, duration);
+      const updatedPlace = { ...place, arrival, departure, duration };
+      arrival = addDuration(departure, { minutes: place.tripInfo?.duration });
+
       return updatedPlace;
     });
 
     return calculatedPlaces;
 
     // TODO: Add this to lib
-    function addDuration(arrival: Date, duration: number): Date {
-      return add(arrival, { minutes: duration });
+    function addDuration(
+      arrival: Date,
+      { hours = 0, minutes = 0 }: { hours?: number; minutes?: number },
+    ): Date {
+      return add(arrival, { hours, minutes });
     }
   }
 
-  // TODO: Why do i have this here again...
-  // useEffect(() => {
-  //   setItems(calcItinerary(places));
-  // }, [places]);
+  // To recalcualte the trip durations going through the distance
+  useEffect(() => {
+    setItems(calcItinerary(places));
+  }, [places]);
 
   return (
     <section className="absolute inset-1 left-10 top-1/2 h-5/6 w-4/12 -translate-y-1/2 overflow-scroll rounded-xl border-4 border-emerald-600 bg-gray-100 p-4 shadow-lg ">

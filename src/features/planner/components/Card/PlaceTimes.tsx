@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PlaceT } from "@/types";
+import { Duration, PlaceT } from "@/types";
 import { updateDuration } from "@/utils/actions/crud/update";
 import { add, format } from "date-fns";
 import { useState } from "react";
@@ -9,25 +9,41 @@ const timeFormat = "HH:mm a";
 
 type Props = {
   arrival: Date;
-  duration: number;
+  duration: Duration;
   placeId: string;
 };
 
 export default function PlaceTimes({ arrival, duration, placeId }: Props) {
-  const [placeDuration, setDuration] = useState(duration);
-  const departure = add(arrival, { minutes: placeDuration });
+  const [hourDuration, setHourDuration] = useState(duration.hours);
+  const [minuteDuration, setMinuteDuration] = useState(duration.minutes);
+  const departure = add(arrival, {
+    hours: hourDuration,
+    minutes: minuteDuration,
+  });
 
   return (
     <form className="flex justify-between gap-2" action={updateDuration}>
       <p className="text-center">{format(arrival, timeFormat)}</p>
       <div className="flex flex-col gap-2">
-        <label className="flex flex-col items-center gap-2">
+        <label className="flex items-center gap-2">
           <Input
             className="max-w-xs px-1"
-            name="duration"
+            name="hours"
             type="number"
-            defaultValue={placeDuration}
-            onChange={(e) => setDuration(Number(e.target.value))}
+            min="0"
+            max="12"
+            defaultValue={hourDuration}
+            onChange={(e) => setHourDuration(Number(e.target.value))}
+          />
+          :
+          <Input
+            className="max-w-xs px-1"
+            name="minutes"
+            type="number"
+            min="0"
+            max="59"
+            defaultValue={minuteDuration}
+            onChange={(e) => setMinuteDuration(Number(e.target.value))}
           />
         </label>
         <input type="hidden" name="id" defaultValue={placeId} />

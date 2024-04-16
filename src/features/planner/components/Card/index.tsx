@@ -1,4 +1,4 @@
-import { PlaceT, Time, Trip } from "@/types";
+import { Duration, PlaceT, Time, Trip } from "@/types";
 import { Reorder } from "framer-motion";
 import DepartureForm from "./PlaceTimes";
 import TripForm from "./TripForm";
@@ -8,7 +8,7 @@ import PlaceTimes from "./PlaceTimes";
 type Props = {
   place: PlaceT;
   arrival: Date;
-  duration: number;
+  duration: Duration;
   tripInfo: Trip | undefined;
   handleDragEnd: () => void;
 };

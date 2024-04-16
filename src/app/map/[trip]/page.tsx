@@ -15,14 +15,14 @@ export default async function MapPage({ params }: Props) {
   const supabase = createClient(cookieStore);
 
   const dayInfo = await getDayInfo(supabase, tripId);
-  const orderedPlaces = await getOrderedPlaces(supabase, dayInfo.currentDay);
-  const trips = await getTrips(orderedPlaces);
-  const places = combineTripInfo(orderedPlaces, trips);
+  const places = await getOrderedPlaces(supabase, dayInfo.currentDay);
+  // const trips = await getTrips(orderedPlaces);
+  // const places = combineTripInfo(orderedPlaces, trips);
 
   return (
-    <main className="relative h-20 flex-grow">
-      <Map places={places} dayInfo={dayInfo} />
+    <main className="relative flex h-40 flex-grow">
       <Planner places={places} dayInfo={dayInfo} tripId={tripId} />
+      <Map places={places} dayInfo={dayInfo} />
     </main>
   );
 }

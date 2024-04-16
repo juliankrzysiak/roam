@@ -3,7 +3,7 @@
 import { DayInfo, PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
-import { add, format, parse } from "date-fns";
+import { add, format, parse, parseISO } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,8 +17,7 @@ type Props = {
 };
 
 export default function Planner({ places, dayInfo, tripId }: Props) {
-  const router = useRouter();
-  let startTime = parse(dayInfo.startTime ?? "08:00", "HH:mm", new Date());
+  let startTime = parseISO(dayInfo.startTime);
   const [items, setItems] = useState(() => calcItinerary(places));
   console.log(items);
 
@@ -65,6 +64,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
               name="startTime"
               defaultValue={format(startTime, "HH:mm")}
             />
+            <input type="hidden" name="id" defaultValue={dayInfo.currentDay} />
             <button>Submit</button>
           </label>
         </form>

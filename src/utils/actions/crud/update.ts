@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { formatISO, parse } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -47,15 +48,18 @@ export async function updateDuration(formData: FormData) {
 export async function updateStartTime(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  const rawFormData = {
-    start_time: formData.get("startTime"),
-  };
-  // TODO: Add day here
+  const id = formData.get("id");
+  const startTime = formData.get("startTime") as string;
+
+  const start_time = formatISO(parse(startTime, "HH:mm", new Date())).slice(
+    0,
+    -1,
+  );
   try {
     const { error } = await supabase
       .from("days")
-      .update(rawFormData)
-      .eq("id", 3);
+      .update({ start_time })
+      .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {

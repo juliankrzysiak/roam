@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Duration, PlaceT } from "@/types";
+import { Duration } from "@/types";
 import { updateDuration } from "@/utils/actions/crud/update";
 import { add, format } from "date-fns";
 import { useState } from "react";
 
-const timeFormat = "HH:mm a";
+const timeFormat = "h:mm aaa";
 
 type Props = {
   arrival: Date;

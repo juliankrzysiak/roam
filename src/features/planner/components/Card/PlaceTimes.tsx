@@ -18,21 +18,22 @@ export default function PlaceTimes({ arrival, duration, placeId }: Props) {
   const departure = add(arrival, { minutes: placeDuration });
 
   return (
-    <form className="flex flex-col  gap-2" action={updateDuration}>
-      <p>Arrival: {format(arrival, timeFormat)}</p>
-      <label className="flex items-center gap-2">
-        Duration:
-        <Input
-          className="px-1"
-          name="duration"
-          type="number"
-          defaultValue={placeDuration}
-          onChange={(e) => setDuration(Number(e.target.value))}
-        />
-      </label>
-      <input type="hidden" name="id" defaultValue={placeId} />
-      <Button>Submit</Button>
-      <p>Departure: {format(departure, timeFormat)}</p>
+    <form className="flex justify-between gap-2" action={updateDuration}>
+      <p className="text-center">{format(arrival, timeFormat)}</p>
+      <div className="flex flex-col gap-2">
+        <label className="flex flex-col items-center gap-2">
+          <Input
+            className="max-w-xs px-1"
+            name="duration"
+            type="number"
+            defaultValue={placeDuration}
+            onChange={(e) => setDuration(Number(e.target.value))}
+          />
+        </label>
+        <input type="hidden" name="id" defaultValue={placeId} />
+        <Button type="submit">Submit</Button>
+      </div>
+      <p className="text-center">{format(departure, timeFormat)}</p>
     </form>
   );
 }

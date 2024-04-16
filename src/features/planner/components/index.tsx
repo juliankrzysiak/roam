@@ -18,13 +18,32 @@ type Props = {
 
 export default function Planner({ places, dayInfo, tripId }: Props) {
   const router = useRouter();
-  const [items, setItems] = useState(places);
   let startTime = parse(dayInfo.startTime ?? "08:00", "HH:mm", new Date());
-  let endTime;
+  const [items, setItems] = useState(() => calcItinerary(places));
 
-  useEffect(() => {
-    setItems(places);
-  }, [places]);
+  function calcItinerary(places: PlaceT[]) {
+    let arrival = startTime;
+    let departure = null;
+
+    const calculatedPlaces = places.map((place) => {
+      departure = addDuration(arrival, place.duration);
+      const updatedPlace = { ...place, arrival, departure };
+      arrival = addDuration(departure, place.tripInfo?.duration ?? 0);
+      return updatedPlace;
+    });
+
+    return calculatedPlaces;
+
+    // TODO: Add this to lib
+    function addDuration(arrival: Date, duration: number): Date {
+      return add(arrival, { minutes: duration });
+    }
+  }
+
+  // TODO: Why do i have this here again...
+  // useEffect(() => {
+  //   setItems(calcItinerary(places));
+  // }, [places]);
 
   return (
     <section className="absolute inset-1 left-10 top-1/2 h-5/6 w-4/12 -translate-y-1/2 overflow-scroll rounded-xl border-4 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
@@ -43,7 +62,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
         </form>
         <div className="flex flex-col text-center">
           <p>End Time</p>
-          <p>{endTime ?? 0}</p>
+          <p>{format(items.at(-1)?.departure, "HH:mm") ?? 0}</p>
         </div>
       </div>
       <Reorder.Group
@@ -52,8 +71,19 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
         onReorder={setItems}
         className="flex flex-col gap-4"
       >
-        {items.map((place, i, arr) => {
-          console.log(place);
+        {items.map((place) => {
+          return (
+            <Card
+              key={place.id}
+              place={place}
+              arrival={place.arrival}
+              duration={place.duration}
+              tripInfo={place.tripInfo}
+              handleDragEnd={reorderPlaces}
+            />
+          );
+        })}
+        {/* {items.map((place, i, arr) => {
           const arrival = startTime;
           const departure = add(arrival, { minutes: place.duration });
           startTime = add(departure, {
@@ -70,7 +100,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
               handleDragEnd={reorderPlaces}
             />
           );
-        })}
+        })} */}
       </Reorder.Group>
     </section>
   );

@@ -1,11 +1,10 @@
 "use client";
 
-import { DayInfo, PlaceT } from "@/types";
+import { DayInfo, PlaceInfo, PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
-import { add, format, parse, parseISO } from "date-fns";
+import { add, format, parseISO } from "date-fns";
 import { Reorder } from "framer-motion";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Card from "./Card";
 import NavigateDays from "./NavigateDays";
@@ -17,21 +16,19 @@ type Props = {
 };
 
 export default function Planner({ places, dayInfo, tripId }: Props) {
+  // TODO: Optimistic updates can be used here
   let startTime = parseISO(dayInfo.startTime);
   const [items, setItems] = useState(() => calcItinerary(places));
-  console.log(items);
 
-  function calcItinerary(places: PlaceT[]) {
+  function calcItinerary(places: PlaceT[]): PlaceInfo[] {
     let arrival = startTime;
     let departure = null;
 
     const calculatedPlaces = places.map((place) => {
-      const { hours, minutes } = place;
-      const duration = { hours, minutes };
-
+      const {placeDuration: duration} = place
       departure = addDuration(arrival, duration);
       const updatedPlace = { ...place, arrival, departure, duration };
-      arrival = addDuration(departure, { minutes: place.tripInfo?.duration });
+      arrival = addDuration(departure, 0);
 
       return updatedPlace;
     });
@@ -39,21 +36,18 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
     return calculatedPlaces;
 
     // TODO: Add this to lib
-    function addDuration(
-      arrival: Date,
-      { hours = 0, minutes = 0 }: { hours?: number; minutes?: number },
-    ): Date {
-      return add(arrival, { hours, minutes });
+    function addDuration(arrival: Date, duration: number): Date {
+      return add(arrival, { minutes: duration });
     }
   }
 
-  // To recalcualte the trip durations going through the distance
-  useEffect(() => {
-    setItems(calcItinerary(places));
-  }, [places]);
+  // // To recalcualte the trip durations going through the distance
+  // useEffect(() => {
+  //   setItems(calcItinerary(places));
+  // }, [places]);
 
   return (
-    <section className="absolute inset-1 left-10 top-1/2 h-5/6 w-4/12 -translate-y-1/2 overflow-scroll rounded-xl border-4 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
+    <section className="overflow-scroll border-2 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
       <NavigateDays dayInfo={dayInfo} tripId={tripId} />
       <div className="flex items-center justify-around">
         <form action={updateStartTime} className="flex flex-col text-center">
@@ -84,9 +78,6 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
             <Card
               key={place.id}
               place={place}
-              arrival={place.arrival}
-              duration={place.duration}
-              tripInfo={place.tripInfo}
               handleDragEnd={reorderPlaces}
             />
           );

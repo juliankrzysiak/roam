@@ -1,17 +1,23 @@
 export type PlaceT = {
   id: string;
-  duration: Duration
   name: string;
   category: string;
   lng: number;
   lat: number;
+  placeDuration: number;
   tripInfo?: Trip;
 };
 
+export type PlaceInfo = PlaceT & {
+  arrival: Date;
+  departure: Date;
+  placeDuration: number;
+};
+
 export type Duration = {
-  hours: number,
-  minutes: number
-}
+  hours: number;
+  minutes: number;
+};
 
 export type Trip = {
   distance: number;

@@ -55,6 +55,7 @@ export type Database = {
           lng: number
           minutes: number | null
           name: string | null
+          placeDuration: number | null
         }
         Insert: {
           category?: string | null
@@ -66,6 +67,7 @@ export type Database = {
           lng: number
           minutes?: number | null
           name?: string | null
+          placeDuration?: number | null
         }
         Update: {
           category?: string | null
@@ -77,6 +79,7 @@ export type Database = {
           lng?: number
           minutes?: number | null
           name?: string | null
+          placeDuration?: number | null
         }
         Relationships: [
           {
@@ -134,6 +137,7 @@ export type Database = {
           lng: number
           minutes: number | null
           name: string | null
+          placeDuration: number | null
         }[]
       }
     }

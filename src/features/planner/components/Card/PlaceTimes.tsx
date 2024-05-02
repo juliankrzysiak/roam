@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Duration } from "@/types";
+import { convertTime } from "@/utils";
 import { updateDuration } from "@/utils/actions/crud/update";
 import { add, format } from "date-fns";
 import { useState } from "react";
@@ -9,13 +9,14 @@ const timeFormat = "h:mm aaa";
 
 type Props = {
   arrival: Date;
-  duration: Duration;
+  placeDuration: number;
   placeId: string;
 };
 
-export default function PlaceTimes({ arrival, duration, placeId }: Props) {
-  const [hourDuration, setHourDuration] = useState(duration.hours);
-  const [minuteDuration, setMinuteDuration] = useState(duration.minutes);
+export default function PlaceTimes({ arrival, placeDuration, placeId }: Props) {
+  const { hours, minutes } = convertTime({ minutes: placeDuration });
+  const [hourDuration, setHourDuration] = useState(hours);
+  const [minuteDuration, setMinuteDuration] = useState(minutes);
   const departure = add(arrival, {
     hours: hourDuration,
     minutes: minuteDuration,
@@ -25,7 +26,7 @@ export default function PlaceTimes({ arrival, duration, placeId }: Props) {
     <form className="flex justify-between gap-2" action={updateDuration}>
       <p className="text-center">{format(arrival, timeFormat)}</p>
       <div className="flex flex-col gap-2">
-        <label className="flex items-center gap-2">
+        <label className="flex items-center gap-1">
           <Input
             className="max-w-xs px-1"
             name="hours"

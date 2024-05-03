@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { formatISO, parse } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { convertTime } from "@/utils";
 
 export async function updateTrip(formData: FormData) {
   const cookieStore = cookies();
@@ -25,18 +26,19 @@ export async function updateTrip(formData: FormData) {
   }
 }
 
-export async function updateDuration(formData: FormData) {
+export async function updatePlaceDuration(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
   const id = formData.get("id");
-  const hours = formData.get("hours");
-  const minutes = formData.get("minutes");
+  const hours = Number(formData.get("hours"));
+  const minutes = Number(formData.get("minutes"));
+  const { minutes: placeDuration } = convertTime({ hours, minutes });
 
   try {
     const { error } = await supabase
       .from("places")
-      .update({ hours, minutes })
+      .update({ placeDuration })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");

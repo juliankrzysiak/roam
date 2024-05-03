@@ -25,26 +25,21 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
     let departure = null;
 
     const calculatedPlaces = places.map((place) => {
-      const {placeDuration: duration} = place
-      departure = addDuration(arrival, duration);
-      const updatedPlace = { ...place, arrival, departure, duration };
-      arrival = addDuration(departure, 0);
-
+      const { placeDuration } = place;
+      departure = add(arrival, { minutes: placeDuration });
+      const placeInfo = { arrival, departure, placeDuration };
+      const updatedPlace = { ...place, ...placeInfo };
+      arrival = departure;
       return updatedPlace;
     });
 
     return calculatedPlaces;
-
-    // TODO: Add this to lib
-    function addDuration(arrival: Date, duration: number): Date {
-      return add(arrival, { minutes: duration });
-    }
   }
 
-  // // To recalcualte the trip durations going through the distance
-  // useEffect(() => {
-  //   setItems(calcItinerary(places));
-  // }, [places]);
+  // Code Smell
+  useEffect(() => {
+    setItems(calcItinerary(places));
+  }, [places]);
 
   return (
     <section className="overflow-scroll border-2 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
@@ -75,11 +70,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
       >
         {items.map((place) => {
           return (
-            <Card
-              key={place.id}
-              place={place}
-              handleDragEnd={reorderPlaces}
-            />
+            <Card key={place.id} place={place} handleDragEnd={reorderPlaces} />
           );
         })}
         {/* {items.map((place, i, arr) => {

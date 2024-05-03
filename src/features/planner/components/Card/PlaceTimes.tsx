@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { convertTime } from "@/utils";
-import { updateDuration } from "@/utils/actions/crud/update";
+import { updatePlaceDuration } from "@/utils/actions/crud/update";
 import { add, format } from "date-fns";
 import { useState } from "react";
 
@@ -23,7 +23,7 @@ export default function PlaceTimes({ arrival, placeDuration, placeId }: Props) {
   });
 
   return (
-    <form className="flex justify-between gap-2" action={updateDuration}>
+    <form className="flex justify-between gap-2" action={updatePlaceDuration}>
       <p className="text-center">{format(arrival, timeFormat)}</p>
       <div className="flex flex-col gap-2">
         <label className="flex items-center gap-1">

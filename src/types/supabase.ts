@@ -49,37 +49,34 @@ export type Database = {
           category: string | null
           created_at: string
           day_id: string
-          hours: number | null
           id: string
           lat: number
           lng: number
-          minutes: number | null
           name: string | null
           placeDuration: number | null
+          tripDuration: number | null
         }
         Insert: {
           category?: string | null
           created_at?: string
           day_id: string
-          hours?: number | null
           id: string
           lat: number
           lng: number
-          minutes?: number | null
           name?: string | null
           placeDuration?: number | null
+          tripDuration?: number | null
         }
         Update: {
           category?: string | null
           created_at?: string
           day_id?: string
-          hours?: number | null
           id?: string
           lat?: number
           lng?: number
-          minutes?: number | null
           name?: string | null
           placeDuration?: number | null
+          tripDuration?: number | null
         }
         Relationships: [
           {
@@ -131,13 +128,12 @@ export type Database = {
           category: string | null
           created_at: string
           day_id: string
-          hours: number | null
           id: string
           lat: number
           lng: number
-          minutes: number | null
           name: string | null
           placeDuration: number | null
+          tripDuration: number | null
         }[]
       }
     }

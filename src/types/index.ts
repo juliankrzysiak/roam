@@ -5,6 +5,7 @@ export type PlaceT = {
   lng: number;
   lat: number;
   placeDuration: number;
+  tripDuration: number;
   tripInfo?: Trip;
 };
 

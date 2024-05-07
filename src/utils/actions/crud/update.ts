@@ -47,6 +47,27 @@ export async function updatePlaceDuration(formData: FormData) {
   }
 }
 
+export async function updateTripDuration(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const id = formData.get("id");
+  const hours = Number(formData.get("hours"));
+  const minutes = Number(formData.get("minutes"));
+  const { minutes: tripDuration } = convertTime({ hours, minutes });
+
+  try {
+    const { error } = await supabase
+      .from("places")
+      .update({ tripDuration })
+      .eq("id", id);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/map");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function updateStartTime(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);

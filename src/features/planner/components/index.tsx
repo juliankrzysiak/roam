@@ -19,20 +19,22 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
   // TODO: Optimistic updates can be used here
   let startTime = parseISO(dayInfo.startTime);
   const [items, setItems] = useState(() => calcItinerary(places));
+  const endTime = format(items.at(-1)?.departure, "h:mm a") ?? 0;
 
   function calcItinerary(places: PlaceT[]): PlaceInfo[] {
     let arrival = startTime;
     let departure = null;
 
     const calculatedPlaces = places.map((place) => {
-      const { placeDuration } = place;
+      const { placeDuration, tripDuration } = place;
       departure = add(arrival, { minutes: placeDuration });
       const placeInfo = { arrival, departure, placeDuration };
       const updatedPlace = { ...place, ...placeInfo };
-      arrival = departure;
+      arrival = add(departure, { minutes: tripDuration });
       return updatedPlace;
     });
 
+    console.log(calculatedPlaces);
     return calculatedPlaces;
   }
 
@@ -59,7 +61,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
         </form>
         <div className="flex flex-col text-center">
           <p>End Time</p>
-          <p>{format(items.at(-1)?.departure, "HH:mm") ?? 0}</p>
+          <p>{endTime}</p>
         </div>
       </div>
       <Reorder.Group

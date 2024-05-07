@@ -68,9 +68,15 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
         onReorder={setItems}
         className="flex flex-col gap-4"
       >
-        {items.map((place) => {
+        {items.map((place, i, arr) => {
+          const isLast = i === arr.length - 1;
           return (
-            <Card key={place.id} place={place} handleDragEnd={reorderPlaces} />
+            <Card
+              key={place.id}
+              place={place}
+              handleDragEnd={reorderPlaces}
+              last={isLast}
+            />
           );
         })}
         {/* {items.map((place, i, arr) => {

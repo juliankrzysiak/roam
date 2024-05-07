@@ -5,12 +5,12 @@ import TripForm from "./TripForm";
 
 type Props = {
   place: PlaceInfo;
-  // tripInfo: Trip | undefined;
   handleDragEnd: () => void;
+  last: boolean;
 };
 
-export default function Card({ place, handleDragEnd }: Props) {
-  const { id, arrival, placeDuration } = place;
+export default function Card({ place, handleDragEnd, last }: Props) {
+  const { id, arrival, placeDuration, tripDuration } = place;
   return (
     <Reorder.Item value={place} id={place.id} onDragEnd={handleDragEnd}>
       <article className="flex flex-col gap-2 rounded-lg bg-slate-300 p-4 shadow-lg">
@@ -21,7 +21,7 @@ export default function Card({ place, handleDragEnd }: Props) {
           placeId={id}
         />
       </article>
-      <TripForm />
+      {!last && <TripForm placeId={id} tripDuration={tripDuration} />}
     </Reorder.Item>
   );
 }

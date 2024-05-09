@@ -1,19 +1,12 @@
 "use client";
 
-import { DayInfo, PlaceT } from "@/types";
+import { DayInfo, PlaceInfo, PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
-import {
-  createDay,
-  updateDay,
-  updateDayOrder,
-  updatePlaceOrder,
-  updateStartTime,
-} from "@/utils/actions";
-import { add, format, parse } from "date-fns";
+import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
+import { add, format, parseISO } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import Card from "./Card";
-import { useRouter } from "next/navigation";
 import NavigateDays from "./NavigateDays";
 
 type Props = {
@@ -23,18 +16,39 @@ type Props = {
 };
 
 export default function Planner({ places, dayInfo, tripId }: Props) {
-  const router = useRouter();
-  const [items, setItems] = useState(places);
-  let startTime = parse(dayInfo.startTime ?? "08:00", "HH:mm", new Date());
-  let endTime;
+  // TODO: Optimistic updates can be used here
+  const startTime = parseISO(dayInfo.startTime);
+  const [items, setItems] = useState(() => calcItinerary(places));
+  const endTime = format(items.at(-1)?.departure ?? startTime, "h:mm a");
 
+  function calcItinerary(places: PlaceT[]): PlaceInfo[] {
+    let arrival = startTime;
+    let departure = null;
+
+    const calculatedPlaces = places.map((place) => {
+      const { placeDuration, tripDuration } = place;
+      departure = add(arrival, { minutes: placeDuration });
+      const placeInfo = { arrival, departure, placeDuration };
+      const updatedPlace = { ...place, ...placeInfo };
+      arrival = add(departure, { minutes: tripDuration });
+      return updatedPlace;
+    });
+
+    return calculatedPlaces;
+  }
+
+  // Code Smell
   useEffect(() => {
-    setItems(places);
+    setItems(calcItinerary(places));
   }, [places]);
 
   return (
-    <section className="absolute inset-1 left-10 top-1/2 h-5/6 w-4/12 -translate-y-1/2 overflow-scroll rounded-xl border-4 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
-      <NavigateDays dayInfo={dayInfo} tripId={tripId} />
+    <section className="overflow-scroll border-2 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
+      <NavigateDays
+        orderDays={dayInfo.orderDays}
+        dayId={dayInfo.currentDay}
+        tripId={tripId}
+      />
       <div className="flex items-center justify-around">
         <form action={updateStartTime} className="flex flex-col text-center">
           <label className="flex w-fit flex-col">
@@ -44,12 +58,13 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
               name="startTime"
               defaultValue={format(startTime, "HH:mm")}
             />
+            <input type="hidden" name="id" defaultValue={dayInfo.currentDay} />
             <button>Submit</button>
           </label>
         </form>
         <div className="flex flex-col text-center">
           <p>End Time</p>
-          <p>{endTime ?? 0}</p>
+          <p>{endTime}</p>
         </div>
       </div>
       <Reorder.Group
@@ -59,11 +74,19 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
         className="flex flex-col gap-4"
       >
         {items.map((place, i, arr) => {
+          const isLast = i === arr.length - 1;
+          return (
+            <Card
+              key={place.id}
+              place={place}
+              handleDragEnd={reorderPlaces}
+              last={isLast}
+            />
+          );
+        })}
+        {/* {items.map((place, i, arr) => {
           const arrival = startTime;
           const departure = add(arrival, { minutes: place.duration });
-
-          const time = { arrival, departure };
-
           startTime = add(departure, {
             minutes: place.tripInfo?.duration ?? 0,
           });
@@ -72,11 +95,13 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
             <Card
               key={place.id}
               place={place}
-              time={time}
+              arrival={arrival}
+              duration={place.duration}
+              tripInfo={place.tripInfo}
               handleDragEnd={reorderPlaces}
             />
           );
-        })}
+        })} */}
       </Reorder.Group>
     </section>
   );

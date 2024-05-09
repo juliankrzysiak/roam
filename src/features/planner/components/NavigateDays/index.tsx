@@ -1,16 +1,14 @@
 import { DayInfo } from "@/types";
-import { updateDay, createDay, updateDayOrder } from "@/utils/actions";
-import { add } from "date-fns";
+import { updateDay, updateDayOrder } from "@/utils/actions/crud/update";
+import { createDay } from "@/utils/actions/crud/create";
 
 type Props = {
-  dayInfo: DayInfo;
+  orderDays: string[];
+  dayId: string;
   tripId: number;
 };
 
-export default function NavigateDays({
-  dayInfo: { orderDays, dayId },
-  tripId,
-}: Props) {
+export default function NavigateDays({ orderDays, dayId, tripId }: Props) {
   const currentIndex = orderDays.findIndex((id) => id === dayId);
   const previousDayId = orderDays[currentIndex - 1];
   const nextDayId = orderDays[currentIndex + 1];
@@ -39,10 +37,12 @@ export default function NavigateDays({
   );
 
   async function addDay(formData: FormData) {
-    const { id } = (await createDay(formData)) || {};
-    formData.set("dayId", id);
+    const tripId = Number(formData.get("tripId"));
+    const id = await createDay(tripId);
+
+    if (!id) throw new Error();
     const newOrder = [...orderDays, id];
-    await updateDayOrder(formData, newOrder);
-    await updateDay(formData);
+    await updateDayOrder(tripId, newOrder);
+    // await updateDay(formData);
   }
 }

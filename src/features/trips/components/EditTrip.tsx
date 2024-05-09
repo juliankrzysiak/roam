@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { updateTrip } from "@/utils/actions";
+import { updateTrip } from "@/utils/actions/crud/update";
 
 type Props = {
   open: boolean;

@@ -1,6 +1,6 @@
-import { DayInfo } from "@/types";
-import { updateDay, updateDayOrder } from "@/utils/actions/crud/update";
+import { DatePicker } from "@/components/general/DatePicker";
 import { createDay } from "@/utils/actions/crud/create";
+import { updateDay, updateDayOrder } from "@/utils/actions/crud/update";
 
 type Props = {
   orderDays: string[];
@@ -21,6 +21,7 @@ export default function NavigateDays({ orderDays, dayId, tripId }: Props) {
         <button>Previous</button>
       </form>
       <span>Day {currentIndex + 1}</span>
+      <DatePicker />
       {nextDayId ? (
         <form action={updateDay}>
           <input type="hidden" name="tripId" value={tripId} />

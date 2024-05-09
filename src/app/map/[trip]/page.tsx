@@ -39,14 +39,15 @@ async function getOrderedPlaces(
 async function getDayInfo(supabase: SupabaseClient, tripId: number) {
   const { data, error } = await supabase
     .from("trips")
-    .select("order_days, current_day, days (start_time)")
+    .select("order_days, current_day, days ( id, start_time)")
     .eq("id", tripId)
     .limit(1)
     .single();
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
   const { order_days: orderDays, current_day: currentDay, days } = data;
-  const { start_time: startTime } = days[0];
+  const startTime =
+    days.find((day) => day.id === currentDay)?.start_time ?? "08:00";
 
   return {
     orderDays,

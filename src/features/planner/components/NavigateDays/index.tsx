@@ -1,14 +1,21 @@
 import { DatePicker } from "@/components/general/DatePicker";
+import { DayInfo } from "@/types";
 import { createDay } from "@/utils/actions/crud/create";
-import { updateDay, updateDayOrder } from "@/utils/actions/crud/update";
+import {
+  updateDate,
+  updateDay,
+  updateDayOrder,
+  updateStartTime,
+} from "@/utils/actions/crud/update";
+import { parse } from "date-fns";
 
 type Props = {
-  orderDays: string[];
-  dayId: string;
+  dayInfo: DayInfo;
   tripId: number;
 };
 
-export default function NavigateDays({ orderDays, dayId, tripId }: Props) {
+export default function NavigateDays({ dayInfo, tripId }: Props) {
+  const { orderDays, currentDay: dayId, date } = dayInfo;
   const currentIndex = orderDays.findIndex((id) => id === dayId);
   const previousDayId = orderDays[currentIndex - 1];
   const nextDayId = orderDays[currentIndex + 1];
@@ -21,7 +28,10 @@ export default function NavigateDays({ orderDays, dayId, tripId }: Props) {
         <button>Previous</button>
       </form>
       <span>Day {currentIndex + 1}</span>
-      <DatePicker />
+      <DatePicker
+        initialDate={parse(date, "yyyy-MM-dd", new Date())}
+        dayId={dayId}
+      />
       {nextDayId ? (
         <form action={updateDay}>
           <input type="hidden" name="tripId" value={tripId} />

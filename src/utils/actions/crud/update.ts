@@ -1,10 +1,10 @@
 "use server";
 
+import { convertTime } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
-import { formatISO, parse } from "date-fns";
+import { formatISO } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { convertTime } from "@/utils";
 
 export async function updateTrip(formData: FormData) {
   const cookieStore = cookies();
@@ -154,19 +154,24 @@ export async function updateCurrentDay(tripId: number, dayId: string) {
   }
 }
 
-export async function updateDate(formData: FormData) {
+export async function updateDate(date: Date, id: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const dayId = formData.get("dayId");
-  const date = formData.get("");
+  const parsedDate = formatISO(date).slice(0, 10);
+
   try {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("days")
-      .update({ current_day: dayId })
-      .eq("id");
+      .update({ date: parsedDate })
+      .eq("id", id)
+      .select()
+      .single();
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
+    const returnedDate = data.date;
+    if (!returnedDate) return;
+    return returnedDate;
   } catch (error) {
     console.log(error);
   }

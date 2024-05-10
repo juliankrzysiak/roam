@@ -3,7 +3,7 @@
 import { DayInfo, PlaceInfo, PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
-import { add, format, parseISO } from "date-fns";
+import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import Card from "./Card";
@@ -17,7 +17,7 @@ type Props = {
 
 export default function Planner({ places, dayInfo, tripId }: Props) {
   // TODO: Optimistic updates can be used here
-  const startTime = parseISO(dayInfo.startTime);
+  const startTime = parse(dayInfo.startTime, "HH:mm:ss", new Date());
   const [items, setItems] = useState(() => calcItinerary(places));
   const endTime = format(items.at(-1)?.departure ?? startTime, "h:mm a");
 
@@ -44,11 +44,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
 
   return (
     <section className="overflow-scroll border-2 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
-      <NavigateDays
-        orderDays={dayInfo.orderDays}
-        dayId={dayInfo.currentDay}
-        tripId={tripId}
-      />
+      <NavigateDays dayInfo={dayInfo} tripId={tripId} />
       <div className="flex items-center justify-around">
         <form action={updateStartTime} className="flex flex-col text-center">
           <label className="flex w-fit flex-col">
@@ -56,7 +52,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
             <input
               type="time"
               name="startTime"
-              defaultValue={format(startTime, "HH:mm")}
+              defaultValue={dayInfo.startTime}
             />
             <input type="hidden" name="id" defaultValue={dayInfo.currentDay} />
             <button>Submit</button>
@@ -84,24 +80,6 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
             />
           );
         })}
-        {/* {items.map((place, i, arr) => {
-          const arrival = startTime;
-          const departure = add(arrival, { minutes: place.duration });
-          startTime = add(departure, {
-            minutes: place.tripInfo?.duration ?? 0,
-          });
-          if (i === arr.length - 1) endTime = format(departure, "HH:mm");
-          return (
-            <Card
-              key={place.id}
-              place={place}
-              arrival={arrival}
-              duration={place.duration}
-              tripInfo={place.tripInfo}
-              handleDragEnd={reorderPlaces}
-            />
-          );
-        })} */}
       </Reorder.Group>
     </section>
   );

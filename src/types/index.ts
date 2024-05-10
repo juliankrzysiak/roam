@@ -38,4 +38,5 @@ export type DayInfo = {
   orderDays: string[];
   currentDay: string;
   startTime: string;
+  date: string;
 };

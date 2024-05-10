@@ -71,17 +71,14 @@ export async function updateTripDuration(formData: FormData) {
 export async function updateStartTime(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+
   const id = formData.get("id");
   const startTime = formData.get("startTime") as string;
 
-  const start_time = formatISO(parse(startTime, "HH:mm", new Date())).slice(
-    0,
-    -1,
-  );
   try {
     const { error } = await supabase
       .from("days")
-      .update({ start_time })
+      .update({ start_time: startTime })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
@@ -150,6 +147,24 @@ export async function updateCurrentDay(tripId: number, dayId: string) {
       .from("trips")
       .update({ current_day: dayId })
       .eq("id", tripId);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/map");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateDate(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const dayId = formData.get("dayId");
+  const date = formData.get("");
+  try {
+    const { error } = await supabase
+      .from("days")
+      .update({ current_day: dayId })
+      .eq("id");
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {

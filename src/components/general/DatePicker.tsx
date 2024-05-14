@@ -31,7 +31,7 @@ export function DatePicker({ initialDate, dayId }: Props) {
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
+            "min-w-max max-w-xs justify-start text-left font-normal",
             !optimisticDate && "text-muted-foreground",
           )}
         >

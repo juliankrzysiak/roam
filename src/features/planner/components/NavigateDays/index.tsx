@@ -9,6 +9,8 @@ import {
 } from "@/utils/actions/crud/update";
 import { parse } from "date-fns";
 
+import { add } from "date-fns";
+
 type Props = {
   dayInfo: DayInfo;
   tripId: number;
@@ -97,7 +99,7 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
 
   async function addDay(formData: FormData) {
     const tripId = Number(formData.get("tripId"));
-    const id = await createDay(tripId);
+    const id = await createDay(tripId, date);
 
     if (!id) throw new Error();
     const newOrder = [...orderDays, id];

@@ -18,7 +18,7 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
   return (
     <div className="flex flex-col items-center">
       <p>Day {currentIndex + 1}</p>
-      <div className="top sticky flex items-center justify-between gap-2 ">
+      <div className="top sticky flex w-full items-center justify-between gap-2 ">
         <form action={updateDay}>
           <input type="hidden" name="tripId" value={tripId} />
           <input type="hidden" name="dayId" value={previousDayId} />

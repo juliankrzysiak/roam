@@ -1,8 +1,7 @@
 "use server";
 
-import { convertTime } from "@/utils";
+import { convertTime, sliceDate } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
-import { formatISO } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -158,7 +157,7 @@ export async function updateDate(date: Date, id: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const parsedDate = formatISO(date).slice(0, 10);
+  const parsedDate = sliceDate(date);
 
   try {
     const { data, error } = await supabase

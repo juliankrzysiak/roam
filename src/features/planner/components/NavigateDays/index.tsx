@@ -1,15 +1,8 @@
 import { DatePicker } from "@/components/general/DatePicker";
 import { DayInfo } from "@/types";
+import { parseDate } from "@/utils";
 import { createDay } from "@/utils/actions/crud/create";
-import {
-  updateDate,
-  updateDay,
-  updateDayOrder,
-  updateStartTime,
-} from "@/utils/actions/crud/update";
-import { parse } from "date-fns";
-
-import { add } from "date-fns";
+import { updateDay, updateDayOrder } from "@/utils/actions/crud/update";
 
 type Props = {
   dayInfo: DayInfo;
@@ -46,10 +39,7 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
             </svg>
           </button>
         </form>
-        <DatePicker
-          initialDate={parse(date, "yyyy-MM-dd", new Date())}
-          dayId={dayId}
-        />
+        <DatePicker initialDate={parseDate(dayInfo.date)} dayId={dayId} />
 
         {nextDayId ? (
           <form action={updateDay}>

@@ -1,4 +1,5 @@
 import { PlaceT } from "@/types";
+import { formatISO, parse } from "date-fns";
 
 export function parseOrder(places: PlaceT[]) {
   return places.map((place) => place.id);
@@ -12,4 +13,12 @@ export function convertTime({ hours, minutes }: Args) {
     hours: Math.floor(minutes / 60),
     minutes: hours ? hours * 60 + minutes : minutes % 60,
   };
+}
+
+export function parseDate(date: string, format: string = "yyyy-MM-dd") {
+  return parse(date, format, new Date());
+}
+
+export function sliceDate(date: Date, end: number = 10) {
+  return formatISO(date).slice(0, end);
 }

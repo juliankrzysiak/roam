@@ -26,3 +26,18 @@ export async function deleteTrip(formData: FormData) {
   if (error) throw new Error(`Supabase error: ${error.message}`);
   revalidatePath("/trips");
 }
+
+export async function deleteDay(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const dayId = formData.get("dayId");
+
+  try {
+    const { error } = await supabase.from("days").delete().eq("id", dayId);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/trips");
+  } catch (error) {
+    console.log(error);
+  }
+}

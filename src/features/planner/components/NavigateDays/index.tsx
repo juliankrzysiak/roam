@@ -11,8 +11,8 @@ type Props = {
 
 export default function NavigateDays({ dayInfo, tripId }: Props) {
   const { orderDays, indexCurrentDay, currentDayId, date } = dayInfo;
-  const previousDayId = orderDays[indexCurrentDay - 1];
-  const nextDayId = orderDays[indexCurrentDay + 1];
+  const indexPrevious = indexCurrentDay - 1;
+  const indexNext = indexCurrentDay + 1;
 
   return (
     <div className="flex flex-col items-center">
@@ -20,14 +20,9 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
       <div className="top sticky flex w-full items-center justify-between gap-2 ">
         <form action={updateDay}>
           <input type="hidden" name="tripId" value={tripId} />
-          <input type="hidden" name="dayId" value={previousDayId} />
-          <input
-            type="hidden"
-            name="indexCurrentDay"
-            value={indexCurrentDay - 1}
-          />
+          <input type="hidden" name="index" value={indexPrevious} />
 
-          <button className={`${!previousDayId && "invisible"}`}>
+          <button className={`${indexCurrentDay <= 0 && "invisible"}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -44,18 +39,15 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
             </svg>
           </button>
         </form>
-        <DatePicker initialDate={parseDate(dayInfo.date)} dayId={currentDayId} />
+        <DatePicker
+          initialDate={parseDate(dayInfo.date)}
+          dayId={currentDayId}
+        />
 
-        {nextDayId ? (
+        {indexNext ? (
           <form action={updateDay}>
             <input type="hidden" name="tripId" value={tripId} />
-            <input type="hidden" name="dayId" value={nextDayId} />
-            <input
-              type="hidden"
-              name="indexCurrentDay"
-              value={indexCurrentDay + 1}
-            />
-
+            <input type="hidden" name="index" value={indexNext} />
             <button>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

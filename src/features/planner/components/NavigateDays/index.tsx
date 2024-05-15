@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function NavigateDays({ dayInfo, tripId }: Props) {
-  const { orderDays, indexCurrentDay, currentDay: dayId, date } = dayInfo;
+  const { orderDays, indexCurrentDay, currentDayId, date } = dayInfo;
   const previousDayId = orderDays[indexCurrentDay - 1];
   const nextDayId = orderDays[indexCurrentDay + 1];
 
@@ -44,7 +44,7 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
             </svg>
           </button>
         </form>
-        <DatePicker initialDate={parseDate(dayInfo.date)} dayId={dayId} />
+        <DatePicker initialDate={parseDate(dayInfo.date)} dayId={currentDayId} />
 
         {nextDayId ? (
           <form action={updateDay}>

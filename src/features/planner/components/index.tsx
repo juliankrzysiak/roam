@@ -39,7 +39,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
   }
 
   function handleDragEnd() {
-    reorderPlaces(places, items, dayInfo.currentDay);
+    reorderPlaces(places, items, dayInfo.currentDayId);
   }
 
   // Code Smell
@@ -59,7 +59,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
               name="startTime"
               defaultValue={dayInfo.startTime}
             />
-            <input type="hidden" name="id" defaultValue={dayInfo.currentDay} />
+            <input type="hidden" name="id" defaultValue={dayInfo.currentDayId} />
             <button>Submit</button>
           </label>
         </form>
@@ -87,7 +87,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
         })}
       </Reorder.Group>
       <form action={deleteDay} className="self-center">
-        <input type="hidden" name="dayId" defaultValue={dayInfo.currentDay} />
+        <input type="hidden" name="dayId" defaultValue={dayInfo.currentDayId} />
         <button>delete</button>
       </form>
     </section>

@@ -15,7 +15,7 @@ export default async function MapPage({ params }: Props) {
   const supabase = createClient(cookieStore);
 
   const dayInfo = await getDayInfo(supabase, tripId);
-  const places = await getOrderedPlaces(supabase, dayInfo.currentDay);
+  const places = await getOrderedPlaces(supabase, dayInfo.currentDayId);
   // const trips = await getTrips(orderedPlaces);
   // const places = combineTripInfo(orderedPlaces, trips);
 
@@ -39,9 +39,7 @@ async function getOrderedPlaces(
 async function getDayInfo(supabase: SupabaseClient, tripId: number) {
   const { data, error } = await supabase
     .from("trips")
-    .select(
-      "order_days, index_current_day, current_day, days ( id, start_time, date)",
-    )
+    .select("order_days, index_current_day, days ( id, start_time, date)")
     .eq("id", tripId)
     .limit(1)
     .single();
@@ -50,18 +48,18 @@ async function getDayInfo(supabase: SupabaseClient, tripId: number) {
   const {
     order_days: orderDays,
     index_current_day: indexCurrentDay,
-    current_day: currentDay,
     days,
   } = data;
 
-  const day = days.find((day) => day.id === currentDay);
+  const currentDayId = orderDays[indexCurrentDay];
+  const day = days.find((day) => day.id === currentDayId);
   if (!day) throw new Error("Day not found");
   const { start_time: startTime, date } = day;
 
   return {
     orderDays,
     indexCurrentDay,
-    currentDay,
+    currentDayId,
     startTime,
     date,
   };

@@ -91,12 +91,13 @@ export async function updateDay(formData: FormData) {
   const supabase = createClient(cookieStore);
 
   const current_day = formData.get("dayId");
+  const index_current_day = Number(formData.get("indexCurrentDay"));
 
   try {
     if (typeof current_day !== "string") throw new Error();
     const { error } = await supabase
       .from("trips")
-      .update({ current_day })
+      .update({ current_day, index_current_day })
       .eq("id", formData.get("tripId"));
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");

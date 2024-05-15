@@ -1,8 +1,24 @@
 import { PlaceT } from "@/types";
 import { formatISO, parse } from "date-fns";
+import { updatePlaceOrder } from "./actions/crud/update";
+
+export async function reorderPlaces(
+  oldPlaces: PlaceT[],
+  newPlaces: PlaceT[],
+  dayId: string,
+) {
+  const [oldOrder, newOrder] = [oldPlaces, newPlaces].map(parseOrder);
+  // Don't want to invoke a server action when dragging and dropping to the same position
+  if (checkEqualArrays(oldOrder, newOrder)) return;
+  await updatePlaceOrder(newOrder, dayId);
+}
 
 export function parseOrder(places: PlaceT[]) {
   return places.map((place) => place.id);
+}
+
+function checkEqualArrays(arr1: string[], arr2: string[]) {
+  return arr1.join("") === arr2.join("");
 }
 
 type Args = { hours?: number; minutes: number };

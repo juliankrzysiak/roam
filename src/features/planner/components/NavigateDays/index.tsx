@@ -10,18 +10,23 @@ type Props = {
 };
 
 export default function NavigateDays({ dayInfo, tripId }: Props) {
-  const { orderDays, currentDay: dayId, date } = dayInfo;
-  const currentIndex = orderDays.findIndex((id) => id === dayId);
-  const previousDayId = orderDays[currentIndex - 1];
-  const nextDayId = orderDays[currentIndex + 1];
+  const { orderDays, indexCurrentDay, currentDay: dayId, date } = dayInfo;
+  const previousDayId = orderDays[indexCurrentDay - 1];
+  const nextDayId = orderDays[indexCurrentDay + 1];
 
   return (
     <div className="flex flex-col items-center">
-      <p>Day {currentIndex + 1}</p>
+      <p>Day {indexCurrentDay + 1}</p>
       <div className="top sticky flex w-full items-center justify-between gap-2 ">
         <form action={updateDay}>
           <input type="hidden" name="tripId" value={tripId} />
           <input type="hidden" name="dayId" value={previousDayId} />
+          <input
+            type="hidden"
+            name="indexCurrentDay"
+            value={indexCurrentDay - 1}
+          />
+
           <button className={`${!previousDayId && "invisible"}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -45,6 +50,12 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
           <form action={updateDay}>
             <input type="hidden" name="tripId" value={tripId} />
             <input type="hidden" name="dayId" value={nextDayId} />
+            <input
+              type="hidden"
+              name="indexCurrentDay"
+              value={indexCurrentDay + 1}
+            />
+
             <button>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

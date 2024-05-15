@@ -93,6 +93,7 @@ export type Database = {
           created_at: string
           current_day: string | null
           id: number
+          index_current_day: number | null
           name: string
           order_days: string[]
           user_id: string | null
@@ -101,6 +102,7 @@ export type Database = {
           created_at?: string
           current_day?: string | null
           id?: number
+          index_current_day?: number | null
           name: string
           order_days?: string[]
           user_id?: string | null
@@ -109,6 +111,7 @@ export type Database = {
           created_at?: string
           current_day?: string | null
           id?: number
+          index_current_day?: number | null
           name?: string
           order_days?: string[]
           user_id?: string | null

@@ -1,10 +1,9 @@
 "use server";
 
+import { convertTime, sliceDate } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
-import { formatISO, parse } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { convertTime } from "@/utils";
 
 export async function updateTrip(formData: FormData) {
   const cookieStore = cookies();
@@ -71,17 +70,14 @@ export async function updateTripDuration(formData: FormData) {
 export async function updateStartTime(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+
   const id = formData.get("id");
   const startTime = formData.get("startTime") as string;
 
-  const start_time = formatISO(parse(startTime, "HH:mm", new Date())).slice(
-    0,
-    -1,
-  );
   try {
     const { error } = await supabase
       .from("days")
-      .update({ start_time })
+      .update({ start_time: startTime })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
@@ -90,18 +86,15 @@ export async function updateStartTime(formData: FormData) {
   }
 }
 
-export async function updateDay(formData: FormData) {
+export async function updateDay(index: number, tripId: number) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const current_day = formData.get("dayId");
-
   try {
-    if (typeof current_day !== "string") throw new Error();
     const { error } = await supabase
       .from("trips")
-      .update({ current_day })
-      .eq("id", formData.get("tripId"));
+      .update({ index_current_day: index })
+      .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {
@@ -152,6 +145,29 @@ export async function updateCurrentDay(tripId: number, dayId: string) {
       .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateDate(date: Date, id: string) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const parsedDate = sliceDate(date);
+
+  try {
+    const { data, error } = await supabase
+      .from("days")
+      .update({ date: parsedDate })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/map");
+    const returnedDate = data.date;
+    if (!returnedDate) return;
+    return returnedDate;
   } catch (error) {
     console.log(error);
   }

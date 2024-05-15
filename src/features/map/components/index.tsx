@@ -2,7 +2,10 @@
 
 import { DayInfo, PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
-import { createPlace, deletePlace, updatePlaceOrder } from "@/utils/actions";
+import { createPlace } from "@/utils/actions/crud/create";
+import { deletePlace } from "@/utils/actions/crud/delete";
+import { updatePlaceOrder } from "@/utils/actions/crud/update";
+
 import mapboxgl from "mapbox-gl";
 import { useRef, useState } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
@@ -22,15 +25,16 @@ export default function Map({ places, dayInfo }: Props) {
     const features = mapRef.current?.queryRenderedFeatures(e.point, {
       layers: ["poi-label"],
     });
-    if (features && features.length > 0) {
+    if (features.length > 0) {
       const feature = features[0];
       setPopupInfo({
         id: uuidv4(),
         name: feature.properties?.name,
         category: feature.properties?.category_en,
-        duration: 0,
         lng: e.lngLat.lng,
         lat: e.lngLat.lat,
+        placeDuration: 0,
+        tripDuration: 0,
       });
       mapRef.current?.panTo(e.lngLat);
     } else setPopupInfo(null);

@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Trip } from "@/types";
 import Link from "next/link";
 import {
   Card,

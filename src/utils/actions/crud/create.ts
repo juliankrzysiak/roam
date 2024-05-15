@@ -1,7 +1,9 @@
 "use server";
 
 import { PlaceT } from "@/types";
+import { parseDate, sliceDate } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
+import { add } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -27,14 +29,16 @@ export async function createTrip(formData: FormData) {
   }
 }
 
-export async function createDay(tripId: number) {
+export async function createDay(tripId: number, date: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+
+  const nextDay = sliceDate(add(parseDate(date), { days: 1 }));
 
   try {
     const { data, error } = await supabase
       .from("days")
-      .insert({ trip_id: tripId })
+      .insert({ trip_id: tripId, date: nextDay })
       .select("id")
       .limit(1)
       .single();

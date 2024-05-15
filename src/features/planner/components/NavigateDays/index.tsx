@@ -18,10 +18,11 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
     <div className="flex flex-col items-center">
       <p>Day {indexCurrentDay + 1}</p>
       <div className="top sticky flex w-full items-center justify-between gap-2 ">
-        <form action={updateDay}>
-          <input type="hidden" name="tripId" value={tripId} />
-          <input type="hidden" name="index" value={indexPrevious} />
-
+        <form
+          action={async () => {
+            await updateDay(indexPrevious, tripId);
+          }}
+        >
           <button className={`${indexCurrentDay <= 0 && "invisible"}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -44,10 +45,12 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
           dayId={currentDayId}
         />
 
-        {indexNext ? (
-          <form action={updateDay}>
-            <input type="hidden" name="tripId" value={tripId} />
-            <input type="hidden" name="index" value={indexNext} />
+        {orderDays[indexNext] ? (
+          <form
+            action={async () => {
+              await updateDay(indexNext, tripId);
+            }}
+          >
             <button>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

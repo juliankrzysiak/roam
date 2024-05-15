@@ -3,7 +3,11 @@
 import { DayInfo, PlaceInfo, PlaceT } from "@/types";
 import { reorderPlaces } from "@/utils";
 import { deleteDay } from "@/utils/actions/crud/delete";
-import { updateStartTime } from "@/utils/actions/crud/update";
+import {
+  updateDay,
+  updateDayOrder,
+  updateStartTime,
+} from "@/utils/actions/crud/update";
 import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -59,7 +63,11 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
               name="startTime"
               defaultValue={dayInfo.startTime}
             />
-            <input type="hidden" name="id" defaultValue={dayInfo.currentDayId} />
+            <input
+              type="hidden"
+              name="id"
+              defaultValue={dayInfo.currentDayId}
+            />
             <button>Submit</button>
           </label>
         </form>
@@ -86,7 +94,29 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
           );
         })}
       </Reorder.Group>
-      <form action={deleteDay} className="self-center">
+      <form
+        action={async () => {
+          if (dayInfo.indexCurrentDay >= dayInfo.orderDays.length - 1)
+            await updateDay(dayInfo.indexCurrentDay - 1, tripId);
+          const newOrder = dayInfo.orderDays.filter(
+            (id) => id !== dayInfo.currentDayId,
+          );
+          await updateDayOrder(tripId, newOrder);
+          await deleteDay(dayInfo.currentDayId);
+        }}
+        className="self-center"
+      >
+        <input type="hidden" name="tripId" defaultValue={tripId} />
+        <input
+          type="hidden"
+          name="index"
+          defaultValue={dayInfo.indexCurrentDay}
+        />
+        <input
+          type="hidden"
+          name="orderDays"
+          defaultValue={dayInfo.orderDays}
+        />
         <input type="hidden" name="dayId" defaultValue={dayInfo.currentDayId} />
         <button>delete</button>
       </form>

@@ -86,17 +86,15 @@ export async function updateStartTime(formData: FormData) {
   }
 }
 
-export async function updateDay(formData: FormData) {
+export async function updateDay(index: number, tripId: number) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-
-  const index_current_day = Number(formData.get("index"));
 
   try {
     const { error } = await supabase
       .from("trips")
-      .update({ index_current_day })
-      .eq("id", formData.get("tripId"));
+      .update({ index_current_day: index })
+      .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {

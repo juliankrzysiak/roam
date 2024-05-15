@@ -14,6 +14,17 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
   const indexPrevious = indexCurrentDay - 1;
   const indexNext = indexCurrentDay + 1;
 
+  async function addDay(formData: FormData) {
+    const tripId = Number(formData.get("tripId"));
+    const id = await createDay(tripId, date);
+
+    if (!id) throw new Error();
+    const newOrder = [...orderDays, id];
+    // Bruh why are the parameters out of order
+    await updateDayOrder(tripId, newOrder);
+    await updateDay(indexNext, tripId);
+  }
+
   return (
     <div className="flex flex-col items-center">
       <p>Day {indexCurrentDay + 1}</p>
@@ -92,14 +103,4 @@ export default function NavigateDays({ dayInfo, tripId }: Props) {
       </div>
     </div>
   );
-
-  async function addDay(formData: FormData) {
-    const tripId = Number(formData.get("tripId"));
-    const id = await createDay(tripId, date);
-
-    if (!id) throw new Error();
-    const newOrder = [...orderDays, id];
-    await updateDayOrder(tripId, newOrder);
-    // await updateDay(formData);
-  }
 }

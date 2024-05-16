@@ -1,5 +1,6 @@
 "use client";
 
+import { DayContext } from "@/app/map/[trip]/DayProvider";
 import { DayInfo, PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
 import { createPlace } from "@/utils/actions/crud/create";
@@ -7,7 +8,7 @@ import { deletePlace } from "@/utils/actions/crud/delete";
 import { updatePlaceOrder } from "@/utils/actions/crud/update";
 
 import mapboxgl from "mapbox-gl";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 import { v4 as uuidv4 } from "uuid";
 
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export default function Map({ places, dayInfo }: Props) {
+  const day = useContext(DayContext);
   const mapRef = useRef<MapRef>(null);
   const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
 
@@ -44,8 +46,8 @@ export default function Map({ places, dayInfo }: Props) {
     if (!popupInfo) return;
     const order = parseOrder(places);
     const newOrder = [...order, popupInfo.id];
-    await createPlace({ ...popupInfo, day_id: dayInfo.currentDay });
-    await updatePlaceOrder(newOrder, dayInfo.currentDay);
+    await createPlace({ ...popupInfo, day_id: dayInfo.currentDayId });
+    await updatePlaceOrder(newOrder, dayInfo.currentDayId);
     setPopupInfo(null);
   }
 
@@ -54,7 +56,7 @@ export default function Map({ places, dayInfo }: Props) {
     const order = parseOrder(places);
     const newOrder = order.filter((id) => id !== popupInfo.id);
     await deletePlace(popupInfo.id);
-    await updatePlaceOrder(newOrder, dayInfo.currentDay);
+    await updatePlaceOrder(newOrder, dayInfo.currentDayId);
     setPopupInfo(null);
   }
 

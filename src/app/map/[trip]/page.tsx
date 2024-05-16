@@ -4,6 +4,7 @@ import { PlaceT, Trip } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import DayProvider from "./DayProvider";
 
 type Props = {
   params: { trip: number };
@@ -20,10 +21,12 @@ export default async function MapPage({ params }: Props) {
   // const places = combineTripInfo(orderedPlaces, trips);
 
   return (
-    <main className="relative flex h-40 flex-grow">
-      <Planner places={places} dayInfo={dayInfo} tripId={tripId} />
-      <Map places={places} dayInfo={dayInfo} />
-    </main>
+    <DayProvider dayInfo={dayInfo}>
+      <main className="relative flex h-40 flex-grow">
+        <Planner places={places} dayInfo={dayInfo} tripId={tripId} />
+        <Map places={places} dayInfo={dayInfo} />
+      </main>
+    </DayProvider>
   );
 }
 

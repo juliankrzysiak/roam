@@ -1,37 +1,15 @@
 "use client";
 
-import { DayInfo, PlaceT } from "@/types";
-import { useState, createContext, useRef } from "react";
-import Planner from "@/features/planner/components";
-import Map from "@/features/map/components";
-import { MapRef } from "react-map-gl";
+import { DayInfo } from "@/types";
+import { ReactElement, createContext } from "react";
 
 export const DayContext = createContext({});
 
 type Props = {
-  places: PlaceT[];
+  children: ReactElement;
   dayInfo: DayInfo;
-  tripId: number;
 };
 
-export default function DayProvider({ places, dayInfo, tripId }: Props) {
-  const mapRef = useRef<MapRef>(null);
-  const [popupInfo, setPopupInfo] = useState<PlaceT | null>(null);
-
-
-
-  return (
-    <DayContext.Provider value={dayInfo}>
-      <main className="relative flex h-40 flex-grow">
-        <Planner places={places} dayInfo={dayInfo} tripId={tripId} />
-        <Map
-          places={places}
-          dayInfo={dayInfo}
-          popupInfo={popupInfo}
-          setPopupInfo={setPopupInfo}
-          mapRef={mapRef}
-        />
-      </main>
-    </DayContext.Provider>
-  );
+export default function DayProvider({ children, dayInfo }: Props) {
+  return <DayContext.Provider value={dayInfo}>{children}</DayContext.Provider>;
 }

@@ -20,7 +20,14 @@ export default async function MapPage({ params }: Props) {
   // const trips = await getTrips(orderedPlaces);
   // const places = combineTripInfo(orderedPlaces, trips);
 
-  return <DayProvider places={places} dayInfo={dayInfo} tripId={tripId} />;
+  return (
+    <DayProvider dayInfo={dayInfo}>
+      <main className="relative flex h-40 flex-grow">
+        <Planner places={places} dayInfo={dayInfo} tripId={tripId} />
+        <Map places={places} dayInfo={dayInfo} />
+      </main>
+    </DayProvider>
+  );
 }
 
 async function getOrderedPlaces(

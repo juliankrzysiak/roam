@@ -54,9 +54,11 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
   }, [places]);
 
   return (
-    <section className="relative flex w-full max-w-xs flex-col overflow-scroll border-2 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
-      <NavigateDays dayInfo={dayInfo} tripId={tripId} />
-      <StartTime endTime={endTime} />
+    <section className="relative flex w-full max-w-xs flex-col overflow-scroll border-2 border-emerald-600 bg-gray-100 px-4 shadow-lg">
+      <div className="sticky top-0 bg-inherit">
+        <NavigateDays dayInfo={dayInfo} tripId={tripId} />
+        <StartTime endTime={endTime} />
+      </div>
       <div className="py-2">
         <Reorder.Group
           axis="y"

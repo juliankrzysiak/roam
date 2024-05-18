@@ -1,6 +1,6 @@
 "use server";
 
-import { PlaceT } from "@/types";
+import { Place, Popup } from "@/types";
 import { parseDate, sliceDate } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { add } from "date-fns";
@@ -50,11 +50,14 @@ export async function createDay(tripId: number, date: string) {
   }
 }
 
-export async function createPlace(place: PlaceT & { day_id: string }) {
+export async function createPlace(place: Popup, day_id: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+
+  const placeWithId = { ...place, day_id };
+
   try {
-    const { error } = await supabase.from("places").insert(place);
+    const { error } = await supabase.from("places").insert(placeWithId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {

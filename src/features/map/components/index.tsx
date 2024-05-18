@@ -1,7 +1,7 @@
 "use client";
 
 import { usePopupStore } from "@/lib/store";
-import { DayInfo, PlaceT } from "@/types";
+import { DayInfo, Place } from "@/types";
 import { parseOrder } from "@/utils";
 import { createPlace } from "@/utils/actions/crud/create";
 import { deletePlace } from "@/utils/actions/crud/delete";
@@ -13,7 +13,7 @@ import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 import { v4 as uuidv4 } from "uuid";
 
 type Props = {
-  places: PlaceT[];
+  places: Place[];
   dayInfo: DayInfo;
 };
 
@@ -38,8 +38,6 @@ export default function Map({ places, dayInfo }: Props) {
         category: feature.properties?.category_en,
         lng: e.lngLat.lng,
         lat: e.lngLat.lat,
-        placeDuration: 0,
-        tripDuration: 0,
       });
     } else updatePopup(null);
   }
@@ -48,7 +46,7 @@ export default function Map({ places, dayInfo }: Props) {
     if (!popup) return;
     const order = parseOrder(places);
     const newOrder = [...order, popup.id];
-    await createPlace({ ...popup, day_id: dayInfo.currentDayId });
+    await createPlace(popup, dayInfo.currentDayId);
     await updatePlaceOrder(newOrder, dayInfo.currentDayId);
     updatePopup(null);
   }

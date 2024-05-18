@@ -1,6 +1,6 @@
 "use client";
 
-import { DayInfo, PlaceInfo, PlaceT } from "@/types";
+import { DayInfo, PlaceInfo, Place } from "@/types";
 import { reorderPlaces } from "@/utils";
 import { deleteDay } from "@/utils/actions/crud/delete";
 import {
@@ -15,7 +15,7 @@ import Card from "./Card";
 import NavigateDays from "./NavigateDays";
 
 type Props = {
-  places: PlaceT[];
+  places: Place[];
   dayInfo: DayInfo;
   tripId: number;
 };
@@ -27,7 +27,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
   const endTime = format(items.at(-1)?.departure ?? startTime, "h:mm a");
 
   // useMemo this, or just move it to server component
-  function calcItinerary(places: PlaceT[]): PlaceInfo[] {
+  function calcItinerary(places: Place[]): PlaceInfo[] {
     let arrival = startTime;
     let departure = null;
 

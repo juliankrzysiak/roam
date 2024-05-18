@@ -1,8 +1,8 @@
-import { PlaceT } from "@/types";
+import { Place, Popup } from "@/types";
 import { create } from "zustand";
 
 type State = {
-  popup: PlaceT | null;
+  popup: Place | Popup | null;
 };
 
 type Action = {

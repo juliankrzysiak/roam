@@ -1,10 +1,10 @@
-import { PlaceT } from "@/types";
+import { Place } from "@/types";
 import { formatISO, parse } from "date-fns";
 import { updatePlaceOrder } from "./actions/crud/update";
 
 export async function reorderPlaces(
-  oldPlaces: PlaceT[],
-  newPlaces: PlaceT[],
+  oldPlaces: Place[],
+  newPlaces: Place[],
   dayId: string,
 ) {
   const [oldOrder, newOrder] = [oldPlaces, newPlaces].map(parseOrder);
@@ -13,7 +13,7 @@ export async function reorderPlaces(
   await updatePlaceOrder(newOrder, dayId);
 }
 
-export function parseOrder(places: PlaceT[]) {
+export function parseOrder(places: Place[]) {
   return places.map((place) => place.id);
 }
 

@@ -1,6 +1,6 @@
 import Map from "@/features/map/components";
 import Planner from "@/features/planner/components";
-import { PlaceT, Trip } from "@/types";
+import { Place, Trip } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
@@ -33,7 +33,7 @@ export default async function MapPage({ params }: Props) {
 async function getOrderedPlaces(
   supabase: SupabaseClient,
   day: string,
-): Promise<PlaceT[]> {
+): Promise<Place[]> {
   const { data: places, error } = await supabase.rpc("get_places", { day });
   if (error) throw new Error(`Supabase error: ${error.message}`);
   return places;
@@ -68,7 +68,7 @@ async function getDayInfo(supabase: SupabaseClient, tripId: number) {
   };
 }
 
-function combineTripInfo(places: PlaceT[], trips: Trip[] | null) {
+function combineTripInfo(places: Place[], trips: Trip[] | null) {
   if (!trips) return places;
   return places.map((place, i) => {
     const tripInfo = trips[i];
@@ -76,7 +76,7 @@ function combineTripInfo(places: PlaceT[], trips: Trip[] | null) {
   });
 }
 
-async function getTrips(places: PlaceT[]): Promise<Trip[] | null> {
+async function getTrips(places: Place[]): Promise<Trip[] | null> {
   if (places.length < 2) return null;
   const coordinates = places
     .map((place) => `${place.lng},${place.lat}`)

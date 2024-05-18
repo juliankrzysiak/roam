@@ -77,24 +77,26 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
           <p>{endTime}</p>
         </div>
       </div>
-      <Reorder.Group
-        axis="y"
-        values={items}
-        onReorder={setItems}
-        className="flex h-full flex-col gap-4"
-      >
-        {items.map((place, i, arr) => {
-          const isLast = i === arr.length - 1;
-          return (
-            <Card
-              key={place.id}
-              place={place}
-              handleDragEnd={handleDragEnd}
-              last={isLast}
-            />
-          );
-        })}
-      </Reorder.Group>
+      <div className="py-2">
+        <Reorder.Group
+          axis="y"
+          values={items}
+          onReorder={setItems}
+          className="flex h-full flex-col gap-4"
+        >
+          {items.map((place, i, arr) => {
+            const isLast = i === arr.length - 1;
+            return (
+              <Card
+                key={place.id}
+                place={place}
+                handleDragEnd={handleDragEnd}
+                last={isLast}
+              />
+            );
+          })}
+        </Reorder.Group>
+      </div>
       <form
         action={async () => {
           if (dayInfo.indexCurrentDay >= dayInfo.orderDays.length - 1)
@@ -105,7 +107,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
           await updateDayOrder(tripId, newOrder);
           await deleteDay(dayInfo.currentDayId);
         }}
-        className="self-center"
+        className="self-center "
       >
         <input type="hidden" name="tripId" defaultValue={tripId} />
         <input
@@ -119,7 +121,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
           defaultValue={dayInfo.orderDays}
         />
         <input type="hidden" name="dayId" defaultValue={dayInfo.currentDayId} />
-        <button>delete</button>
+        <button>delete day</button>
       </form>
     </section>
   );

@@ -13,6 +13,7 @@ import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import Card from "./Card";
 import NavigateDays from "./NavigateDays";
+import StartTime from "./StartTime";
 
 type Props = {
   places: Place[];
@@ -53,30 +54,9 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
   }, [places]);
 
   return (
-    <section className="flex w-full max-w-xs flex-col overflow-scroll border-2 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
+    <section className="relative flex w-full max-w-xs flex-col overflow-scroll border-2 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
       <NavigateDays dayInfo={dayInfo} tripId={tripId} />
-      <div className="flex items-center justify-around">
-        <form action={updateStartTime} className="flex flex-col text-center">
-          <label className="flex w-fit flex-col">
-            Start time
-            <input
-              type="time"
-              name="startTime"
-              defaultValue={dayInfo.startTime}
-            />
-            <input
-              type="hidden"
-              name="id"
-              defaultValue={dayInfo.currentDayId}
-            />
-            <button>Submit</button>
-          </label>
-        </form>
-        <div className="flex flex-col text-center">
-          <p>End Time</p>
-          <p>{endTime}</p>
-        </div>
-      </div>
+      <StartTime endTime={endTime} />
       <div className="py-2">
         <Reorder.Group
           axis="y"

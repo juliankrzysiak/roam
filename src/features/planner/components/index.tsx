@@ -26,6 +26,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
   const [items, setItems] = useState(() => calcItinerary(places));
   const endTime = format(items.at(-1)?.departure ?? startTime, "h:mm a");
 
+  // useMemo this, or just move it to server component
   function calcItinerary(places: PlaceT[]): PlaceInfo[] {
     let arrival = startTime;
     let departure = null;

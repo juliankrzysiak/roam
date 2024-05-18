@@ -1,6 +1,6 @@
 "use client";
 
-import { DayContext } from "@/app/map/[trip]/DayProvider";
+import { usePopupStore } from "@/lib/store";
 import { DayInfo, PlaceT } from "@/types";
 import { parseOrder } from "@/utils";
 import { createPlace } from "@/utils/actions/crud/create";
@@ -8,7 +8,7 @@ import { deletePlace } from "@/utils/actions/crud/delete";
 import { updatePlaceOrder } from "@/utils/actions/crud/update";
 
 import mapboxgl from "mapbox-gl";
-import { useContext, useRef, useState } from "react";
+import { useRef } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 import { v4 as uuidv4 } from "uuid";
 
@@ -18,9 +18,12 @@ type Props = {
 };
 
 export default function Map({ places, dayInfo }: Props) {
-  const day = useContext(DayContext);
   const mapRef = useRef<MapRef>(null);
-  const [popupInfo, setPopupInfo] = useState<PlaceT | null>();
+
+  const popup = usePopupStore((state) => state.popup);
+  const updatePopup = usePopupStore((state) => state.updatePopup);
+
+  if (popup) mapRef.current?.panTo([popup.lng, popup.lat]);
 
   function handleClickMap(e: mapboxgl.MapMouseEvent) {
     if (!mapRef.current) return;
@@ -29,7 +32,7 @@ export default function Map({ places, dayInfo }: Props) {
     });
     if (features.length > 0) {
       const feature = features[0];
-      setPopupInfo({
+      updatePopup({
         id: uuidv4(),
         name: feature.properties?.name,
         category: feature.properties?.category_en,
@@ -38,26 +41,25 @@ export default function Map({ places, dayInfo }: Props) {
         placeDuration: 0,
         tripDuration: 0,
       });
-      mapRef.current?.panTo(e.lngLat);
-    } else setPopupInfo(null);
+    } else updatePopup(null);
   }
 
   async function handleAddPlace() {
-    if (!popupInfo) return;
+    if (!popup) return;
     const order = parseOrder(places);
-    const newOrder = [...order, popupInfo.id];
-    await createPlace({ ...popupInfo, day_id: dayInfo.currentDayId });
+    const newOrder = [...order, popup.id];
+    await createPlace({ ...popup, day_id: dayInfo.currentDayId });
     await updatePlaceOrder(newOrder, dayInfo.currentDayId);
-    setPopupInfo(null);
+    updatePopup(null);
   }
 
   async function handleDeletePlace() {
-    if (!popupInfo) return;
+    if (!popup) return;
     const order = parseOrder(places);
-    const newOrder = order.filter((id) => id !== popupInfo.id);
-    await deletePlace(popupInfo.id);
+    const newOrder = order.filter((id) => id !== popup.id);
+    await deletePlace(popup.id);
     await updatePlaceOrder(newOrder, dayInfo.currentDayId);
-    setPopupInfo(null);
+    updatePopup(null);
   }
 
   return (
@@ -80,25 +82,24 @@ export default function Map({ places, dayInfo }: Props) {
             longitude={place.lng}
             latitude={place.lat}
             onClick={(e) => {
-              setPopupInfo(place);
-              mapRef.current?.panTo([place.lng, place.lat]);
+              updatePopup(place);
               e.originalEvent.stopPropagation();
             }}
           />
         );
       })}
 
-      {popupInfo && (
+      {popup && (
         <Popup
-          longitude={popupInfo.lng}
-          latitude={popupInfo.lat}
+          longitude={popup.lng}
+          latitude={popup.lat}
           offset={10}
           closeOnClick={false}
-          onClose={() => setPopupInfo(null)}
+          onClose={() => updatePopup(null)}
         >
           <div className="w-fit">
-            <h1 className="text-lg">{popupInfo.name}</h1>
-            <h2>{popupInfo.category}</h2>
+            <h1 className="text-lg">{popup.name}</h1>
+            <h2>{popup.category}</h2>
             <button onClick={handleAddPlace}>Add +</button>
             <button onClick={handleDeletePlace}>Delete -</button>
           </div>

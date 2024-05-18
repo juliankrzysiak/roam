@@ -9,7 +9,7 @@ type Action = {
   updatePopup: (popup: State["popup"]) => void;
 };
 
-const usePopupStore = create<State & Action>((set) => ({
+export const usePopupStore = create<State & Action>((set) => ({
   popup: null,
   updatePopup: (popup) => set(() => ({ popup: popup })),
 }));

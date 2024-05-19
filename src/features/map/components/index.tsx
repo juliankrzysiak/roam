@@ -23,6 +23,8 @@ export default function Map({ places, dayInfo }: Props) {
   const popup = usePopupStore((state) => state.popup);
   const updatePopup = usePopupStore((state) => state.updatePopup);
 
+  const isMarker = places.some((place) => place.id === popup?.id);
+
   if (popup) mapRef.current?.panTo([popup.lng, popup.lat]);
 
   function handleClickMap(e: mapboxgl.MapMouseEvent) {
@@ -98,8 +100,8 @@ export default function Map({ places, dayInfo }: Props) {
           <div className="w-fit">
             <h1 className="text-lg">{popup.name}</h1>
             <h2>{popup.category}</h2>
-            <button onClick={handleAddPlace}>Add +</button>
-            <button onClick={handleDeletePlace}>Delete -</button>
+            {!isMarker && <button onClick={handleAddPlace}>Add +</button>}
+            {isMarker && <button onClick={handleDeletePlace}>Delete -</button>}
           </div>
         </Popup>
       )}

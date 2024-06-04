@@ -1,6 +1,6 @@
 "use client";
 
-import { DayInfo, PlaceInfo, PlaceT } from "@/types";
+import { DayInfo, PlaceInfo, Place } from "@/types";
 import { reorderPlaces } from "@/utils";
 import { deleteDay } from "@/utils/actions/crud/delete";
 import {
@@ -13,9 +13,10 @@ import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import Card from "./Card";
 import NavigateDays from "./NavigateDays";
+import StartTime from "./StartTime";
 
 type Props = {
-  places: PlaceT[];
+  places: Place[];
   dayInfo: DayInfo;
   tripId: number;
 };
@@ -26,7 +27,8 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
   const [items, setItems] = useState(() => calcItinerary(places));
   const endTime = format(items.at(-1)?.departure ?? startTime, "h:mm a");
 
-  function calcItinerary(places: PlaceT[]): PlaceInfo[] {
+  // useMemo this, or just move it to server component
+  function calcItinerary(places: Place[]): PlaceInfo[] {
     let arrival = startTime;
     let departure = null;
 
@@ -52,48 +54,31 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
   }, [places]);
 
   return (
-    <section className="flex w-full max-w-xs flex-col overflow-scroll border-2 border-emerald-600 bg-gray-100 p-4 shadow-lg ">
-      <NavigateDays dayInfo={dayInfo} tripId={tripId} />
-      <div className="flex items-center justify-around">
-        <form action={updateStartTime} className="flex flex-col text-center">
-          <label className="flex w-fit flex-col">
-            Start time
-            <input
-              type="time"
-              name="startTime"
-              defaultValue={dayInfo.startTime}
-            />
-            <input
-              type="hidden"
-              name="id"
-              defaultValue={dayInfo.currentDayId}
-            />
-            <button>Submit</button>
-          </label>
-        </form>
-        <div className="flex flex-col text-center">
-          <p>End Time</p>
-          <p>{endTime}</p>
-        </div>
+    <section className="relative flex w-full max-w-xs flex-col overflow-scroll border-2 border-emerald-600 bg-gray-100 px-4 shadow-lg">
+      <div className="sticky top-0 bg-inherit">
+        <NavigateDays dayInfo={dayInfo} tripId={tripId} />
+        <StartTime endTime={endTime} />
       </div>
-      <Reorder.Group
-        axis="y"
-        values={items}
-        onReorder={setItems}
-        className="flex h-full flex-col gap-4"
-      >
-        {items.map((place, i, arr) => {
-          const isLast = i === arr.length - 1;
-          return (
-            <Card
-              key={place.id}
-              place={place}
-              handleDragEnd={handleDragEnd}
-              last={isLast}
-            />
-          );
-        })}
-      </Reorder.Group>
+      <div className="py-2">
+        <Reorder.Group
+          axis="y"
+          values={items}
+          onReorder={setItems}
+          className="flex h-full flex-col gap-4"
+        >
+          {items.map((place, i, arr) => {
+            const isLast = i === arr.length - 1;
+            return (
+              <Card
+                key={place.id}
+                place={place}
+                handleDragEnd={handleDragEnd}
+                last={isLast}
+              />
+            );
+          })}
+        </Reorder.Group>
+      </div>
       <form
         action={async () => {
           if (dayInfo.indexCurrentDay >= dayInfo.orderDays.length - 1)
@@ -104,7 +89,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
           await updateDayOrder(tripId, newOrder);
           await deleteDay(dayInfo.currentDayId);
         }}
-        className="self-center"
+        className="self-center "
       >
         <input type="hidden" name="tripId" defaultValue={tripId} />
         <input
@@ -118,7 +103,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
           defaultValue={dayInfo.orderDays}
         />
         <input type="hidden" name="dayId" defaultValue={dayInfo.currentDayId} />
-        <button>delete</button>
+        <button>delete day</button>
       </form>
     </section>
   );

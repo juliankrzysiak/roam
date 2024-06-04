@@ -39,7 +39,7 @@
     "line-awesome": "^1.3.0",
     "lucide-react": "^0.263.1",
     "mapbox-gl": "^3.0.0",
-    "next": "14.3.0-canary.54",
+    "next": "14.2.3",
     "postcss": "8.4.27",
     "postgres": "^3.4.3",
     "react": "18.3.0-canary-c5b937576-20231219",
@@ -53,7 +53,8 @@
     "tailwindcss-animate": "^1.0.6",
     "typescript": "5.1.6",
     "uuid": "^9.0.1",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

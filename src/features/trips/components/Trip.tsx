@@ -21,13 +21,13 @@ export default async function Trip({ id, name }: Props) {
       <CardHeader>
         <CardTitle className="w-fit">{name}</CardTitle>
       </CardHeader>
-      <CardContent>
+      {/* <CardContent>
         <p>Date</p>
         <p>Miles</p>
-      </CardContent>
+      </CardContent> */}
       <CardFooter>
         <Button asChild>
-          <Link href={`/map/${id}`}>Go To Schedule</Link>
+          <Link href={`/${id}`}>Go To Schedule</Link>
         </Button>
       </CardFooter>
     </Card>

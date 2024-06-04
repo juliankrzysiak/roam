@@ -4,12 +4,10 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { deleteTrip } from "@/utils/actions";
+import { deleteTrip } from "@/utils/actions/crud/delete";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 type Props = {

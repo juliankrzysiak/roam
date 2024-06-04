@@ -37,6 +37,7 @@ export default function Card({ place, handleDragEnd, last }: Props) {
           placeDuration={placeDuration}
           placeId={id}
         />
+        {/* // BUG dragging is broken */}
         <ReorderIcon dragControls={controls} />
       </article>
       {!last && <TripForm placeId={id} tripDuration={tripDuration} />}

@@ -1,10 +1,13 @@
-import Map from "@/features/map/components";
+import Map from "@/features/map/components/Map";
 import Planner from "@/features/planner/components";
 import { Place, Trip } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import DayProvider from "./DayProvider";
+import DayControls from "@/features/map/components/MapDayControls";
+import { add, addMinutes, parseISO } from "date-fns";
+import { parse } from "date-fns";
 
 type Props = {
   params: { trip: number };
@@ -17,14 +20,25 @@ export default async function MapPage({ params }: Props) {
 
   const dayInfo = await getDayInfo(supabase, tripId);
   const places = await getOrderedPlaces(supabase, dayInfo.currentDayId);
+  const totalDuration = places.reduce(
+    (acc, cur) => acc + cur.placeDuration + cur.tripDuration,
+    0,
+  );
+
+  const endTime = add(parse(dayInfo.startTime, "HH:mm:ss", new Date()), {
+    minutes: totalDuration,
+  });
+
   // const trips = await getTrips(orderedPlaces);
   // const places = combineTripInfo(orderedPlaces, trips);
 
   return (
     <DayProvider dayInfo={dayInfo}>
       <main className="relative flex h-40 flex-grow">
-        <Planner places={places} dayInfo={dayInfo} tripId={tripId} />
+        {/* <Planner places={places} dayInfo={dayInfo} tripId={tripId} /> */}
+
         <Map places={places} dayInfo={dayInfo} />
+        <DayControls dayInfo={dayInfo} totalDuration={totalDuration} />
       </main>
     </DayProvider>
   );

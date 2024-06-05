@@ -15,6 +15,24 @@ type Props = {
 };
 
 export default function DayControls({ dayInfo, totalDuration }: Props) {
+  return (
+    <div className="absolute bottom-8 left-1/2 grid w-full max-w-xs -translate-x-1/2 grid-flow-col grid-rows-2 items-center gap-4 rounded-lg  bg-background px-2 py-3 shadow-lg">
+      <TimePicker dayInfo={dayInfo} totalDuration={totalDuration} />
+      <DatePicker
+        initialDate={parseDate(dayInfo.date)}
+        dayId={dayInfo.currentDayId}
+      />
+      <PlacePicker />
+    </div>
+  );
+}
+
+type TimePickerProps = {
+  dayInfo: DayInfo;
+  totalDuration: number;
+};
+
+function TimePicker({ dayInfo, totalDuration }: Props) {
   const [startTime, setStartTime] = useState(dayInfo.startTime.slice(0, 5));
   const endTime = addMinutes(
     parse(startTime, "HH:mm", new Date()),
@@ -22,7 +40,7 @@ export default function DayControls({ dayInfo, totalDuration }: Props) {
   );
 
   return (
-    <div className="absolute bottom-8 left-1/2 grid w-full max-w-xs -translate-x-1/2 grid-flow-col grid-rows-2 items-center gap-4 rounded-lg  bg-background px-2 py-3 shadow-lg">
+    <div className="row-span-2 flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -61,41 +79,42 @@ export default function DayControls({ dayInfo, totalDuration }: Props) {
         </svg>
         <Input type="time" defaultValue={format(endTime, "HH:mm")} />
       </div>
-      <DatePicker
-        initialDate={parseDate(dayInfo.date)}
-        dayId={dayInfo.currentDayId}
-      />
-      <div className="flex justify-between gap-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 19.5 8.25 12l7.5-7.5"
-          />
-        </svg>
-        <span>1</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="m8.25 4.5 7.5 7.5-7.5 7.5"
-          />
-        </svg>
-      </div>
+    </div>
+  );
+}
+
+function PlacePicker() {
+  return (
+    <div className="flex justify-between gap-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M15.75 19.5 8.25 12l7.5-7.5"
+        />
+      </svg>
+      <span>1</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="m8.25 4.5 7.5 7.5-7.5 7.5"
+        />
+      </svg>
     </div>
   );
 }

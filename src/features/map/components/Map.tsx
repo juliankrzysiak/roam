@@ -8,7 +8,7 @@ import { deletePlace } from "@/utils/actions/crud/delete";
 import { updatePlaceOrder } from "@/utils/actions/crud/update";
 
 import mapboxgl from "mapbox-gl";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 import { v4 as uuidv4 } from "uuid";
 
@@ -75,13 +75,11 @@ export default function Map({ places, dayInfo }: Props) {
       mapStyle="mapbox://styles/mapbox/streets-v12"
     >
       {places.map((place, i) => {
-        const el = document.createElement("div");
         return (
           <Marker
             key={place.id}
             longitude={place.lng}
             latitude={place.lat}
-            element={el}
             onClick={(e) => {
               updatePopup(place);
               e.originalEvent.stopPropagation();

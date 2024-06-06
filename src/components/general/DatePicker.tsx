@@ -37,7 +37,7 @@ export function DatePicker({ initialDate, dayId }: Props) {
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {optimisticDate ? (
-            format(optimisticDate, "PPP")
+            format(optimisticDate, "eee, MMM d")
           ) : (
             <span>Pick a date</span>
           )}

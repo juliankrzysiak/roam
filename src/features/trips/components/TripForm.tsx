@@ -1,5 +1,6 @@
 "use client";
 
+import { DatePickerWithRange } from "@/components/general/DatePickerWithRange";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,25 +11,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  createDay,
-  createTrip,
-  updateCurrentDay,
-  updateDayOrder,
-} from "@/utils/actions";
+import { createTrip } from "@/utils/actions/crud/create";
+import { eachDayOfInterval } from "date-fns";
 import { useState } from "react";
+import { DateRange } from "react-day-picker";
 
 export default function TripForm() {
   const [open, setOpen] = useState(false);
+  const [date, setDate] = useState<DateRange | undefined>(undefined);
 
   async function handleSubmit(formData: FormData) {
-    // TODO: Tidy this up it's ugly
-    const tripId = await createTrip(formData);
-    if (!tripId) return;
-    const dayId = await createDay(tripId);
-    if (!dayId) return;
-    await updateDayOrder(tripId, [dayId]);
-    await updateCurrentDay(tripId, dayId);
+    const tripName = formData.get("tripName") as string;
+    const dates = getEachDateInRange(date.from, date?.to);
+
+    await createTrip(tripName, dates);
     setOpen(false);
   }
 
@@ -44,11 +40,20 @@ export default function TripForm() {
         <form
           action={handleSubmit}
           id="createTrip"
-          className="flex flex-col items-center gap-2"
+          className="flex flex-col gap-3"
         >
-          <label className="flex w-full flex-col items-start gap-1">
-            Name
-            <Input type="text" name="name" placeholder="Palmdale" required />
+          <label className="flex w-fit flex-col items-start gap-1">
+            Name *
+            <Input
+              type="text"
+              name="tripName"
+              placeholder="Palmdale"
+              required
+            />
+          </label>
+          <label className="w-fit">
+            Dates *
+            <DatePickerWithRange date={date} setDate={setDate} />
           </label>
         </form>
         <DialogFooter>
@@ -57,4 +62,9 @@ export default function TripForm() {
       </DialogContent>
     </Dialog>
   );
+}
+
+function getEachDateInRange(start: Date, end?: Date): Date[] {
+  if (!end) return [start];
+  else return eachDayOfInterval({ start, end });
 }

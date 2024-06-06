@@ -7,41 +7,47 @@ import { add } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
-export async function createTrip(formData: FormData) {
+export async function createTrip(name: string, dates: Date[]) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const name = formData.get("name");
-
   try {
-    if (typeof name !== "string") return;
     const { data, error } = await supabase
       .from("trips")
       .insert({ name })
       .select()
       .limit(1)
       .single();
+
+    const tripId = data?.id;
+    const bulkDates = formatBulkDates(tripId, dates);
+    
+    await supabase.from("days").insert(bulkDates);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/trips");
-    return data.id;
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function createDay(tripId: number, date: string) {
+function formatBulkDates(trip_id: number, dates: Date[]) {
+  return dates.map((date) => ({ trip_id, date }));
+}
+
+export async function createDays(tripId: number, dates: Date[]) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const nextDay = sliceDate(add(parseDate(date), { days: 1 }));
+  function formatBulkDates(dates: Date[], tripId: number) {
+    return dates.map((date) => {
+      tripId: tripId, date;
+    });
+  }
 
   try {
     const { data, error } = await supabase
       .from("days")
-      .insert({ trip_id: tripId, date: nextDay })
-      .select("id")
-      .limit(1)
-      .single();
+      .insert({ trip_id: tripId, date: nextDay });
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/maps");
     return data.id;

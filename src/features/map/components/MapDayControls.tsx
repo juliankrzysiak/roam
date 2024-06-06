@@ -18,13 +18,15 @@ type Props = {
 
 export default function DayControls({ dayInfo, totalDuration }: Props) {
   return (
-    <div className="absolute bottom-8 left-1/2  w-full max-w-sm -translate-x-1/2 items-center gap-4 rounded-lg bg-background shadow-lg">
+    <div className="absolute bottom-8 left-1/2 flex w-full max-w-sm  -translate-x-1/2 flex-col items-center gap-1  rounded-lg">
+      <div className="flex gap-2 rounded-lg bg-background p-2 shadow-lg">
+        <DatePicker
+          initialDate={parseDate(dayInfo.date)}
+          dayId={dayInfo.currentDayId}
+        />
+        <PlacePicker />
+      </div>
       <TimePicker dayInfo={dayInfo} totalDuration={totalDuration} />
-      {/* <DatePicker
-        initialDate={parseDate(dayInfo.date)}
-        dayId={dayInfo.currentDayId}
-      /> */}
-      {/* <PlacePicker /> */}
     </div>
   );
 }
@@ -38,7 +40,7 @@ function TimePicker({ dayInfo, totalDuration }: Props) {
 
   return (
     <form
-      className="flex items-center justify-between gap-2 p-2"
+      className="flex items-center justify-between gap-2 rounded-lg bg-background p-2 shadow-lg"
       action={updateStartTime}
     >
       <label className="flex gap-2" aria-label="Start Time">
@@ -107,7 +109,7 @@ function TimePicker({ dayInfo, totalDuration }: Props) {
 
 function PlacePicker() {
   return (
-    <div className="flex justify-between gap-2">
+    <div className="flex items-center justify-between gap-4">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

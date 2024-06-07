@@ -12,26 +12,29 @@ export type Database = {
       days: {
         Row: {
           created_at: string
-          date: string | null
+          date: string
           id: string
+          local_start: string | null
           order_places: string[] | null
-          start_time: string | null
+          start_time: string
           trip_id: number
         }
         Insert: {
           created_at?: string
-          date?: string | null
+          date: string
           id?: string
+          local_start?: string | null
           order_places?: string[] | null
-          start_time?: string | null
+          start_time?: string
           trip_id: number
         }
         Update: {
           created_at?: string
-          date?: string | null
+          date?: string
           id?: string
+          local_start?: string | null
           order_places?: string[] | null
-          start_time?: string | null
+          start_time?: string
           trip_id?: number
         }
         Relationships: [
@@ -53,8 +56,8 @@ export type Database = {
           lat: number
           lng: number
           name: string | null
-          placeDuration: number | null
-          tripDuration: number | null
+          placeDuration: number
+          tripDuration: number
         }
         Insert: {
           category?: string | null
@@ -64,8 +67,8 @@ export type Database = {
           lat: number
           lng: number
           name?: string | null
-          placeDuration?: number | null
-          tripDuration?: number | null
+          placeDuration?: number
+          tripDuration?: number
         }
         Update: {
           category?: string | null
@@ -75,8 +78,8 @@ export type Database = {
           lat?: number
           lng?: number
           name?: string | null
-          placeDuration?: number | null
-          tripDuration?: number | null
+          placeDuration?: number
+          tripDuration?: number
         }
         Relationships: [
           {
@@ -135,8 +138,8 @@ export type Database = {
           lat: number
           lng: number
           name: string | null
-          placeDuration: number | null
-          tripDuration: number | null
+          placeDuration: number
+          tripDuration: number
         }[]
       }
     }

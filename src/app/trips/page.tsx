@@ -1,5 +1,5 @@
 import { DatePickerWithRange } from "@/components/general/DatePickerWithRange";
-import Trip from "@/features/trips/components/Trip";
+import TripCard from "@/features/trips/components/TripCard";
 import TripForm from "@/features/trips/components/TripForm";
 import { createClient } from "@/utils/supabase/server";
 import { parseISO } from "date-fns";
@@ -30,7 +30,7 @@ export default async function Trips() {
       <TripForm />
       <section className="m-4 grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-sm bg-slate-400 p-4">
         {trips.map((trip) => {
-          return <Trip key={trip.id} name={trip.name} id={trip.id} />;
+          return <TripCard key={trip.id} {...trip} />;
         })}
       </section>
     </main>

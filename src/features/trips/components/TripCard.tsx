@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -7,24 +6,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
+import { DateRange } from "react-day-picker";
 import TripOptions from "./TripOptions";
+import { format } from "date-fns";
 
 type Props = {
   id: number;
   name: string;
+  dateRange: DateRange;
 };
 
-export default async function Trip({ id, name }: Props) {
+const dateFormat = "eeee, MMMM do";
+
+export default async function TripCard({ id, name, dateRange }: Props) {
+  const range = `${format(dateRange.from, dateFormat)} - ${format(
+    dateRange.to,
+    dateFormat,
+  )}`;
+
   return (
     <Card className="relative flex flex-col items-center justify-between">
       <TripOptions id={id} />
       <CardHeader>
         <CardTitle className="w-fit">{name}</CardTitle>
       </CardHeader>
-      {/* <CardContent>
-        <p>Date</p>
-        <p>Miles</p>
-      </CardContent> */}
+      <CardContent>
+        <p>Days: {range}</p>
+        {/* <p>Date</p> */}
+        {/* <p>Miles</p> */}
+      </CardContent>
       <CardFooter>
         <Button asChild>
           <Link href={`/${id}`}>Go To Schedule</Link>

@@ -42,8 +42,8 @@ export function sliceDate(date: Date, end: number = 10) {
 // Get what dates to add and remove comparing two arrays of dates]\
 
 export function calcDateDeltas(oldArr: Date[], newArr: Date[]) {
-  const removedItems = calcDateDelta(oldArr, newArr)
-  const addedItems = calcDateDelta(newArr, oldArr)
+  const removedItems = calcDateDelta(oldArr, newArr);
+  const addedItems = calcDateDelta(newArr, oldArr);
 
   return [addedItems, removedItems];
 }
@@ -53,4 +53,10 @@ function calcDateDelta(arr1: Date[], arr2: Date[]) {
     (date1) =>
       !arr2.some((date2) => date2.toUTCString() === date1.toUTCString()),
   );
+}
+
+//
+
+export function formatBulkDates(trip_id: number, dates: Date[]) {
+  return dates.map((date) => ({ trip_id, date }));
 }

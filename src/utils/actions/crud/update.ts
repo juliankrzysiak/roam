@@ -1,9 +1,11 @@
 "use server";
 
-import { convertTime, sliceDate } from "@/utils";
+import { convertTime, calcDateDeltas, sliceDate } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
+import { eachDayOfInterval } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { DateRange } from "react-day-picker";
 
 export async function updateTrip(formData: FormData) {
   const cookieStore = cookies();
@@ -23,6 +25,24 @@ export async function updateTrip(formData: FormData) {
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function updateTripDates(ranges: [DateRange, DateRange]) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const [initialDates, newDates] = ranges.map((range) =>
+    eachDayOfInterval({ start: range.from, end: range.to }),
+  );
+
+  const [daysToAdd, daysToRemove] = calcDateDeltas(initialDates, newDates);
+
+  // try {
+  //   if (error) throw new Error(`Supabase error: ${error.message}`);
+  //   revalidatePath("/trips");
+  // } catch (error) {
+  //   console.log(error);
+  // }
 }
 
 export async function updatePlaceDuration(formData: FormData) {

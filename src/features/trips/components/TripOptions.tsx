@@ -20,17 +20,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { updateTrip } from "@/utils/actions/crud/update";
+import { updateTrip, updateTripDates } from "@/utils/actions/crud/update";
 
 import MoreSVG from "@/assets/more-vertical.svg";
 import DeleteTrip from "./DeleteTrip";
+import { DatePickerWithRange } from "@/components/general/DatePickerWithRange";
+import { DateRange } from "react-day-picker";
 
 type Props = {
   id: number;
   name: string;
+  dateRange: DateRange;
 };
 
-export default function TripOptions({ id, name }: Props) {
+export default function TripOptions({ id, name, dateRange }: Props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -53,7 +56,13 @@ export default function TripOptions({ id, name }: Props) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <EditTrip open={openEdit} setOpen={setOpenEdit} id={id} name={name} />
+      <EditTrip
+        open={openEdit}
+        setOpen={setOpenEdit}
+        id={id}
+        name={name}
+        dateRange={dateRange}
+      />
       <DeleteTrip open={openDelete} setOpen={setOpenDelete} id={id} />
     </>
   );
@@ -64,12 +73,17 @@ type EditTripProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   id: number;
+  dateRange: DateRange;
 };
 
-export function EditTrip({ open, setOpen, id, name }: EditTripProps) {
+function EditTrip({ open, setOpen, id, name, dateRange }: EditTripProps) {
+  const [date, setDate] = useState<DateRange | undefined>(dateRange);
+
   async function submitForm(formData: FormData) {
-    await updateTrip(formData);
-    setOpen(false);
+    // await updateTrip(formData);
+    if (!date) return;
+    await updateTripDates([dateRange, date]);
+    // setOpen(false);
   }
 
   return (
@@ -87,6 +101,10 @@ export function EditTrip({ open, setOpen, id, name }: EditTripProps) {
           <label className="flex w-full flex-col items-start gap-1">
             Name
             <Input type="text" name="name" defaultValue={name} required />
+          </label>
+          <label>
+            Dates
+            <DatePickerWithRange date={date} setDate={setDate} />
           </label>
         </form>
         <DialogFooter>

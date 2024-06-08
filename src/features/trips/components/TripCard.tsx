@@ -27,7 +27,7 @@ export default async function TripCard({ id, name, dateRange }: Props) {
 
   return (
     <Card className="relative flex flex-col items-center justify-between">
-      <TripOptions id={id} name={name} />
+      <TripOptions id={id} name={name} dateRange={dateRange} />
       <CardHeader>
         <CardTitle className="w-fit">{name}</CardTitle>
       </CardHeader>

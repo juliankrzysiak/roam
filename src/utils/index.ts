@@ -38,3 +38,19 @@ export function parseDate(date: string, format: string = "yyyy-MM-dd") {
 export function sliceDate(date: Date, end: number = 10) {
   return formatISO(date).slice(0, end);
 }
+
+// Get what dates to add and remove comparing two arrays of dates]\
+
+export function calcDateDeltas(oldArr: Date[], newArr: Date[]) {
+  const removedItems = calcDateDelta(oldArr, newArr)
+  const addedItems = calcDateDelta(newArr, oldArr)
+
+  return [addedItems, removedItems];
+}
+
+function calcDateDelta(arr1: Date[], arr2: Date[]) {
+  return arr1.filter(
+    (date1) =>
+      !arr2.some((date2) => date2.toUTCString() === date1.toUTCString()),
+  );
+}

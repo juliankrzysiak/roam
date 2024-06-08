@@ -1,8 +1,13 @@
 "use server";
 
-import { convertTime, calcDateDeltas, sliceDate } from "@/utils";
+import {
+  convertTime,
+  calcDateDeltas,
+  sliceDate,
+  formatBulkDates,
+} from "@/utils";
 import { createClient } from "@/utils/supabase/server";
-import { eachDayOfInterval } from "date-fns";
+import { eachDayOfInterval, format } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { DateRange } from "react-day-picker";
@@ -27,7 +32,10 @@ export async function updateTrip(formData: FormData) {
   }
 }
 
-export async function updateTripDates(ranges: [DateRange, DateRange]) {
+export async function updateTripDates(
+  tripId: number,
+  ranges: [DateRange, DateRange],
+) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -37,12 +45,32 @@ export async function updateTripDates(ranges: [DateRange, DateRange]) {
 
   const [daysToAdd, daysToRemove] = calcDateDeltas(initialDates, newDates);
 
-  // try {
-  //   if (error) throw new Error(`Supabase error: ${error.message}`);
-  //   revalidatePath("/trips");
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  if (daysToAdd) {
+    const bulkDates = formatBulkDates(tripId, daysToAdd);
+    try {
+      const { error } = await supabase.from("days").insert(bulkDates);
+      if (error) throw new Error(`Supabase error: ${error.message}`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (daysToRemove) {
+    const formattedDates = daysToRemove.map((date) =>
+      format(date, "yyy-MM-dd"),
+    );
+
+    try {
+      const { error } = await supabase
+        .from("days")
+        .delete()
+        .eq("trip_id", tripId)
+        .in("date", formattedDates);
+      if (error) throw new Error(`Supabase error: ${error.message}`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 export async function updatePlaceDuration(formData: FormData) {

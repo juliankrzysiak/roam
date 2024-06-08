@@ -17,7 +17,7 @@ type Props = {
   dateRange: DateRange;
 };
 
-const dateFormat = "eeee, MMMM do";
+const dateFormat = "MMM dd";
 
 export default async function TripCard({ id, name, dateRange }: Props) {
   const range = `${format(dateRange.from, dateFormat)} - ${format(
@@ -27,7 +27,7 @@ export default async function TripCard({ id, name, dateRange }: Props) {
 
   return (
     <Card className="relative flex flex-col items-center justify-between">
-      <TripOptions id={id} />
+      <TripOptions id={id} name={name} />
       <CardHeader>
         <CardTitle className="w-fit">{name}</CardTitle>
       </CardHeader>

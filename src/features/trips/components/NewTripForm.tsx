@@ -16,7 +16,7 @@ import { eachDayOfInterval } from "date-fns";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 
-export default function TripForm() {
+export default function NewTripForm() {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<DateRange | undefined>(undefined);
 

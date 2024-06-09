@@ -10,21 +10,48 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createTrip } from "@/utils/actions/crud/create";
-import { eachDayOfInterval } from "date-fns";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { DateRange } from "react-day-picker";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { getEachDateInRange } from "../utils";
+
+const formSchema = z.object({
+  name: z.string().min(2).max(50),
+  dateRange: z.object(
+    {
+      from: z.date(),
+      to: z.date().optional(),
+    },
+    { required_error: "Must have a start date." },
+  ),
+});
 
 export default function NewTripForm() {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<DateRange | undefined>(undefined);
 
-  async function handleSubmit(formData: FormData) {
-    const tripName = formData.get("tripName") as string;
-    const dates = getEachDateInRange(date.from, date?.to);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      dateRange: undefined,
+    },
+  });
 
-    await createTrip(tripName, dates);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { name, dateRange } = values;
+    const dates = getEachDateInRange(dateRange.from, dateRange?.to);
+    await createTrip(name, dates);
     setOpen(false);
   }
 
@@ -37,34 +64,45 @@ export default function NewTripForm() {
         <DialogHeader>
           <DialogTitle>Create New Trip</DialogTitle>
         </DialogHeader>
-        <form
-          action={handleSubmit}
-          id="createTrip"
-          className="flex flex-col gap-3"
-        >
-          <label className="flex w-fit flex-col items-start gap-1">
-            Name *
-            <Input
-              type="text"
-              name="tripName"
-              placeholder="Palmdale"
-              required
+        <Form {...form}>
+          <form
+            id="createTrip"
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Trip Name *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Antelope Valley" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </label>
-          <label className="w-fit">
-            Dates *
-            <DatePickerWithRange date={date} setDate={setDate} />
-          </label>
-        </form>
+            <FormField
+              control={form.control}
+              name="dateRange"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dates *</FormLabel>
+                  <DatePickerWithRange
+                    dateRange={field.value}
+                    setDateRange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
         <DialogFooter>
           <Button form="createTrip">Submit</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-}
-
-function getEachDateInRange(start: Date, end?: Date): Date[] {
-  if (!end) return [start];
-  else return eachDayOfInterval({ start, end });
 }

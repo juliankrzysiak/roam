@@ -25,17 +25,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { getEachDateInRange } from "../utils";
-
-const formSchema = z.object({
-  name: z.string().min(2).max(50),
-  dateRange: z.object(
-    {
-      from: z.date(),
-      to: z.date().optional(),
-    },
-    { required_error: "Must have a start date." },
-  ),
-});
+import { formSchema } from "../schema";
 
 export default function NewTripForm() {
   const [open, setOpen] = useState(false);

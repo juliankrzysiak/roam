@@ -1,5 +1,5 @@
 import { Place } from "@/types";
-import { formatISO, parse } from "date-fns";
+import { format, formatISO, parse } from "date-fns";
 import { updatePlaceOrder } from "./actions/crud/update";
 
 export async function reorderPlaces(
@@ -58,5 +58,5 @@ function calcDateDelta(arr1: Date[], arr2: Date[]) {
 //
 
 export function formatBulkDates(trip_id: number, dates: Date[]) {
-  return dates.map((date) => ({ trip_id, date }));
+  return dates.map((date) => ({ trip_id, date: format(date, "yyyy-MM-dd") }));
 }

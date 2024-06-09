@@ -80,10 +80,13 @@ function EditTrip({ open, setOpen, id, name, dateRange }: EditTripProps) {
   const [date, setDate] = useState<DateRange | undefined>(dateRange);
 
   async function submitForm(formData: FormData) {
-    // await updateTrip(formData);
-    if (!date) return;
-    await updateTripDates([dateRange, date]);
-    // setOpen(false);
+    const formName = formData.get("name") as string;
+    const isSameDate =
+      dateRange.from === date?.from && dateRange.to === date?.to;
+
+    if (formName !== name) await updateTrip(formData);
+    if (date && !isSameDate) await updateTripDates(id, [dateRange, date]);
+    setOpen(false);
   }
 
   return (

@@ -1,9 +1,8 @@
 "use server";
 
-import { Place, Popup } from "@/types";
-import { parseDate, sliceDate } from "@/utils";
+import { Popup } from "@/types";
+import { formatBulkDates } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
-import { add } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -20,37 +19,12 @@ export async function createTrip(name: string, dates: Date[]) {
       .single();
 
     const tripId = data?.id;
+    if (!tripId) throw new Error("Couldn't add dates to trip.");
     const bulkDates = formatBulkDates(tripId, dates);
-    
+
     await supabase.from("days").insert(bulkDates);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/trips");
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function formatBulkDates(trip_id: number, dates: Date[]) {
-  return dates.map((date) => ({ trip_id, date }));
-}
-
-export async function createDays(tripId: number, dates: Date[]) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  function formatBulkDates(dates: Date[], tripId: number) {
-    return dates.map((date) => {
-      tripId: tripId, date;
-    });
-  }
-
-  try {
-    const { data, error } = await supabase
-      .from("days")
-      .insert({ trip_id: tripId, date: nextDay });
-    if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/maps");
-    return data.id;
   } catch (error) {
     console.log(error);
   }

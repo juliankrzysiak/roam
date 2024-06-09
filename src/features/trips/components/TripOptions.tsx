@@ -25,6 +25,18 @@ import { deleteTrip } from "@/utils/actions/crud/delete";
 import { updateTrip, updateTripDates } from "@/utils/actions/crud/update";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { DateRange } from "react-day-picker";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formSchema } from "../schema";
+import { z } from "zod";
 
 type Props = {
   id: number;
@@ -75,17 +87,29 @@ type EditTripProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-function EditTrip({ id, name, dateRange, open, setOpen }: EditTripProps) {
-  // TODO: Add notifications for form information
-  const [date, setDate] = useState<DateRange | undefined>(dateRange);
+function EditTrip({
+  id,
+  name: initialName,
+  dateRange: initialDateRange,
+  open,
+  setOpen,
+}: EditTripProps) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: initialName,
+      dateRange: initialDateRange,
+    },
+  });
 
-  async function submitForm(formData: FormData) {
-    const formName = formData.get("name") as string;
+  async function onSubmit({ name, dateRange }: z.infer<typeof formSchema>) {
     const isSameDate =
-      dateRange.from === date?.from && dateRange.to === date?.to;
+      dateRange.from === initialDateRange.from &&
+      dateRange.to === initialDateRange.to;
 
-    if (formName !== name) await updateTrip(formData);
-    if (date && !isSameDate) await updateTripDates(id, [dateRange, date]);
+    if (name !== initialName) await updateTrip(id, name);
+    if (dateRange && !isSameDate)
+      await updateTripDates(id, [initialDateRange, dateRange]);
     setOpen(false);
   }
 
@@ -93,25 +117,45 @@ function EditTrip({ id, name, dateRange, open, setOpen }: EditTripProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit New Trip</DialogTitle>
+          <DialogTitle>Edit Trip</DialogTitle>
         </DialogHeader>
-        <form
-          action={submitForm}
-          id="createTrip"
-          className="flex flex-col items-center gap-2"
-        >
-          <input type="hidden" name="tripId" value={id} />
-          <label className="flex w-full flex-col items-start gap-1">
-            Name
-            <Input type="text" name="name" defaultValue={name} required />
-          </label>
-          <label>
-            Dates
-            <DatePickerWithRange dateRange={date} setDateRange={setDate} />
-          </label>
-        </form>
+        <Form {...form}>
+          <form
+            id="updateTrip"
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Trip Name *</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dateRange"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dates *</FormLabel>
+                  <DatePickerWithRange
+                    dateRange={field.value}
+                    setDateRange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
         <DialogFooter>
-          <Button form="createTrip">Submit</Button>
+          <Button form="updateTrip">Submit</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

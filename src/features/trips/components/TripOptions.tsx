@@ -107,7 +107,7 @@ function EditTrip({ id, name, dateRange, open, setOpen }: EditTripProps) {
           </label>
           <label>
             Dates
-            <DatePickerWithRange date={date} setDate={setDate} />
+            <DatePickerWithRange dateRange={date} setDateRange={setDate} />
           </label>
         </form>
         <DialogFooter>

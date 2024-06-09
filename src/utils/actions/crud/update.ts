@@ -12,19 +12,16 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { DateRange } from "react-day-picker";
 
-export async function updateTrip(formData: FormData) {
+export async function updateTrip(id: number, name: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-
-  const name = formData.get("name");
-  const tripId = formData.get("tripId");
 
   try {
     if (typeof name !== "string") return;
     const { error } = await supabase
       .from("trips")
       .update({ name })
-      .eq("id", tripId);
+      .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/trips");
   } catch (error) {

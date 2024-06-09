@@ -10,6 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import MoreSVG from "@/assets/more-vertical.svg";
+import { DatePickerWithRange } from "@/components/general/DatePickerWithRange";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,14 +19,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { deleteTrip } from "@/utils/actions/crud/delete";
 import { updateTrip, updateTripDates } from "@/utils/actions/crud/update";
-
-import MoreSVG from "@/assets/more-vertical.svg";
-import DeleteTrip from "./DeleteTrip";
-import { DatePickerWithRange } from "@/components/general/DatePickerWithRange";
+import { DialogDescription } from "@radix-ui/react-dialog";
 import { DateRange } from "react-day-picker";
 
 type Props = {
@@ -69,14 +68,15 @@ export default function TripOptions({ id, name, dateRange }: Props) {
 }
 
 type EditTripProps = {
+  id: number;
   name: string;
+  dateRange: DateRange;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  id: number;
-  dateRange: DateRange;
 };
 
-function EditTrip({ open, setOpen, id, name, dateRange }: EditTripProps) {
+function EditTrip({ id, name, dateRange, open, setOpen }: EditTripProps) {
+  // TODO: Add notifications for form information
   const [date, setDate] = useState<DateRange | undefined>(dateRange);
 
   async function submitForm(formData: FormData) {
@@ -113,6 +113,45 @@ function EditTrip({ open, setOpen, id, name, dateRange }: EditTripProps) {
         <DialogFooter>
           <Button form="createTrip">Submit</Button>
         </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DeleteTrip({
+  id,
+  open,
+  setOpen,
+}: Omit<EditTripProps, "name" | "dateRange">) {
+  async function handleSubmit(formData: FormData) {
+    await deleteTrip(formData);
+    setOpen(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you sure you?</DialogTitle>
+          <DialogDescription>This cannot be undone.</DialogDescription>
+        </DialogHeader>
+        <form
+          action={handleSubmit}
+          id="createTrip"
+          className="flex justify-center gap-4"
+        >
+          <input type="hidden" name="tripId" value={id} />
+          <Button type="submit" variant="destructive">
+            Yes, Delete
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setOpen(false)}
+          >
+            No, Cancel
+          </Button>
+        </form>
       </DialogContent>
     </Dialog>
   );

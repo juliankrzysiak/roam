@@ -39,7 +39,7 @@ import { formSchema } from "../schema";
 import { z } from "zod";
 
 type Props = {
-  id: number;
+  id: string;
   name: string;
   dateRange: DateRange;
 };
@@ -80,7 +80,7 @@ export default function TripOptions({ id, name, dateRange }: Props) {
 }
 
 type EditTripProps = {
-  id: number;
+  id: string;
   name: string;
   dateRange: DateRange;
   open: boolean;

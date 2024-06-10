@@ -14,32 +14,29 @@ export type Database = {
           created_at: string
           date: string
           id: string
-          local_start: string | null
           order_places: string[] | null
           start_time: string
-          trip_id: number
+          trip_id: string
         }
         Insert: {
           created_at?: string
           date: string
           id?: string
-          local_start?: string | null
           order_places?: string[] | null
           start_time?: string
-          trip_id: number
+          trip_id: string
         }
         Update: {
           created_at?: string
           date?: string
           id?: string
-          local_start?: string | null
           order_places?: string[] | null
           start_time?: string
-          trip_id?: number
+          trip_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "public_days_trip_id_fkey"
+            foreignKeyName: "days_trip_id_fkey"
             columns: ["trip_id"]
             isOneToOne: false
             referencedRelation: "trips"
@@ -94,8 +91,8 @@ export type Database = {
       trips: {
         Row: {
           created_at: string
-          current_day: string | null
-          id: number
+          current_date: string | null
+          id: string
           index_current_day: number | null
           name: string
           order_days: string[]
@@ -103,8 +100,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          current_day?: string | null
-          id?: number
+          current_date?: string | null
+          id?: string
           index_current_day?: number | null
           name: string
           order_days?: string[]
@@ -112,8 +109,8 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          current_day?: string | null
-          id?: number
+          current_date?: string | null
+          id?: string
           index_current_day?: number | null
           name?: string
           order_days?: string[]

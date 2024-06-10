@@ -57,6 +57,6 @@ function calcDateDelta(arr1: Date[], arr2: Date[]) {
 
 //
 
-export function formatBulkDates(trip_id: number, dates: Date[]) {
+export function formatBulkDates(trip_id: string, dates: Date[]) {
   return dates.map((date) => ({ trip_id, date: format(date, "yyyy-MM-dd") }));
 }

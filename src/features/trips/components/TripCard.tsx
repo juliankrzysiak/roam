@@ -12,7 +12,7 @@ import TripOptions from "./TripOptions";
 import { format } from "date-fns";
 
 type Props = {
-  id: number;
+  id: string;
   name: string;
   dateRange: DateRange;
 };

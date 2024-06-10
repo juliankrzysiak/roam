@@ -12,7 +12,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { DateRange } from "react-day-picker";
 
-export async function updateTrip(id: number, name: string) {
+export async function updateTrip(id: string, name: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -30,7 +30,7 @@ export async function updateTrip(id: number, name: string) {
 }
 
 export async function updateTripDates(
-  tripId: number,
+  tripId: string,
   ranges: [DateRange, DateRange],
 ) {
   const cookieStore = cookies();
@@ -47,6 +47,7 @@ export async function updateTripDates(
     try {
       const { error } = await supabase.from("days").insert(bulkDates);
       if (error) throw new Error(`Supabase error: ${error.message}`);
+      revalidatePath("/trips");
     } catch (error) {
       console.log(error);
     }

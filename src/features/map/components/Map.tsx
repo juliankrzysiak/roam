@@ -21,7 +21,8 @@ export default function Map({ day }: MapProps) {
   const popup = usePopupStore((state) => state.popup);
   const updatePopup = usePopupStore((state) => state.updatePopup);
 
-  const isMarker = day.places.some((place) => place.id === popup?.id);
+  const { places } = day;
+  const isMarker = places.some((place) => place.id === popup?.id);
 
   if (popup) mapRef.current?.panTo([popup.lng, popup.lat]);
 
@@ -44,7 +45,7 @@ export default function Map({ day }: MapProps) {
 
   async function handleAddPlace() {
     if (!popup) return;
-    const order = parseOrder(day.places);
+    const order = parseOrder(places);
     const newOrder = [...order, popup.id];
     await createPlace(popup, day.id);
     await updatePlaceOrder(newOrder, day.id);
@@ -53,7 +54,7 @@ export default function Map({ day }: MapProps) {
 
   async function handleDeletePlace() {
     if (!popup) return;
-    const order = parseOrder(day.places);
+    const order = parseOrder(places);
     const newOrder = order.filter((id) => id !== popup.id);
     await deletePlace(popup.id);
     await updatePlaceOrder(newOrder, day.id);
@@ -73,7 +74,7 @@ export default function Map({ day }: MapProps) {
       }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
     >
-      {day.places.map((place, i) => {
+      {places.map((place, i) => {
         return (
           <Marker
             key={place.id}

@@ -22,10 +22,9 @@ export type Trip = {
   duration: number;
 };
 
-export type DayInfo = {
-  orderDays: string[];
-  indexCurrentDay: number;
-  currentDayId: string;
+export type Day = {
+  id: string;
+  date: Date;
   startTime: string;
-  date: string;
+  places: Place[];
 };

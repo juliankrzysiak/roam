@@ -1,6 +1,6 @@
 "use client";
 
-import { DayInfo, PlaceInfo, Place } from "@/types";
+import { Day, PlaceInfo, Place } from "@/types";
 import { reorderPlaces } from "@/utils";
 import { deleteDay } from "@/utils/actions/crud/delete";
 import {
@@ -17,12 +17,13 @@ import StartTime from "./StartTime";
 
 type Props = {
   places: Place[];
-  dayInfo: DayInfo;
+  dayInfo: Day;
   tripId: number;
 };
 
 export default function Planner({ places, dayInfo, tripId }: Props) {
   // TODO: Optimistic updates can be used here
+  // FIX: make it a date then convert
   const startTime = parse(dayInfo.startTime, "HH:mm:ss", new Date());
   const [items, setItems] = useState(() => calcItinerary(places));
   const endTime = format(items.at(-1)?.departure ?? startTime, "h:mm a");

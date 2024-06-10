@@ -1,7 +1,7 @@
 "use client";
 
 import { usePopupStore } from "@/lib/store";
-import { DayInfo, Place } from "@/types";
+import { Day, Place } from "@/types";
 import { parseOrder } from "@/utils";
 import { createPlace } from "@/utils/actions/crud/create";
 import { deletePlace } from "@/utils/actions/crud/delete";
@@ -12,17 +12,16 @@ import { useRef } from "react";
 import { Map as MapBox, MapRef, Marker, Popup } from "react-map-gl";
 import { v4 as uuidv4 } from "uuid";
 
-type Props = {
-  places: Place[];
-  dayInfo: DayInfo;
+type MapProps = {
+  day: Day;
 };
 
-export default function Map({ places, dayInfo }: Props) {
+export default function Map({ day }: MapProps) {
   const mapRef = useRef<MapRef>(null);
   const popup = usePopupStore((state) => state.popup);
   const updatePopup = usePopupStore((state) => state.updatePopup);
 
-  const isMarker = places.some((place) => place.id === popup?.id);
+  const isMarker = day.places.some((place) => place.id === popup?.id);
 
   if (popup) mapRef.current?.panTo([popup.lng, popup.lat]);
 
@@ -45,19 +44,19 @@ export default function Map({ places, dayInfo }: Props) {
 
   async function handleAddPlace() {
     if (!popup) return;
-    const order = parseOrder(places);
+    const order = parseOrder(day.places);
     const newOrder = [...order, popup.id];
-    await createPlace(popup, dayInfo.currentDayId);
-    await updatePlaceOrder(newOrder, dayInfo.currentDayId);
+    await createPlace(popup, day.id);
+    await updatePlaceOrder(newOrder, day.id);
     updatePopup(null);
   }
 
   async function handleDeletePlace() {
     if (!popup) return;
-    const order = parseOrder(places);
+    const order = parseOrder(day.places);
     const newOrder = order.filter((id) => id !== popup.id);
     await deletePlace(popup.id);
-    await updatePlaceOrder(newOrder, dayInfo.currentDayId);
+    await updatePlaceOrder(newOrder, day.id);
     updatePopup(null);
   }
 
@@ -74,7 +73,7 @@ export default function Map({ places, dayInfo }: Props) {
       }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
     >
-      {places.map((place, i) => {
+      {day.places.map((place, i) => {
         return (
           <Marker
             key={place.id}

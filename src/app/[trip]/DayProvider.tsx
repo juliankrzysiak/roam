@@ -1,15 +1,15 @@
 "use client";
 
-import { DayInfo } from "@/types";
+import { Day } from "@/types";
 import { ReactElement, createContext } from "react";
 
-export const DayContext = createContext({} as DayInfo);
+export const DayContext = createContext({} as Day);
 
 type Props = {
   children: ReactElement;
-  dayInfo: DayInfo;
+  day: Day;
 };
 
-export default function DayProvider({ children, dayInfo }: Props) {
-  return <DayContext.Provider value={dayInfo}>{children}</DayContext.Provider>;
+export default function DayProvider({ children, day }: Props) {
+  return <DayContext.Provider value={day}>{children}</DayContext.Provider>;
 }

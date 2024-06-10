@@ -1,11 +1,11 @@
 import { DatePicker } from "@/components/general/DatePicker";
-import { DayInfo } from "@/types";
+import { Day } from "@/types";
 import { parseDate } from "@/utils";
 import { createDay } from "@/utils/actions/crud/create";
 import { updateDay, updateDayOrder } from "@/utils/actions/crud/update";
 
 type Props = {
-  dayInfo: DayInfo;
+  dayInfo: Day;
   tripId: number;
 };
 

@@ -11,17 +11,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { updateDate } from "@/utils/actions/crud/update";
-import { useOptimistic, useState } from "react";
-import { DateRange, Matcher } from "react-day-picker";
+import { updateCurrentDate } from "@/utils/actions/crud/update";
+import { useOptimistic } from "react";
+import { DateRange } from "react-day-picker";
 
 type Props = {
-  dayId: string;
+  tripId: string;
   initialDate: Date;
   dateRange: DateRange;
 };
 
-export function DatePicker({ dayId, initialDate, dateRange }: Props) {
+export function DatePicker({ tripId, initialDate, dateRange }: Props) {
   const [optimisticDate, setOptimisticDate] = useOptimistic<Date | undefined>(
     initialDate,
     (state, newDate) => newDate,
@@ -59,7 +59,7 @@ export function DatePicker({ dayId, initialDate, dateRange }: Props) {
           onSelect={async (date) => {
             if (!date) return;
             setOptimisticDate(date);
-            await updateDate(date, dayId);
+            await updateCurrentDate(tripId, date);
           }}
           initialFocus
         />

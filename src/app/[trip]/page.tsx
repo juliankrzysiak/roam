@@ -40,6 +40,7 @@ export default async function MapPage({ params }: Props) {
 
       <Map day={day} />
       <MapControls
+        tripId={tripId}
         day={day}
         totalDuration={totalDuration}
         dateRange={dateRange}
@@ -73,7 +74,6 @@ async function getDay(supabase: SupabaseClient, tripId: string): Promise<Day> {
     .match({ trip_id: tripId, date: dateInfo.current_date })
     .limit(1)
     .single();
-  console.log(dayInfo);
   if (dayError) throw new Error(`Supbase error: ${dayError.message}`);
 
   const { data: places, error } = await supabase.rpc("get_places", {

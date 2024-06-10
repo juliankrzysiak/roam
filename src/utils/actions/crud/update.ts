@@ -180,14 +180,14 @@ export async function updateDayOrder(tripId: number, orderDays: string[]) {
   }
 }
 
-export async function updateCurrentDay(tripId: number, dayId: string) {
+export async function updateCurrentDate(tripId: string, date: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
   try {
     const { error } = await supabase
       .from("trips")
-      .update({ current_day: dayId })
+      .update({ current_date: date })
       .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
@@ -196,25 +196,3 @@ export async function updateCurrentDay(tripId: number, dayId: string) {
   }
 }
 
-export async function updateDate(date: Date, id: string) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const parsedDate = sliceDate(date);
-
-  try {
-    const { data, error } = await supabase
-      .from("days")
-      .update({ date: parsedDate })
-      .eq("id", id)
-      .select()
-      .single();
-    if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
-    const returnedDate = data.date;
-    if (!returnedDate) return;
-    return returnedDate;
-  } catch (error) {
-    console.log(error);
-  }
-}

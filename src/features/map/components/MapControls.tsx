@@ -10,12 +10,14 @@ import { useState } from "react";
 import { DateRange } from "react-day-picker";
 
 type MapControlsProps = {
+  tripId: string,
   day: Day;
   totalDuration: number;
   dateRange: DateRange;
 };
 
 export default function MapControls({
+  tripId,
   day,
   totalDuration,
   dateRange,
@@ -27,7 +29,7 @@ export default function MapControls({
         <DatePicker
           initialDate={day.date}
           dateRange={dateRange}
-          dayId={day.id}
+          tripId={tripId}
         />
         <PlacePicker />
       </div>

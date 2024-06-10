@@ -8,6 +8,7 @@ import DayProvider from "./DayProvider";
 import MapControls from "@/features/map/components/MapControls";
 import { add, addMinutes, parseISO } from "date-fns";
 import { parse } from "date-fns";
+import { calcDateRange } from "@/utils";
 
 type Props = {
   params: { trip: string };
@@ -19,6 +20,7 @@ export default async function MapPage({ params }: Props) {
   const supabase = createClient(cookieStore);
 
   const day = await getDay(supabase, tripId);
+  const dateRange = await getDateRange(supabase, tripId);
   const totalDuration = day.places.reduce(
     (acc, cur) => acc + cur.placeDuration + cur.tripDuration,
     0,
@@ -37,10 +39,24 @@ export default async function MapPage({ params }: Props) {
       {/* <Planner places={places} dayInfo={dayInfo} tripId={tripId} /> */}
 
       <Map day={day} />
-      <MapControls day={day} totalDuration={totalDuration} />
+      <MapControls
+        day={day}
+        totalDuration={totalDuration}
+        dateRange={dateRange}
+      />
     </main>
     // </DayProvider>
   );
+}
+
+async function getDateRange(supabase: SupabaseClient, tripId: string) {
+  const { data, error } = await supabase
+    .from("days")
+    .select("date")
+    .eq("trip_id", tripId);
+  if (error) throw new Error(`${error.message}`);
+  const dateRange = calcDateRange(data);
+  return dateRange;
 }
 
 async function getDay(supabase: SupabaseClient, tripId: string): Promise<Day> {
@@ -57,6 +73,7 @@ async function getDay(supabase: SupabaseClient, tripId: string): Promise<Day> {
     .match({ trip_id: tripId, date: dateInfo.current_date })
     .limit(1)
     .single();
+  console.log(dayInfo);
   if (dayError) throw new Error(`Supbase error: ${dayError.message}`);
 
   const { data: places, error } = await supabase.rpc("get_places", {

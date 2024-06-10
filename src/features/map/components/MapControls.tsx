@@ -4,24 +4,31 @@ import { DatePicker } from "@/components/general/DatePicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Day } from "@/types";
-import { parseDate } from "@/utils";
 import { updateStartTime } from "@/utils/actions/crud/update";
 import { addMinutes, format, parse } from "date-fns";
 import { useState } from "react";
+import { DateRange } from "react-day-picker";
 
 type MapControlsProps = {
   day: Day;
   totalDuration: number;
+  dateRange: DateRange;
 };
 
-export default function MapControls({ day, totalDuration }: MapControlsProps) {
+export default function MapControls({
+  day,
+  totalDuration,
+  dateRange,
+}: MapControlsProps) {
+  console.log(dateRange);
   return (
     <div className="absolute bottom-8 left-1/2 flex w-full max-w-sm  -translate-x-1/2 flex-col items-center gap-1  rounded-lg">
       <div className="flex gap-2 rounded-lg bg-background p-2 shadow-lg">
-        {/* <DatePicker
-          initialDate={parseDate(day.date)}
-          dayId={day.currentDayId}
-        /> */}
+        <DatePicker
+          initialDate={day.date}
+          dateRange={dateRange}
+          dayId={day.id}
+        />
         <PlacePicker />
       </div>
       <TimePicker day={day} totalDuration={totalDuration} />

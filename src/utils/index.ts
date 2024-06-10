@@ -1,6 +1,7 @@
 import { Place } from "@/types";
-import { format, formatISO, parse } from "date-fns";
+import { format, formatISO, parse, parseISO } from "date-fns";
 import { updatePlaceOrder } from "./actions/crud/update";
+import { DateRange } from "react-day-picker";
 
 export async function reorderPlaces(
   oldPlaces: Place[],
@@ -59,4 +60,36 @@ function calcDateDelta(arr1: Date[], arr2: Date[]) {
 
 export function formatBulkDates(trip_id: string, dates: Date[]) {
   return dates.map((date) => ({ trip_id, date: format(date, "yyyy-MM-dd") }));
+}
+
+//
+
+type Trip = {
+  id: string;
+  name: string;
+  days: { date: string }[];
+};
+
+// Calculate the min and max days and replace days with new property
+export function mapDateRange(trips: Trip[]) {
+  return trips.map((trip) => {
+    const dateRange = calcDateRange(trip.days);
+    // Remove a property and add a property
+    const { days, ...newTrip } = { ...trip, dateRange };
+
+    return newTrip;
+  });
+}
+
+export function calcDateRange(days: { date: string }[]) {
+  const sortedDays = days.map(({ date }) => date).sort();
+  const from = parseISO(sortedDays[0]);
+  const to = parseISO(sortedDays[days.length - 1]);
+
+  const dateRange: DateRange = {
+    from,
+  };
+  if (to && from !== to) dateRange.to = to;
+
+  return dateRange;
 }

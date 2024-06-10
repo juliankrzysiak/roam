@@ -48,6 +48,7 @@ function mapDateRange(trips: Trip[]) {
       dateRange.to = parseISO(end);
     }
 
+    // Remove a property and adds a property
     const { days, ...newTrip } = { ...trip, dateRange };
 
     return newTrip;

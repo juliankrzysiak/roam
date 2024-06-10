@@ -12,18 +12,25 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { updateDate } from "@/utils/actions/crud/update";
-import { useOptimistic } from "react";
+import { useOptimistic, useState } from "react";
+import { DateRange, Matcher } from "react-day-picker";
 
 type Props = {
-  initialDate: Date;
   dayId: string;
+  initialDate: Date;
+  dateRange: DateRange;
 };
 
-export function DatePicker({ initialDate, dayId }: Props) {
+export function DatePicker({ dayId, initialDate, dateRange }: Props) {
   const [optimisticDate, setOptimisticDate] = useOptimistic<Date | undefined>(
     initialDate,
     (state, newDate) => newDate,
   );
+
+  const dateMatcher = {
+    before: dateRange.from,
+    after: dateRange.to || dateRange,
+  };
 
   return (
     <Popover>
@@ -46,6 +53,8 @@ export function DatePicker({ initialDate, dayId }: Props) {
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
+          requiredy
+          disabled={dateMatcher}
           selected={optimisticDate}
           onSelect={async (date) => {
             if (!date) return;

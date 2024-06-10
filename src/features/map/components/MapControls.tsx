@@ -63,7 +63,7 @@ function TimePicker({ day, totalDuration }: MapControlsProps) {
           defaultValue={startTime}
           onChange={(e) => setStartTime(e.target.value)}
         />
-        <input type="hidden" name="id" defaultValue={day.currentDayId} />
+        <input type="hidden" name="id" defaultValue={day.id} />
       </label>
 
       <div className="flex items-center justify-between gap-2">

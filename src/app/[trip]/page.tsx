@@ -1,6 +1,6 @@
 import Map from "@/features/map/components/Map";
 import Planner from "@/features/planner/components";
-import { Place, Trip } from "@/types";
+import { Day, Place, Trip } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
@@ -19,11 +19,10 @@ export default async function MapPage({ params }: Props) {
   const supabase = createClient(cookieStore);
 
   const day = await getDay(supabase, tripId);
-  // const places = await getOrderedPlaces(supabase, dayInfo.currentDayId);
-  // const totalDuration = places.reduce(
-  //   (acc, cur) => acc + cur.placeDuration + cur.tripDuration,
-  //   0,
-  // );
+  const totalDuration = day.places.reduce(
+    (acc, cur) => acc + cur.placeDuration + cur.tripDuration,
+    0,
+  );
 
   // const endTime = add(parse(dayInfo.startTime, "HH:mm:ss", new Date()), {
   //   minutes: totalDuration,
@@ -38,13 +37,13 @@ export default async function MapPage({ params }: Props) {
       {/* <Planner places={places} dayInfo={dayInfo} tripId={tripId} /> */}
 
       <Map day={day} />
-      {/* <MapControls dayInfo={dayInfo} totalDuration={totalDuration} /> */}
+      <MapControls day={day} totalDuration={totalDuration} />
     </main>
     // </DayProvider>
   );
 }
 
-async function getDay(supabase: SupabaseClient, tripId: string) {
+async function getDay(supabase: SupabaseClient, tripId: string): Promise<Day> {
   const { data: dateInfo, error: dateError } = await supabase
     .from("trips")
     .select("current_date")

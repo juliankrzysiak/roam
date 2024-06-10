@@ -5,12 +5,12 @@ import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import DayProvider from "./DayProvider";
-import DayControls from "@/features/map/components/MapDayControls";
+import MapControls from "@/features/map/components/MapControls";
 import { add, addMinutes, parseISO } from "date-fns";
 import { parse } from "date-fns";
 
 type Props = {
-  params: { trip: number };
+  params: { trip: string };
 };
 
 export default async function MapPage({ params }: Props) {
@@ -18,67 +18,58 @@ export default async function MapPage({ params }: Props) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const dayInfo = await getDayInfo(supabase, tripId);
-  const places = await getOrderedPlaces(supabase, dayInfo.currentDayId);
-  const totalDuration = places.reduce(
-    (acc, cur) => acc + cur.placeDuration + cur.tripDuration,
-    0,
-  );
+  const day = await getDay(supabase, tripId);
+  // const places = await getOrderedPlaces(supabase, dayInfo.currentDayId);
+  // const totalDuration = places.reduce(
+  //   (acc, cur) => acc + cur.placeDuration + cur.tripDuration,
+  //   0,
+  // );
 
-  const endTime = add(parse(dayInfo.startTime, "HH:mm:ss", new Date()), {
-    minutes: totalDuration,
-  });
+  // const endTime = add(parse(dayInfo.startTime, "HH:mm:ss", new Date()), {
+  //   minutes: totalDuration,
+  // });
 
   // const trips = await getTrips(orderedPlaces);
   // const places = combineTripInfo(orderedPlaces, trips);
 
   return (
-    <DayProvider dayInfo={dayInfo}>
-      <main className="relative flex h-40 flex-grow">
-        {/* <Planner places={places} dayInfo={dayInfo} tripId={tripId} /> */}
+    // <DayProvider dayInfo={dayInfo}>
+    <main className="relative flex h-40 flex-grow">
+      {/* <Planner places={places} dayInfo={dayInfo} tripId={tripId} /> */}
 
-        <Map places={places} dayInfo={dayInfo} />
-        <DayControls dayInfo={dayInfo} totalDuration={totalDuration} />
-      </main>
-    </DayProvider>
+      <Map day={day} />
+      {/* <MapControls dayInfo={dayInfo} totalDuration={totalDuration} /> */}
+    </main>
+    // </DayProvider>
   );
 }
 
-async function getOrderedPlaces(
-  supabase: SupabaseClient,
-  day: string,
-): Promise<Place[]> {
-  const { data: places, error } = await supabase.rpc("get_places", { day });
-  if (error) throw new Error(`Supabase error: ${error.message}`);
-  return places;
-}
-
-async function getDayInfo(supabase: SupabaseClient, tripId: number) {
-  const { data, error } = await supabase
+async function getDay(supabase: SupabaseClient, tripId: string) {
+  const { data: dateInfo, error: dateError } = await supabase
     .from("trips")
-    .select("order_days, index_current_day, days ( id, start_time, date)")
-    .eq("id", tripId)
+    .select("current_date")
     .limit(1)
     .single();
+  if (dateError) throw new Error(`Supbase error: ${dateError.message}`);
+
+  const { data: dayInfo, error: dayError } = await supabase
+    .from("days")
+    .select("id, date, startTime:start_time")
+    .match({ trip_id: tripId, date: dateInfo.current_date })
+    .limit(1)
+    .single();
+  if (dayError) throw new Error(`Supbase error: ${dayError.message}`);
+
+  const { data: places, error } = await supabase.rpc("get_places", {
+    day: dayInfo.id,
+  });
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
-  const {
-    order_days: orderDays,
-    index_current_day: indexCurrentDay,
-    days,
-  } = data;
-
-  const currentDayId = orderDays[indexCurrentDay];
-  const day = days.find((day) => day.id === currentDayId);
-  if (!day) throw new Error("Day not found");
-  const { start_time: startTime, date } = day;
+  dayInfo.date = parse(dayInfo.date, "yyyy-MM-dd", new Date());
 
   return {
-    orderDays,
-    indexCurrentDay,
-    currentDayId,
-    startTime,
-    date,
+    ...dayInfo,
+    places,
   };
 }
 

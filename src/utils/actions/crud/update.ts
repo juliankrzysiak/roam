@@ -180,7 +180,7 @@ export async function updateDayOrder(tripId: number, orderDays: string[]) {
   }
 }
 
-export async function updateCurrentDate(tripId: string, date: string) {
+export async function updateCurrentDate(tripId: string, date: Date) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -195,4 +195,3 @@ export async function updateCurrentDate(tripId: string, date: string) {
     console.log(error);
   }
 }
-

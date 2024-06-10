@@ -1,38 +1,36 @@
 "use client";
 
 import { DatePicker } from "@/components/general/DatePicker";
-import { Input } from "@/components/ui/input";
-import { DayInfo } from "@/types";
-import { parseDate } from "@/utils";
-import { format } from "date-fns";
-import { useOptimistic, useState } from "react";
-import { addMinutes, parse } from "date-fns";
-import { Separator } from "@/components/ui/separator";
-import { updateStartTime } from "@/utils/actions/crud/update";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Day } from "@/types";
+import { parseDate } from "@/utils";
+import { updateStartTime } from "@/utils/actions/crud/update";
+import { addMinutes, format, parse } from "date-fns";
+import { useState } from "react";
 
-type Props = {
-  dayInfo: DayInfo;
+type MapControlsProps = {
+  day: Day;
   totalDuration: number;
 };
 
-export default function DayControls({ dayInfo, totalDuration }: Props) {
+export default function MapControls({ day, totalDuration }: MapControlsProps) {
   return (
     <div className="absolute bottom-8 left-1/2 flex w-full max-w-sm  -translate-x-1/2 flex-col items-center gap-1  rounded-lg">
       <div className="flex gap-2 rounded-lg bg-background p-2 shadow-lg">
-        <DatePicker
-          initialDate={parseDate(dayInfo.date)}
-          dayId={dayInfo.currentDayId}
-        />
+        {/* <DatePicker
+          initialDate={parseDate(day.date)}
+          dayId={day.currentDayId}
+        /> */}
         <PlacePicker />
       </div>
-      <TimePicker dayInfo={dayInfo} totalDuration={totalDuration} />
+      <TimePicker day={day} totalDuration={totalDuration} />
     </div>
   );
 }
 
-function TimePicker({ dayInfo, totalDuration }: Props) {
-  const [startTime, setStartTime] = useState(dayInfo.startTime.slice(0, 5));
+function TimePicker({ day, totalDuration }: MapControlsProps) {
+  const [startTime, setStartTime] = useState(day.startTime.slice(0, 5));
   const endTime = addMinutes(
     parse(startTime, "HH:mm", new Date()),
     totalDuration,
@@ -65,7 +63,7 @@ function TimePicker({ dayInfo, totalDuration }: Props) {
           defaultValue={startTime}
           onChange={(e) => setStartTime(e.target.value)}
         />
-        <input type="hidden" name="id" defaultValue={dayInfo.currentDayId} />
+        <input type="hidden" name="id" defaultValue={day.currentDayId} />
       </label>
 
       <div className="flex items-center justify-between gap-2">

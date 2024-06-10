@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { updateCurrentDate } from "@/utils/actions/crud/update";
-import { useOptimistic } from "react";
+import { useOptimistic, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 type Props = {
@@ -22,6 +22,7 @@ type Props = {
 };
 
 export function DatePicker({ tripId, initialDate, dateRange }: Props) {
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [optimisticDate, setOptimisticDate] = useOptimistic<Date | undefined>(
     initialDate,
     (state, newDate) => newDate,
@@ -33,8 +34,8 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
   };
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+      <PopoverTrigger onClick={() => setCalendarOpen(true)} asChild>
         <Button
           variant={"outline"}
           className={cn(
@@ -60,6 +61,7 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
             if (!date) return;
             setOptimisticDate(date);
             await updateCurrentDate(tripId, date);
+            setCalendarOpen(false);
           }}
           initialFocus
         />

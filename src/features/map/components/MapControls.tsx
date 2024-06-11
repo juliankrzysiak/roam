@@ -10,7 +10,7 @@ import { useState } from "react";
 import { DateRange } from "react-day-picker";
 
 type MapControlsProps = {
-  tripId: string,
+  tripId: string;
   day: Day;
   totalDuration: number;
   dateRange: DateRange;
@@ -22,7 +22,6 @@ export default function MapControls({
   totalDuration,
   dateRange,
 }: MapControlsProps) {
-  console.log(dateRange);
   return (
     <div className="absolute bottom-8 left-1/2 flex w-full max-w-sm  -translate-x-1/2 flex-col items-center gap-1  rounded-lg">
       <div className="flex gap-2 rounded-lg bg-background p-2 shadow-lg">
@@ -38,7 +37,9 @@ export default function MapControls({
   );
 }
 
-function TimePicker({ day, totalDuration }: MapControlsProps) {
+type TimePickerProps = Omit<MapControlsProps, "tripId" | "dateRange">;
+
+function TimePicker({ day, totalDuration }: TimePickerProps) {
   const [startTime, setStartTime] = useState(day.startTime.slice(0, 5));
   const endTime = addMinutes(
     parse(startTime, "HH:mm", new Date()),

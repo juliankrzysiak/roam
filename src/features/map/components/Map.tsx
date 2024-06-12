@@ -2,17 +2,20 @@
 
 import {
   APIProvider,
+  AdvancedMarker,
   Map as GoogleMap,
   MapCameraChangedEvent,
+  Pin,
 } from "@vis.gl/react-google-maps";
-
-import { Day } from "@/types";
+import { Day, Place } from "@/types";
 
 type MapProps = {
   day: Day;
 };
 
 export default function Map({ day }: MapProps) {
+  getLocation();
+
   return (
     <APIProvider
       apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
@@ -31,7 +34,34 @@ export default function Map({ day }: MapProps) {
             ev.detail.zoom,
           )
         }
-      ></GoogleMap>
+      >
+        <Markers places={day.places} />
+      </GoogleMap>
     </APIProvider>
+  );
+}
+
+function getLocation() {
+  return navigator.geolocation.getCurrentPosition((position) =>
+    console.log(position),
+  );
+}
+
+function Markers({ places }: { places: Place[] }) {
+  return (
+    <>
+      {places.map((place) => (
+        <AdvancedMarker
+          key={place.id}
+          position={{ lat: place.lat, lng: place.lng }}
+        >
+          <Pin
+            background={"#FBBC04"}
+            glyphColor={"#000"}
+            borderColor={"#000"}
+          />
+        </AdvancedMarker>
+      ))}
+    </>
   );
 }

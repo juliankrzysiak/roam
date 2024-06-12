@@ -8,42 +8,40 @@ import {
   Pin,
 } from "@vis.gl/react-google-maps";
 import { Day, Place } from "@/types";
+import { useRef, useState, useEffect } from "react";
 
 type MapProps = {
   day: Day;
 };
 
 export default function Map({ day }: MapProps) {
-  getLocation();
+  const { places } = day;
+  const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
+    { lat: -34, lng: 118 },
+  );
+
+  useEffect(() => {
+    if (places.length) {
+      const { lat, lng } = places[0];
+      setDefaultCenter({ lat, lng });
+    } else
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude: lat, longitude: lng } = position.coords;
+        setDefaultCenter({ lat, lng });
+      });
+  }, []);
 
   return (
-    <APIProvider
-      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
-      onLoad={() => console.log("Maps API has loaded.")}
-    >
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
       <GoogleMap
         className="w-full"
         defaultZoom={13}
-        defaultCenter={{ lat: -33.860664, lng: 151.208138 }}
+        defaultCenter={defaultCenter}
         mapId={"2b28f32837556830"}
-        onCameraChanged={(ev: MapCameraChangedEvent) =>
-          console.log(
-            "camera changed:",
-            ev.detail.center,
-            "zoom:",
-            ev.detail.zoom,
-          )
-        }
       >
-        <Markers places={day.places} />
+        <Markers places={places} />
       </GoogleMap>
     </APIProvider>
-  );
-}
-
-function getLocation() {
-  return navigator.geolocation.getCurrentPosition((position) =>
-    console.log(position),
   );
 }
 

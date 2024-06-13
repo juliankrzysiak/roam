@@ -94,34 +94,34 @@ async function getDay(
   };
 }
 
-function combineTripInfo(places: Place[], trips: Trip[] | null) {
-  if (!trips) return places;
-  return places.map((place, i) => {
-    const tripInfo = trips[i];
-    return { ...place, tripInfo };
-  });
-}
+// function combineTripInfo(places: Place[], trips: Trip[] | null) {
+//   if (!trips) return places;
+//   return places.map((place, i) => {
+//     const tripInfo = trips[i];
+//     return { ...place, tripInfo };
+//   });
+// }
 
-async function getTrips(places: Place[]): Promise<Trip[] | null> {
-  if (places.length < 2) return null;
-  const coordinates = places
-    .map((place) => `${place.lng},${place.lat}`)
-    .join(";");
+// async function getTrips(places: Place[]): Promise<Trip[] | null> {
+//   if (places.length < 2) return null;
+//   const coordinates = places
+//     .map((place) => `${place.lng},${place.lat}`)
+//     .join(";");
 
-  const profile = "mapbox/driving";
-  const res = await fetch(
-    `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`,
-  );
-  const tripInformation = await res.json();
+//   const profile = "mapbox/driving";
+//   const res = await fetch(
+//     `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`,
+//   );
+//   const tripInformation = await res.json();
 
-  const meterToMileFactor = 1 / (1000 * 1.609);
-  const secondToMinuteFactor = 1 / 60;
+//   const meterToMileFactor = 1 / (1000 * 1.609);
+//   const secondToMinuteFactor = 1 / 60;
 
-  const trips = tripInformation.routes.at(0).legs.map((leg: Trip) => {
-    const distance = Math.round(leg.distance * meterToMileFactor);
-    const duration = Math.round(leg.duration * secondToMinuteFactor);
-    return { distance, duration };
-  });
+//   const trips = tripInformation.routes.at(0).legs.map((leg: Trip) => {
+//     const distance = Math.round(leg.distance * meterToMileFactor);
+//     const duration = Math.round(leg.duration * secondToMinuteFactor);
+//     return { distance, duration };
+//   });
 
-  return trips;
-}
+//   return trips;
+// }

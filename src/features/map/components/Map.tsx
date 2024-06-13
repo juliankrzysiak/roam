@@ -22,8 +22,8 @@ export default function Map({ day }: MapProps) {
 
   useEffect(() => {
     if (places.length) {
-      const { lat, lng } = places[0];
-      setDefaultCenter({ lat, lng });
+      const { position } = places[0];
+      setDefaultCenter(position);
     } else
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude: lat, longitude: lng } = position.coords;
@@ -61,7 +61,7 @@ function Markers({ places }: { places: Place[] }) {
       {places.map((place, i) => (
         <AdvancedMarker
           key={place.id}
-          position={{ lat: place.lat, lng: place.lng }}
+          position={place.position}
           clickable={true}
           onClick={handleClick}
         >

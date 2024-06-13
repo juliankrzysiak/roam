@@ -66,30 +66,41 @@ async function getDay(
   supabase: SupabaseClient<Database>,
   tripId: string,
 ): Promise<Day> {
-  const { data: dateInfo, error: dateError } = await supabase
+  const { data: dateData, error: dateError } = await supabase
     .from("trips")
     .select("current_date")
     .limit(1)
     .single();
   if (dateError) throw new Error(`Supbase error: ${dateError.message}`);
 
-  const { data: dayInfo, error: dayError } = await supabase
+  const { data: dayData, error: dayError } = await supabase
     .from("days")
     .select("id, date, startTime:start_time")
-    .match({ trip_id: tripId, date: dateInfo.current_date })
+    .match({ trip_id: tripId, date: dateData.current_date })
     .limit(1)
     .single();
   if (dayError) throw new Error(`Supbase error: ${dayError.message}`);
 
-  const { data: places, error } = await supabase.rpc("get_places", {
-    day: dayInfo.id,
-  });
+  const { data: placesData, error } = await supabase
+    .from("places")
+    .select(
+      "id, name, lat, lng, placeDuration:place_duration, tripDuration:trip_duration",
+    )
+    .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
-  dayInfo.date = parse(dayInfo.date, "yyyy-MM-dd", new Date());
+  const places = placesData.map((place) => {
+    const { lat, lng, ...placeProps } = place;
+    return { ...placeProps, position: { lat, lng } };
+  });
+
+  const day = {
+    ...dayData,
+    date: parse(dayData.date, "yyyy-MM-dd", new Date()),
+  };
 
   return {
-    ...dayInfo,
+    ...day,
     places,
   };
 }

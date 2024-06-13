@@ -1,9 +1,7 @@
 export type Place = {
   id: string;
   name: string;
-  category: string;
-  lng: number;
-  lat: number;
+  position: google.maps.LatLngLiteral;
   placeDuration: number;
   tripDuration: number;
 };

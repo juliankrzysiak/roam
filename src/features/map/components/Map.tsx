@@ -59,18 +59,14 @@ function Markers({ places }: { places: Place[] }) {
 
   return (
     <>
-      {places.map((place) => (
+      {places.map((place, i) => (
         <AdvancedMarker
           key={place.id}
           position={{ lat: place.lat, lng: place.lng }}
           clickable={true}
           onClick={handleClick}
         >
-          <Pin
-            background={"#FBBC04"}
-            glyphColor={"#000"}
-            borderColor={"#000"}
-          />
+          <Pin>{i + 1}</Pin>
         </AdvancedMarker>
       ))}
     </>

@@ -6,9 +6,10 @@ import {
   Map as GoogleMap,
   MapCameraChangedEvent,
   Pin,
+  useMap,
 } from "@vis.gl/react-google-maps";
 import { Day, Place } from "@/types";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 type MapProps = {
   day: Day;
@@ -46,12 +47,24 @@ export default function Map({ day }: MapProps) {
 }
 
 function Markers({ places }: { places: Place[] }) {
+  const map = useMap();
+  const handleClick = useCallback(
+    (ev: google.maps.MapMouseEvent) => {
+      if (!map) return;
+      if (!ev.latLng) return;
+      map.panTo(ev.latLng);
+    },
+    [map],
+  );
+
   return (
     <>
       {places.map((place) => (
         <AdvancedMarker
           key={place.id}
           position={{ lat: place.lat, lng: place.lng }}
+          clickable={true}
+          onClick={handleClick}
         >
           <Pin
             background={"#FBBC04"}

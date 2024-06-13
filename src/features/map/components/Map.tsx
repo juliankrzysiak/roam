@@ -1,15 +1,14 @@
 "use client";
 
+import { Day, Place } from "@/types";
 import {
   APIProvider,
   AdvancedMarker,
   Map as GoogleMap,
-  MapCameraChangedEvent,
   Pin,
   useMap,
 } from "@vis.gl/react-google-maps";
-import { Day, Place } from "@/types";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type MapProps = {
   day: Day;

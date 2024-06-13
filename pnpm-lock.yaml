@@ -57,8 +57,8 @@ dependencies:
     specifier: 18.2.7
     version: 18.2.7
   '@vis.gl/react-google-maps':
-    specifier: ^0.4.1
-    version: 0.4.1(react-dom@18.3.0-canary-c5b937576-20231219)(react@18.3.0-canary-c5b937576-20231219)
+    specifier: ^1.0.2
+    version: 1.0.2(react-dom@18.3.0-canary-c5b937576-20231219)(react@18.3.0-canary-c5b937576-20231219)
   autoprefixer:
     specifier: 10.4.14
     version: 10.4.14(postcss@8.4.27)
@@ -2997,8 +2997,8 @@ packages:
     resolution: {integrity: sha512-zDU8c7K0YR1Ob7Wn0qCSQvICIuxilZH9KFIDHK6JO/5QzqEMv8e4+9bmyoDEktA9vPNmwP++zzg65h9y53iZ6Q==}
     dev: true
 
-  /@types/google.maps@3.54.10:
-    resolution: {integrity: sha512-N6gwM01mKhooXaw+IKbUH7wJcIJCn8U60VoaVvom5EiQjmfgevhQ+0+/r17beXW5j8ad2x+WPr0iyOUodCw4/w==}
+  /@types/google.maps@3.55.9:
+    resolution: {integrity: sha512-phaOMtezbT3NaXPKiI3m0OosUS7Nly0auw3Be5s/CgMWLVoDAUP1Yb/Ld0TRoRp8ibrlT4VqM5kmzfvUA0UNLQ==}
     dev: false
 
   /@types/json5@0.0.29:
@@ -3110,13 +3110,14 @@ packages:
       eslint-visitor-keys: 3.4.2
     dev: false
 
-  /@vis.gl/react-google-maps@0.4.1(react-dom@18.3.0-canary-c5b937576-20231219)(react@18.3.0-canary-c5b937576-20231219):
-    resolution: {integrity: sha512-Dqv9N9mJOmXhDgcFmwyLby3x9diTMxO3D5b7ltAWsoP5aORlQqTITtuZT8IH3PQbyXyA/0fcMGhnfy/sRuVCLg==}
+  /@vis.gl/react-google-maps@1.0.2(react-dom@18.3.0-canary-c5b937576-20231219)(react@18.3.0-canary-c5b937576-20231219):
+    resolution: {integrity: sha512-/hmaX2J+IuRC+TgnRpWhd5biQlb88zsYUZ5y/mRpcBsAtNr/ZTHtXGjlAWbvE+z56ldjaboCie7IeKg+5lKNww==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      '@types/google.maps': 3.54.10
+      '@types/google.maps': 3.55.9
+      fast-deep-equal: 3.1.3
       react: 18.3.0-canary-c5b937576-20231219
       react-dom: 18.3.0-canary-c5b937576-20231219(react@18.3.0-canary-c5b937576-20231219)
     dev: false

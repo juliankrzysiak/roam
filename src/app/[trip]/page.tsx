@@ -3,7 +3,6 @@ import Planner from "@/features/planner/components";
 import { Day, Place, Trip } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
 import DayProvider from "./DayProvider";
 import MapControls from "@/features/map/components/MapControls";
 import { add, addMinutes, parseISO } from "date-fns";
@@ -16,8 +15,7 @@ type Props = {
 
 export default async function MapPage({ params }: Props) {
   const { trip: tripId } = params;
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   const day = await getDay(supabase, tripId);
   const dateRange = await getDateRange(supabase, tripId);

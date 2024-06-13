@@ -8,6 +8,7 @@ import MapControls from "@/features/map/components/MapControls";
 import { add, addMinutes, parseISO } from "date-fns";
 import { parse } from "date-fns";
 import { calcDateRange } from "@/utils";
+import { Database } from "@/types/supabase";
 
 type Props = {
   params: { trip: string };
@@ -48,7 +49,10 @@ export default async function MapPage({ params }: Props) {
   );
 }
 
-async function getDateRange(supabase: SupabaseClient, tripId: string) {
+async function getDateRange(
+  supabase: SupabaseClient<Database>,
+  tripId: string,
+) {
   const { data, error } = await supabase
     .from("days")
     .select("date")
@@ -58,7 +62,10 @@ async function getDateRange(supabase: SupabaseClient, tripId: string) {
   return dateRange;
 }
 
-async function getDay(supabase: SupabaseClient, tripId: string): Promise<Day> {
+async function getDay(
+  supabase: SupabaseClient<Database>,
+  tripId: string,
+): Promise<Day> {
   const { data: dateInfo, error: dateError } = await supabase
     .from("trips")
     .select("current_date")

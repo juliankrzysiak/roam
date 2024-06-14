@@ -31,6 +31,13 @@ export default function Map({ day }: MapProps) {
       });
   }, []);
 
+  function handleClick(e: MapMouseEvent) {
+    const { placeId, latLng } = e.detail;
+    if (!latLng || !placeId) return;
+    e.map.panTo(latLng);
+    e.stop();
+  }
+
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
       <GoogleMap

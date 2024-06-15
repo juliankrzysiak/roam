@@ -31,6 +31,14 @@ export default function Map({ day }: MapProps) {
       });
   }, []);
 
+  // const { data, error, isLoading } = useSWR(
+  //   currentPlace &&
+  //     `${currentPlace.id}?fields=id,displayName,formattedAddress,currentOpeningHours,websiteUri&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
+  //   fetcher,
+  // );
+  // if (error) return <div>failed to load</div>;
+  // if (isLoading) return <div>loading...</div>;
+
   function handleClick(e: MapMouseEvent) {
     const { placeId, latLng } = e.detail;
     if (!latLng || !placeId) return;

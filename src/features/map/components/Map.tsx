@@ -16,6 +16,7 @@ type MapProps = {
 
 export default function Map({ day }: MapProps) {
   const { places } = day;
+  const [currentPlace, setCurrentPlace] = useState<currentPlace | null>(null);
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
     { lat: -34, lng: 118 },
   );
@@ -41,9 +42,16 @@ export default function Map({ day }: MapProps) {
 
   function handleClick(e: MapMouseEvent) {
     const { placeId, latLng } = e.detail;
-    if (!latLng || !placeId) return;
+    if (!latLng || !placeId) setCurrentPlace(null);
+    else {
+      setCurrentPlace({ id: placeId, position: latLng });
     e.map.panTo(latLng);
+    }
     e.stop();
+  }
+
+  function handleClose() {
+    setCurrentPlace(null);
   }
 
   return (
@@ -53,6 +61,7 @@ export default function Map({ day }: MapProps) {
         defaultZoom={13}
         defaultCenter={defaultCenter}
         mapId={"2b28f32837556830"}
+        onClick={handleClick}
       >
         <Markers places={places} />
         {currentPlace && (

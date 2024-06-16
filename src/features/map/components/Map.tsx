@@ -55,6 +55,38 @@ export default function Map({ day }: MapProps) {
         mapId={"2b28f32837556830"}
       >
         <Markers places={places} />
+        {currentPlace && (
+          <AdvancedMarker
+            position={currentPlace.position}
+            className="font-['Nunito Sans'] mb-8 flex gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
+          >
+            <div className="flex flex-col">
+              <h2 className="text-xl font-bold">Pizza Box</h2>
+              <h3 className="mb-2">40052 Westin Way, Palmdale</h3>
+              <p>4.2 Stars</p>
+              <a href="#">pizza.com</a>
+            </div>
+            <div className="flex flex-col items-end justify-between gap-2">
+              <button onClick={handleClose} aria-label="Close info window">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="aspect-square h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18 18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+              <button>Add Place</button>
+            </div>
+          </AdvancedMarker>
+        )}
       </GoogleMap>
     </APIProvider>
   );

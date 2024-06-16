@@ -50,6 +50,10 @@ export default function Map({ day }: MapProps) {
     e.stop();
   }
 
+  function handleAdvancedMarkerClick(e: google.maps.MapMouseEvent) {
+    e.stop();
+  }
+
   function handleClose() {
     setCurrentPlace(null);
   }
@@ -61,13 +65,14 @@ export default function Map({ day }: MapProps) {
         defaultZoom={13}
         defaultCenter={defaultCenter}
         mapId={"2b28f32837556830"}
-        onClick={handleClick}
+        onClick={handleMapClick}
       >
         <Markers places={places} />
         {currentPlace && (
           <AdvancedMarker
-            position={currentPlace.position}
             className="font-['Nunito Sans'] mb-8 flex gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
+            position={currentPlace.position}
+            onClick={handleAdvancedMarkerClick}
           >
             <div className="flex flex-col">
               <h2 className="text-xl font-bold">Pizza Box</h2>

@@ -1,22 +1,36 @@
 "use client";
 
+import { usePlaceStore } from "@/lib/store";
 import { Day, Place } from "@/types";
 import {
   APIProvider,
   AdvancedMarker,
   Map as GoogleMap,
+  MapMouseEvent,
   Pin,
   useMap,
 } from "@vis.gl/react-google-maps";
-import { useCallback, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import useSWR, { Fetcher } from "swr";
 
 type MapProps = {
   day: Day;
 };
 
+type CurrentPlace = {
+  id: string;
+  position: google.maps.LatLngLiteral;
+};
+
 export default function Map({ day }: MapProps) {
   const { places } = day;
-  const [currentPlace, setCurrentPlace] = useState<currentPlace | null>(null);
+  const [currentPlace, setCurrentPlace] = useState<CurrentPlace | null>(null);
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
     { lat: -34, lng: 118 },
   );
@@ -32,30 +46,14 @@ export default function Map({ day }: MapProps) {
       });
   }, []);
 
-  // const { data, error, isLoading } = useSWR(
-  //   currentPlace &&
-  //     `${currentPlace.id}?fields=id,displayName,formattedAddress,currentOpeningHours,websiteUri&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
-  //   fetcher,
-  // );
-  // if (error) return <div>failed to load</div>;
-  // if (isLoading) return <div>loading...</div>;
-
-  function handleClick(e: MapMouseEvent) {
+  function handleMapClick(e: MapMouseEvent) {
     const { placeId, latLng } = e.detail;
     if (!latLng || !placeId) setCurrentPlace(null);
     else {
       setCurrentPlace({ id: placeId, position: latLng });
-    e.map.panTo(latLng);
+      e.map.panTo(latLng);
     }
     e.stop();
-  }
-
-  function handleAdvancedMarkerClick(e: google.maps.MapMouseEvent) {
-    e.stop();
-  }
-
-  function handleClose() {
-    setCurrentPlace(null);
   }
 
   return (
@@ -69,50 +67,101 @@ export default function Map({ day }: MapProps) {
       >
         <Markers places={places} />
         {currentPlace && (
-          <AdvancedMarker
-            className="font-['Nunito Sans'] mb-8 flex gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
-            position={currentPlace.position}
-            onClick={handleAdvancedMarkerClick}
-          >
-            <div className="flex flex-col">
-              <h2 className="text-xl font-bold">Pizza Box</h2>
-              <h3 className="mb-2">40052 Westin Way, Palmdale</h3>
-              <p>4.2 Stars</p>
-              <a href="#">pizza.com</a>
-            </div>
-            <div className="flex flex-col items-end justify-between gap-2">
-              <button onClick={handleClose} aria-label="Close info window">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="aspect-square h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18 18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-              <button>Add Place</button>
-            </div>
-          </AdvancedMarker>
+          <InfoWindow
+            currentPlace={currentPlace}
+            setCurrentPlace={setCurrentPlace}
+          />
         )}
       </GoogleMap>
     </APIProvider>
   );
 }
 
+type PlaceDetails = {
+  id: string;
+  displayName: { languageCode: string; text: string };
+  formattedAddress: string;
+  regularOpeningHours: {
+    openNow: boolean;
+    weekdayDescriptions: string[];
+  };
+  rating: number;
+  websiteUri: string;
+};
+
+const placeDetailsFetcher: Fetcher<PlaceDetails, string> = (id) =>
+  fetch(
+    `https://places.googleapis.com/v1/places/${id}?fields=id,displayName,formattedAddress,regularOpeningHours,rating,websiteUri&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
+  ).then((res) => res.json());
+
+type InfoWindowProps = {
+  currentPlace: CurrentPlace;
+  setCurrentPlace: Dispatch<SetStateAction<CurrentPlace | null>>;
+};
+
+function InfoWindow({ currentPlace, setCurrentPlace }: InfoWindowProps) {
+  const { data, error, isLoading } = useSWR(
+    currentPlace.id,
+    placeDetailsFetcher,
+  );
+  if (error || !data) return <div>failed to load</div>;
+  if (isLoading) return <div>loading...</div>;
+
+  function handleClick(e: google.maps.MapMouseEvent) {
+    e.stop();
+  }
+
+  function handleClose() {
+    setCurrentPlace(null);
+  }
+
+  return (
+    <AdvancedMarker
+      className="font-['Nunito Sans'] mb-8 flex gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
+      position={currentPlace.position}
+      onClick={handleClick}
+    >
+      <div className="flex flex-col">
+        <h2 className="text-xl font-bold">{data.displayName.text}</h2>
+        <h3 className="mb-2">{data.formattedAddress}</h3>
+        <p>{data.rating} Stars</p>
+        <a href={data.websiteUri} className="underline">
+          Website link
+        </a>
+      </div>
+      <div className="flex flex-col items-end justify-between gap-2">
+        <button onClick={handleClose} aria-label="Close info window">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="aspect-square h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <button>Add Place</button>
+      </div>
+    </AdvancedMarker>
+  );
+}
+
 function Markers({ places }: { places: Place[] }) {
   const map = useMap();
+
   const handleClick = useCallback(
-    (ev: google.maps.MapMouseEvent) => {
+    (ev: google.maps.MapMouseEvent, place: Place) => {
       if (!map) return;
       if (!ev.latLng) return;
       map.panTo(ev.latLng);
+      const { id, position } = place;
+      usePlaceStore.setState({ id, position });
     },
     [map],
   );
@@ -124,7 +173,7 @@ function Markers({ places }: { places: Place[] }) {
           key={place.id}
           position={place.position}
           clickable={true}
-          onClick={handleClick}
+          onClick={(ev) => handleClick(ev, place)}
         >
           <Pin>{i + 1}</Pin>
         </AdvancedMarker>

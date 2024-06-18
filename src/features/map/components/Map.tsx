@@ -71,6 +71,7 @@ export default function Map({ day }: MapProps) {
           <InfoWindow
             currentPlace={currentPlace}
             setCurrentPlace={setCurrentPlace}
+            date={day.date}
           />
         )}
       </GoogleMap>
@@ -101,9 +102,10 @@ const placeDetailsFetcher: Fetcher<PlaceDetails, string> = (id) =>
 type InfoWindowProps = {
   currentPlace: CurrentPlace;
   setCurrentPlace: Dispatch<SetStateAction<CurrentPlace | null>>;
+  date: Day["date"];
 };
 
-function InfoWindow({ currentPlace, setCurrentPlace }: InfoWindowProps) {
+function InfoWindow({ currentPlace, setCurrentPlace, date }: InfoWindowProps) {
   const { data, error, isLoading } = useSWR(
     currentPlace.id,
     placeDetailsFetcher,
@@ -176,7 +178,10 @@ function InfoWindow({ currentPlace, setCurrentPlace }: InfoWindowProps) {
             </span>
             ({data.userRatingCount})
           </span>
-          <OpeningHours regularOpeningHours={data.regularOpeningHours} />
+          <OpeningHours
+            regularOpeningHours={data.regularOpeningHours}
+            date={date}
+          />
         </div>
         <div className="mb-2 flex gap-1">
           <a href={data.websiteUri} className="underline">
@@ -193,12 +198,14 @@ function InfoWindow({ currentPlace, setCurrentPlace }: InfoWindowProps) {
   );
 }
 
-type OpeningHoursProps = Pick<PlaceDetails, "regularOpeningHours">;
+type OpeningHoursProps = {
+  regularOpeningHours: PlaceDetails["regularOpeningHours"];
+  date: Day["date"];
+};
 
-const todayIndex = new Date().getDay() - 1;
-
-function OpeningHours({ regularOpeningHours }: OpeningHoursProps) {
+function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const todayIndex = date.getDay() - 1;
   const today = regularOpeningHours.weekdayDescriptions.at(todayIndex);
 
   function toggleIsOpen() {

@@ -20,6 +20,10 @@ import {
 } from "react";
 import useSWR, { Fetcher } from "swr";
 
+/* -------------------------------------------------------------------------- */
+/*                                     Map                                    */
+/* -------------------------------------------------------------------------- */
+
 type MapProps = {
   day: Day;
 };
@@ -80,6 +84,8 @@ export default function Map({ day }: MapProps) {
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                 Info Window                                */
 /* -------------------------------------------------------------------------- */
 
 type PlaceDetails = {
@@ -202,6 +208,8 @@ function InfoWindow({ currentPlace, setCurrentPlace, date }: InfoWindowProps) {
 }
 
 /* -------------------------------------------------------------------------- */
+/*                                Opening Hours                               */
+/* -------------------------------------------------------------------------- */
 
 type OpeningHoursProps = {
   regularOpeningHours: PlaceDetails["regularOpeningHours"];
@@ -245,6 +253,8 @@ function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   Markers                                  */
 /* -------------------------------------------------------------------------- */
 
 function Markers({ places }: { places: Place[] }) {

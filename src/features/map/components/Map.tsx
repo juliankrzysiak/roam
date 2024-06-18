@@ -18,6 +18,12 @@ import {
   useState,
 } from "react";
 import useSWR, { Fetcher } from "swr";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type MapProps = {
   day: Day;
@@ -149,6 +155,29 @@ function InfoWindow({ currentPlace, setCurrentPlace }: InfoWindowProps) {
         <button>Add Place</button>
       </div>
     </AdvancedMarker>
+  );
+}
+
+type OpeningHoursProps = Pick<PlaceDetails, "regularOpeningHours">;
+
+const todayIndex = new Date().getDay() - 1;
+
+function OpeningHours({ regularOpeningHours }: OpeningHoursProps) {
+  const today = regularOpeningHours.weekdayDescriptions.at(todayIndex);
+
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>{today}</AccordionTrigger>
+        <AccordionContent>
+          <ol>
+            {regularOpeningHours.weekdayDescriptions.map((desc) => {
+              return <li key={desc}>{desc}</li>;
+            })}
+          </ol>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }
 

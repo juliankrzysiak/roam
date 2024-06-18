@@ -65,6 +65,7 @@ export default function Map({ day }: MapProps) {
         defaultCenter={defaultCenter}
         mapId={"2b28f32837556830"}
         onClick={handleMapClick}
+        disableDefaultUI
       >
         <Markers places={places} />
         {currentPlace && (
@@ -78,6 +79,8 @@ export default function Map({ day }: MapProps) {
     </APIProvider>
   );
 }
+
+/* -------------------------------------------------------------------------- */
 
 type PlaceDetails = {
   id: string;
@@ -198,6 +201,8 @@ function InfoWindow({ currentPlace, setCurrentPlace, date }: InfoWindowProps) {
   );
 }
 
+/* -------------------------------------------------------------------------- */
+
 type OpeningHoursProps = {
   regularOpeningHours: PlaceDetails["regularOpeningHours"];
   date: Day["date"];
@@ -239,6 +244,8 @@ function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
     </div>
   );
 }
+
+/* -------------------------------------------------------------------------- */
 
 function Markers({ places }: { places: Place[] }) {
   const map = useMap();

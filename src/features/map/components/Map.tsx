@@ -80,7 +80,7 @@ export default function Map({ day }: MapProps) {
 type PlaceDetails = {
   id: string;
   displayName: { languageCode: string; text: string };
-  formattedAddress: string;
+  shortFormattedAddress: string;
   regularOpeningHours: {
     openNow: boolean;
     weekdayDescriptions: string[];
@@ -91,7 +91,7 @@ type PlaceDetails = {
 
 const placeDetailsFetcher: Fetcher<PlaceDetails, string> = (id) =>
   fetch(
-    `https://places.googleapis.com/v1/places/${id}?fields=id,displayName,formattedAddress,regularOpeningHours,rating,websiteUri&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
+    `https://places.googleapis.com/v1/places/${id}?fields=id,displayName,shortFormattedAddress,regularOpeningHours,rating,websiteUri&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
   ).then((res) => res.json());
 
 type InfoWindowProps = {
@@ -123,7 +123,7 @@ function InfoWindow({ currentPlace, setCurrentPlace }: InfoWindowProps) {
     >
       <div className="flex flex-col">
         <h2 className="text-xl font-bold">{data.displayName.text}</h2>
-        <h3 className="mb-2">{data.formattedAddress}</h3>
+        <h3 className="text-md mb-2">{data.shortFormattedAddress}</h3>
         <p>{data.rating} Stars</p>
         <a href={data.websiteUri} className="underline">
           Website link

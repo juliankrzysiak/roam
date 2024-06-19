@@ -1,10 +1,8 @@
 "use server";
 
-import { Popup } from "@/types";
 import { formatBulkDates } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
 
 export async function createTrip(name: string, dates: Date[]) {
@@ -42,7 +40,7 @@ type CreatePlaceParams = {
   lng: number;
   lat: number;
   day_id: string;
-  place_id: string;
+  place_id?: string
 };
 
 export async function createPlace(payload: CreatePlaceParams) {

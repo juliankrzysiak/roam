@@ -3,23 +3,18 @@
 import { Button } from "@/components/ui/button";
 import { Day, Place } from "@/types";
 import { createPlace } from "@/utils/actions/crud/create";
+import { deletePlace } from "@/utils/actions/crud/delete";
 import {
   APIProvider,
   AdvancedMarker,
+  AdvancedMarkerRef,
   Map as GoogleMap,
   MapMouseEvent,
   Pin,
   useMap,
 } from "@vis.gl/react-google-maps";
 import { ChevronsUpDown } from "lucide-react";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 
 /* -------------------------------------------------------------------------- */
@@ -32,7 +27,8 @@ type MapProps = {
 
 // TODO: Make id optional for places that are not pois
 type CurrentPlace = {
-  id: string;
+  id?: string;
+  placeId?: string;
   position: google.maps.LatLngLiteral;
 };
 
@@ -55,12 +51,9 @@ export default function Map({ day }: MapProps) {
   }, [day.id]);
 
   function handleMapClick(e: MapMouseEvent) {
-    const { placeId, latLng } = e.detail;
-    if (!latLng || !placeId) setCurrentPlace(null);
-    else {
-      setCurrentPlace({ id: placeId, position: latLng });
-      e.map.panTo(latLng);
-    }
+    const { placeId, latLng: position } = e.detail;
+    if (!position || !placeId) setCurrentPlace(null);
+    else setCurrentPlace({ placeId, position });
     e.stop();
   }
 
@@ -125,14 +118,18 @@ function InfoWindow({
   date,
   dayId: day_id,
 }: InfoWindowProps) {
+  const advancedMarkerRef = useRef<AdvancedMarkerRef>(null);
   const map = useMap();
   useEffect(() => {
+    advancedMarkerRef?.current?.addEventListener("click", (e) => {
+      console.log(e);
+    });
     if (!map) return;
     map.panTo(currentPlace.position);
   }, []);
 
   const { data, error, isLoading } = useSWR(
-    currentPlace.id,
+    currentPlace.placeId,
     placeDetailsFetcher,
   );
   if (error || !data) return <div>failed to load</div>;
@@ -149,11 +146,19 @@ function InfoWindow({
   async function handleCreatePlace() {
     const name = data?.displayName.text ?? "";
     const {
-      id: place_id,
+      placeId: place_id,
       position: { lng, lat },
     } = currentPlace;
     const payload = { name, day_id, lng, lat, place_id };
+
     await createPlace(payload);
+    setCurrentPlace(null);
+  }
+
+  async function handleDeletePlace() {
+    const { id } = currentPlace;
+    if (!id) return;
+    await deletePlace(id);
     setCurrentPlace(null);
   }
 
@@ -162,6 +167,7 @@ function InfoWindow({
       className="font-['Nunito Sans'] mb-8 flex flex-col gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
       position={currentPlace.position}
       onClick={handleClick}
+      ref={advancedMarkerRef}
     >
       <div>
         <div className="flex items-center justify-between gap-4">
@@ -227,7 +233,11 @@ function InfoWindow({
           </a>
         </div>
       </div>
-      <Button onClick={handleCreatePlace}>Add Place</Button>
+      {currentPlace.id ? (
+        <Button onClick={handleDeletePlace}>Delete place</Button>
+      ) : (
+        <Button onClick={handleCreatePlace}>Add place</Button>
+      )}
     </AdvancedMarker>
   );
 }
@@ -242,6 +252,7 @@ type OpeningHoursProps = {
 };
 
 function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
+  // TODO: Return nothing if opening hours not there
   const [isOpen, setIsOpen] = useState(false);
   const todayIndex = date.getDay() - 1;
   const days = regularOpeningHours.weekdayDescriptions.map((desc) => {
@@ -297,8 +308,10 @@ type MarkersProps = {
 
 function Markers({ places, setCurrentPlace }: MarkersProps) {
   const handleClick = (place: Place) => {
-    const { placeId: id, position } = place;
-    const currentPlace = id ? { id, position } : null;
+    const { id, position } = place;
+    // ! Fix issues of undefined v null
+    const placeId = place.placeId ?? undefined;
+    const currentPlace = { id, placeId, position };
     setCurrentPlace(currentPlace);
   };
 

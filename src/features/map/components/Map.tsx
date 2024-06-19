@@ -138,6 +138,10 @@ function InfoWindow({
   if (error || !data) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
 
+  function handleClick(e: google.maps.MapMouseEvent) {
+    e.stop();
+  }
+
   function handleClose() {
     setCurrentPlace(null);
   }
@@ -157,6 +161,7 @@ function InfoWindow({
     <AdvancedMarker
       className="font-['Nunito Sans'] mb-8 flex flex-col gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
       position={currentPlace.position}
+      onClick={handleClick}
     >
       <div>
         <div className="flex items-center justify-between gap-4">

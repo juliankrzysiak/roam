@@ -1,5 +1,6 @@
 "use client";
 
+import { searchText } from "@/utils/actions/api";
 import clsx from "clsx";
 import { Search } from "lucide-react";
 import { useState } from "react";
@@ -7,7 +8,8 @@ import { useState } from "react";
 export default function MapSearch() {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div
+    <form
+      action={searchText}
       className={clsx(
         "absolute left-2 top-2 flex items-center gap-2 rounded-full border bg-slate-100 p-2 shadow-lg sm:max-w-lg",
         isOpen && "right-2",
@@ -27,6 +29,6 @@ export default function MapSearch() {
           className="w-full bg-inherit"
         />
       )}
-    </div>
+    </form>
   );
 }

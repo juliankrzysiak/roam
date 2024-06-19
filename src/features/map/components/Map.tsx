@@ -192,7 +192,7 @@ function InfoWindow({ currentPlace, setCurrentPlace, date }: InfoWindowProps) {
             date={date}
           />
         </div>
-        <div className="mb-2 flex gap-1">
+        <div className="mb-2 flex gap-1 text-slate-500">
           <a href={data.websiteUri} className="underline">
             Website
           </a>
@@ -219,6 +219,11 @@ type OpeningHoursProps = {
 function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
   const [isOpen, setIsOpen] = useState(false);
   const todayIndex = date.getDay() - 1;
+  const days = regularOpeningHours.weekdayDescriptions.map((desc) => {
+    const [day, time] = desc.split(" ");
+    const truncatedDay = day.slice(0, 3) + ":";
+    return [truncatedDay, time];
+  });
   const today = regularOpeningHours.weekdayDescriptions.at(todayIndex);
 
   function toggleIsOpen() {
@@ -228,20 +233,22 @@ function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
   return (
     <div>
       {isOpen ? (
-        <ol onClick={toggleIsOpen}>
-          {regularOpeningHours.weekdayDescriptions.map((desc) => {
-            return (
-              <li
-                key={desc}
-                className={`${
-                  desc === today ? "text-slate-900" : "text-slate-500"
-                }`}
-              >
-                {desc}
-              </li>
-            );
-          })}
-        </ol>
+        <table className="table-auto" onClick={toggleIsOpen}>
+          <tbody>
+            {days.map((desc, i) => {
+              return (
+                <tr
+                  className={`${
+                    i === todayIndex ? "text-slate-900" : "text-slate-500"
+                  }`}
+                >
+                  <td className="pr-1">{desc[0]}</td>
+                  <td>{desc[1]}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       ) : (
         <button onClick={toggleIsOpen}>
           <span className="flex items-center gap-1">

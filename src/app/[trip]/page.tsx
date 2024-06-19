@@ -9,6 +9,7 @@ import { add, addMinutes, parseISO } from "date-fns";
 import { parse } from "date-fns";
 import { calcDateRange } from "@/utils";
 import { Database } from "@/types/supabase";
+import MapSearch from "@/features/map/components/MapSearch";
 
 type Props = {
   params: { trip: string };
@@ -38,6 +39,7 @@ export default async function MapPage({ params }: Props) {
       {/* <Planner places={places} dayInfo={dayInfo} tripId={tripId} /> */}
 
       <Map day={day} />
+      <MapSearch />
       <MapControls
         tripId={tripId}
         day={day}

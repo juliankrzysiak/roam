@@ -46,7 +46,7 @@ export type Database = {
       }
       places: {
         Row: {
-          category: string
+          category: string | null
           created_at: string
           day_id: string
           id: string
@@ -54,21 +54,23 @@ export type Database = {
           lng: number
           name: string
           place_duration: number
+          place_id: string | null
           trip_duration: number
         }
         Insert: {
-          category: string
+          category?: string | null
           created_at?: string
           day_id: string
-          id: string
+          id?: string
           lat: number
           lng: number
           name: string
           place_duration?: number
+          place_id?: string | null
           trip_duration?: number
         }
         Update: {
-          category?: string
+          category?: string | null
           created_at?: string
           day_id?: string
           id?: string
@@ -76,6 +78,7 @@ export type Database = {
           lng?: number
           name?: string
           place_duration?: number
+          place_id?: string | null
           trip_duration?: number
         }
         Relationships: [
@@ -128,7 +131,7 @@ export type Database = {
           day: string
         }
         Returns: {
-          category: string
+          category: string | null
           created_at: string
           day_id: string
           id: string
@@ -136,6 +139,7 @@ export type Database = {
           lng: number
           name: string
           place_duration: number
+          place_id: string | null
           trip_duration: number
         }[]
       }

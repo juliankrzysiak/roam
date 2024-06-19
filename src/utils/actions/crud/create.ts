@@ -8,8 +8,7 @@ import { cookies } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
 
 export async function createTrip(name: string, dates: Date[]) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   try {
     const tripId = uuidv4();
@@ -38,14 +37,19 @@ export async function createTrip(name: string, dates: Date[]) {
   }
 }
 
-export async function createPlace(place: Popup, day_id: string) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+type CreatePlaceParams = {
+  name: string;
+  lng: number;
+  lat: number;
+  day_id: string;
+  place_id: string;
+};
 
-  const placeWithId = { ...place, day_id };
+export async function createPlace(payload: CreatePlaceParams) {
+  const supabase = createClient();
 
   try {
-    const { error } = await supabase.from("places").insert(placeWithId);
+    const { error } = await supabase.from("places").insert(payload);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {

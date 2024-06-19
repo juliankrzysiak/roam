@@ -2,11 +2,9 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 
 export async function deletePlace(id: string) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
   try {
     const { error } = await supabase.from("places").delete().eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
@@ -17,8 +15,7 @@ export async function deletePlace(id: string) {
 }
 
 export async function deleteTrip(formData: FormData) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   const id = formData.get("tripId");
 
@@ -28,15 +25,10 @@ export async function deleteTrip(formData: FormData) {
 }
 
 export async function deleteDay(dayId: string) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
+  const supabase = createClient();
 
   try {
-    const { error } = await supabase
-      .from("days")
-      .delete()
-      .eq("id", dayId);
+    const { error } = await supabase.from("days").delete().eq("id", dayId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/trips");
   } catch (error) {

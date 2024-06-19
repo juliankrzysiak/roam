@@ -18,10 +18,15 @@ export async function deleteTrip(formData: FormData) {
   const supabase = createClient();
 
   const id = formData.get("tripId");
+  if (!id) return;
 
-  const { error } = await supabase.from("trips").delete().eq("id", id);
-  if (error) throw new Error(`Supabase error: ${error.message}`);
-  revalidatePath("/trips");
+  try {
+    const { error } = await supabase.from("trips").delete().eq("id", id);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/trips");
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function deleteDay(dayId: string) {

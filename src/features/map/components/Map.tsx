@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Day, Place } from "@/types";
+import { createPlace } from "@/utils/actions/crud/create";
 import {
   APIProvider,
   AdvancedMarker,
@@ -16,6 +17,7 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import useSWR, { Fetcher } from "swr";
@@ -77,6 +79,7 @@ export default function Map({ day }: MapProps) {
             currentPlace={currentPlace}
             setCurrentPlace={setCurrentPlace}
             date={day.date}
+            dayId={day.id}
           />
         )}
       </GoogleMap>
@@ -112,9 +115,16 @@ type InfoWindowProps = {
   currentPlace: CurrentPlace;
   setCurrentPlace: Dispatch<SetStateAction<CurrentPlace | null>>;
   date: Day["date"];
+  dayId: Day["id"];
 };
 
-function InfoWindow({ currentPlace, setCurrentPlace, date }: InfoWindowProps) {
+function InfoWindow({
+  currentPlace,
+  setCurrentPlace,
+  date,
+  dayId: day_id,
+}: InfoWindowProps) {
+  const advancedMarkerRef = useRef<HTMLElement>(null);
   const { data, error, isLoading } = useSWR(
     currentPlace.id,
     placeDetailsFetcher,
@@ -123,14 +133,23 @@ function InfoWindow({ currentPlace, setCurrentPlace, date }: InfoWindowProps) {
   if (isLoading) return <div>loading...</div>;
 
   function handleClick(e: google.maps.MapMouseEvent) {
-    e.stop();
+    console.log(e);
   }
 
   function handleClose() {
     setCurrentPlace(null);
   }
 
-  console.log(data);
+  async function handleCreatePlace() {
+    const name = data?.displayName.text ?? "";
+    const {
+      id: place_id,
+      position: { lng, lat },
+    } = currentPlace;
+    const payload = { name, day_id, lng, lat, place_id };
+    await createPlace(payload);
+    setCurrentPlace(null);
+  }
 
   return (
     <AdvancedMarker
@@ -202,7 +221,7 @@ function InfoWindow({ currentPlace, setCurrentPlace, date }: InfoWindowProps) {
           </a>
         </div>
       </div>
-      <Button size="sm">Add Place</Button>
+      <Button onClick={handleCreatePlace}>Add Place</Button>
     </AdvancedMarker>
   );
 }
@@ -238,6 +257,7 @@ function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
             {days.map((desc, i) => {
               return (
                 <tr
+                  key={i}
                   className={`${
                     i === todayIndex ? "text-slate-900" : "text-slate-500"
                   }`}

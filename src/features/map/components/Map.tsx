@@ -30,6 +30,7 @@ type MapProps = {
   day: Day;
 };
 
+// TODO: Make id optional for places that are not pois
 type CurrentPlace = {
   id: string;
   position: google.maps.LatLngLiteral;
@@ -51,7 +52,7 @@ export default function Map({ day }: MapProps) {
         const { latitude: lat, longitude: lng } = position.coords;
         setDefaultCenter({ lat, lng });
       });
-  }, []);
+  }, [day.id]);
 
   function handleMapClick(e: MapMouseEvent) {
     const { placeId, latLng } = e.detail;
@@ -73,7 +74,7 @@ export default function Map({ day }: MapProps) {
         onClick={handleMapClick}
         disableDefaultUI
       >
-        <Markers places={places} />
+        <Markers places={places} setCurrentPlace={setCurrentPlace} />
         {currentPlace && (
           <InfoWindow
             currentPlace={currentPlace}
@@ -124,17 +125,18 @@ function InfoWindow({
   date,
   dayId: day_id,
 }: InfoWindowProps) {
-  const advancedMarkerRef = useRef<HTMLElement>(null);
+  const map = useMap();
+  useEffect(() => {
+    if (!map) return;
+    map.panTo(currentPlace.position);
+  }, []);
+
   const { data, error, isLoading } = useSWR(
     currentPlace.id,
     placeDetailsFetcher,
   );
   if (error || !data) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
-
-  function handleClick(e: google.maps.MapMouseEvent) {
-    console.log(e);
-  }
 
   function handleClose() {
     setCurrentPlace(null);
@@ -155,7 +157,6 @@ function InfoWindow({
     <AdvancedMarker
       className="font-['Nunito Sans'] mb-8 flex flex-col gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
       position={currentPlace.position}
-      onClick={handleClick}
     >
       <div>
         <div className="flex items-center justify-between gap-4">
@@ -284,18 +285,17 @@ function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
 /*                                   Markers                                  */
 /* -------------------------------------------------------------------------- */
 
-function Markers({ places }: { places: Place[] }) {
-  const map = useMap();
+type MarkersProps = {
+  places: Place[];
+  setCurrentPlace: React.Dispatch<SetStateAction<CurrentPlace | null>>;
+};
 
-  const handleClick = useCallback(
-    (ev: google.maps.MapMouseEvent, place: Place) => {
-      if (!map) return;
-      if (!ev.latLng) return;
-      map.panTo(ev.latLng);
-      const { id, position } = place;
-    },
-    [map],
-  );
+function Markers({ places, setCurrentPlace }: MarkersProps) {
+  const handleClick = (place: Place) => {
+    const { placeId: id, position } = place;
+    const currentPlace = id ? { id, position } : null;
+    setCurrentPlace(currentPlace);
+  };
 
   return (
     <>
@@ -304,7 +304,7 @@ function Markers({ places }: { places: Place[] }) {
           key={place.id}
           position={place.position}
           clickable={true}
-          onClick={(ev) => handleClick(ev, place)}
+          onClick={() => handleClick(place)}
         >
           <Pin>{i + 1}</Pin>
         </AdvancedMarker>

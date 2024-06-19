@@ -84,7 +84,7 @@ async function getDay(
   const { data: placesData, error } = await supabase
     .from("places")
     .select(
-      "id, name, lat, lng, placeDuration:place_duration, tripDuration:trip_duration",
+      "id, name, lat, lng, placeDuration:place_duration, tripDuration:trip_duration, placeId:place_id",
     )
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);

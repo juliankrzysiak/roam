@@ -202,10 +202,12 @@ function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
             </span>
             ({data.userRatingCount})
           </span>
-          <OpeningHours
-            regularOpeningHours={data.regularOpeningHours}
-            date={date}
-          />
+          {data.regularOpeningHours && (
+            <OpeningHours
+              regularOpeningHours={data.regularOpeningHours}
+              date={date}
+            />
+          )}
         </div>
         <div className="mb-2 flex gap-1 text-slate-500">
           <a href={data.websiteUri} className="underline">

@@ -23,6 +23,7 @@ import useSWR, { Fetcher } from "swr";
 
 type MapProps = {
   day: Day;
+  children: React.ReactNode
 };
 
 // TODO: Make id optional for places that are not pois
@@ -32,7 +33,7 @@ type CurrentPlace = {
   position: google.maps.LatLngLiteral;
 };
 
-export default function Map({ day }: MapProps) {
+export default function Map({ day, children }: MapProps) {
   const { places } = day;
   const [currentPlace, setCurrentPlace] = useState<CurrentPlace | null>(null);
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
@@ -67,6 +68,7 @@ export default function Map({ day }: MapProps) {
         onClick={handleMapClick}
         disableDefaultUI
       >
+        {children}
         <Markers places={places} setCurrentPlace={setCurrentPlace} />
         {currentPlace && (
           <InfoWindow

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useCurrentPlaceStore } from "@/lib/store";
 import { Day, Place } from "@/types";
 import { createPlace } from "@/utils/actions/crud/create";
 import { deletePlace } from "@/utils/actions/crud/delete";
@@ -14,7 +15,7 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import { ChevronsUpDown } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 
 /* -------------------------------------------------------------------------- */
@@ -23,19 +24,17 @@ import useSWR, { Fetcher } from "swr";
 
 type MapProps = {
   day: Day;
-  children: React.ReactNode
-};
-
-// TODO: Make id optional for places that are not pois
-type CurrentPlace = {
-  id?: string;
-  placeId?: string;
-  position: google.maps.LatLngLiteral;
+  children: React.ReactNode;
 };
 
 export default function Map({ day, children }: MapProps) {
   const { places } = day;
-  const [currentPlace, setCurrentPlace] = useState<CurrentPlace | null>(null);
+  const [currentPlace, updateCurrentPlace, resetCurrentPlace] =
+    useCurrentPlaceStore((state) => [
+      state.currentPlace,
+      state.updateCurrentPlace,
+      state.reset,
+    ]);
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
     { lat: -34, lng: 118 },
   );
@@ -53,8 +52,8 @@ export default function Map({ day, children }: MapProps) {
 
   function handleMapClick(e: MapMouseEvent) {
     const { placeId, latLng: position } = e.detail;
-    if (!position || !placeId) setCurrentPlace(null);
-    else setCurrentPlace({ placeId, position });
+    if (!position || !placeId) resetCurrentPlace();
+    else updateCurrentPlace({ currentPlace: { placeId, position } });
     e.stop();
   }
 
@@ -69,15 +68,8 @@ export default function Map({ day, children }: MapProps) {
         disableDefaultUI
       >
         {children}
-        <Markers places={places} setCurrentPlace={setCurrentPlace} />
-        {currentPlace && (
-          <InfoWindow
-            currentPlace={currentPlace}
-            setCurrentPlace={setCurrentPlace}
-            date={day.date}
-            dayId={day.id}
-          />
-        )}
+        <Markers places={places} />
+        {currentPlace && <InfoWindow date={day.date} dayId={day.id} />}
       </GoogleMap>
     </APIProvider>
   );
@@ -108,67 +100,57 @@ const placeDetailsFetcher: Fetcher<PlaceDetails, string> = (id) =>
   ).then((res) => res.json());
 
 type InfoWindowProps = {
-  currentPlace: CurrentPlace;
-  setCurrentPlace: Dispatch<SetStateAction<CurrentPlace | null>>;
   date: Day["date"];
   dayId: Day["id"];
 };
 
-function InfoWindow({
-  currentPlace,
-  setCurrentPlace,
-  date,
-  dayId: day_id,
-}: InfoWindowProps) {
+function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
+  const [currentPlace, resetCurrentPlace] = useCurrentPlaceStore((state) => [
+    state.currentPlace,
+    state.reset,
+  ]);
   const advancedMarkerRef = useRef<AdvancedMarkerRef>(null);
   const map = useMap();
   useEffect(() => {
     advancedMarkerRef?.current?.addEventListener("click", (e) => {
       console.log(e);
     });
-    if (!map) return;
+    if (!map || !currentPlace?.position) return;
     map.panTo(currentPlace.position);
   }, []);
 
   const { data, error, isLoading } = useSWR(
-    currentPlace.placeId,
+    currentPlace?.placeId,
     placeDetailsFetcher,
   );
   if (error || !data) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
 
-  function handleClick(e: google.maps.MapMouseEvent) {
-    e.stop();
-  }
-
-  function handleClose() {
-    setCurrentPlace(null);
-  }
-
   async function handleCreatePlace() {
     const name = data?.displayName.text ?? "";
+    if (!currentPlace) return;
     const {
       placeId: place_id,
       position: { lng, lat },
     } = currentPlace;
+    if (!place_id) return;
     const payload = { name, day_id, lng, lat, place_id };
 
     await createPlace(payload);
-    setCurrentPlace(null);
+    resetCurrentPlace();
   }
 
   async function handleDeletePlace() {
-    const { id } = currentPlace;
-    if (!id) return;
-    await deletePlace(id);
-    setCurrentPlace(null);
+    if (!currentPlace?.id) return;
+    await deletePlace(currentPlace.id);
+    resetCurrentPlace();
   }
 
   return (
     <AdvancedMarker
       className="font-['Nunito Sans'] mb-8 flex flex-col gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
-      position={currentPlace.position}
-      onClick={handleClick}
+      position={currentPlace?.position}
+      onClick={(e) => e.stop()}
       ref={advancedMarkerRef}
     >
       <div>
@@ -176,7 +158,7 @@ function InfoWindow({
           <h2 className="text-xl font-bold text-slate-900">
             {data.displayName.text}
           </h2>
-          <button onClick={handleClose} aria-label="Close info window">
+          <button onClick={resetCurrentPlace} aria-label="Close info window">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -235,7 +217,7 @@ function InfoWindow({
           </a>
         </div>
       </div>
-      {currentPlace.id ? (
+      {currentPlace?.id ? (
         <Button onClick={handleDeletePlace}>Delete place</Button>
       ) : (
         <Button onClick={handleCreatePlace}>Add place</Button>
@@ -305,16 +287,17 @@ function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
 
 type MarkersProps = {
   places: Place[];
-  setCurrentPlace: React.Dispatch<SetStateAction<CurrentPlace | null>>;
 };
 
-function Markers({ places, setCurrentPlace }: MarkersProps) {
+function Markers({ places }: MarkersProps) {
+  const updateCurrentPlace = useCurrentPlaceStore(
+    (state) => state.updateCurrentPlace,
+  );
   const handleClick = (place: Place) => {
     const { id, position } = place;
-    // ! Fix issues of undefined v null
-    const placeId = place.placeId ?? undefined;
+    const placeId = place.placeId;
     const currentPlace = { id, placeId, position };
-    setCurrentPlace(currentPlace);
+    updateCurrentPlace({ currentPlace });
   };
 
   return (

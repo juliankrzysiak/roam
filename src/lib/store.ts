@@ -1,15 +1,28 @@
-import { Place, Popup } from "@/types";
 import { create } from "zustand";
 
 type State = {
-  popup: Place | Popup | null;
+  currentPlace: {
+    id?: string;
+    placeId: string | null;
+    position: google.maps.LatLngLiteral;
+  } | null;
 };
 
-type Action = {
-  updatePopup: (popup: State["popup"]) => void;
+type Actions = {
+  updateCurrentPlace: (currentPlace: State) => void;
+  reset: () => void;
 };
 
-export const usePopupStore = create<State & Action>((set) => ({
-  popup: null,
-  updatePopup: (popup) => set(() => ({ popup: popup })),
+const initialState: State = {
+  currentPlace: null,
+};
+
+export const useCurrentPlaceStore = create<State & Actions>((set) => ({
+  ...initialState,
+  updateCurrentPlace: (currentPlace: State) => {
+    set(currentPlace);
+  },
+  reset: () => {
+    set(initialState);
+  },
 }));

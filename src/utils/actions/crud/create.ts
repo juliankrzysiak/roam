@@ -40,7 +40,7 @@ type CreatePlaceParams = {
   lng: number;
   lat: number;
   day_id: string;
-  place_id?: string
+  place_id: string
 };
 
 export async function createPlace(payload: CreatePlaceParams) {

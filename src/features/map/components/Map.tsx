@@ -14,7 +14,7 @@ import {
   Pin,
   useMap,
 } from "@vis.gl/react-google-maps";
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 
@@ -161,20 +161,7 @@ function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
             {data.displayName.text}
           </h2>
           <button onClick={resetCurrentPlace} aria-label="Close info window">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="aspect-square h-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18 18 6M6 6l12 12"
-              />
-            </svg>
+            <X />
           </button>
         </div>
         <h3 className=" text-sm text-slate-600">
@@ -185,23 +172,10 @@ function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
         <div className="flex flex-col">
           <span>{data?.primaryTypeDisplayName?.text || "place"}</span>
           {data.rating && (
-            <span className="flex items-center gap-1 text-sm">
-              <span className="flex items-center">
+            <span className="flex items-center gap-2 text-sm">
+              <span className="flex items-center gap-1">
                 {data.rating}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="aspect-square h-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                  />
-                </svg>
+                <Star size={14} />
               </span>
               ({data.userRatingCount})
             </span>

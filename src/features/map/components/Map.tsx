@@ -79,18 +79,19 @@ export default function Map({ day, children }: MapProps) {
 /*                                 Info Window                                */
 /* -------------------------------------------------------------------------- */
 
+// ! Fix optional api properties like opening hours and ratings
 type PlaceDetails = {
   id: string;
   displayName: { languageCode: string; text: string };
   primaryTypeDisplayName?: { languageCode: string; text: string };
   shortFormattedAddress: string;
-  regularOpeningHours: {
+  regularOpeningHours?: {
     openNow: boolean;
     weekdayDescriptions: string[];
   };
-  rating: number;
-  userRatingCount: number;
-  websiteUri: string;
+  rating?: number;
+  userRatingCount?: number;
+  websiteUri?: string;
   googleMapsUri: string;
 };
 
@@ -111,6 +112,7 @@ function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
   ]);
   const advancedMarkerRef = useRef<AdvancedMarkerRef>(null);
   const map = useMap();
+
   useEffect(() => {
     advancedMarkerRef?.current?.addEventListener("click", (e) => {
       console.log(e);
@@ -182,38 +184,42 @@ function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
       <div className="flex flex-col gap-2 text-sm">
         <div className="flex flex-col">
           <span>{data?.primaryTypeDisplayName?.text || "place"}</span>
-          <span className="flex items-center gap-1 text-sm">
-            <span className="flex items-center">
-              {data.rating}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="aspect-square h-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                />
-              </svg>
+          {data.rating && (
+            <span className="flex items-center gap-1 text-sm">
+              <span className="flex items-center">
+                {data.rating}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="aspect-square h-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                  />
+                </svg>
+              </span>
+              ({data.userRatingCount})
             </span>
-            ({data.userRatingCount})
-          </span>
-          {data.regularOpeningHours && (
-            <OpeningHours
-              regularOpeningHours={data.regularOpeningHours}
-              date={date}
-            />
           )}
+          <OpeningHours
+            regularOpeningHours={data.regularOpeningHours}
+            date={date}
+          />
         </div>
         <div className="mb-2 flex gap-1 text-slate-500">
-          <a href={data.websiteUri} className="underline">
-            Website
-          </a>
-          •
+          {data.websiteUri && (
+            <>
+              <a href={data.websiteUri} className="underline">
+                Website
+              </a>
+              •
+            </>
+          )}
           <a href={data.googleMapsUri} className="underline">
             Google Maps
           </a>
@@ -233,13 +239,15 @@ function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
 /* -------------------------------------------------------------------------- */
 
 type OpeningHoursProps = {
-  regularOpeningHours: PlaceDetails["regularOpeningHours"];
+  regularOpeningHours: PlaceDetails["regularOpeningHours"] | undefined;
   date: Day["date"];
 };
 
 function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
   // TODO: Return nothing if opening hours not there
   const [isOpen, setIsOpen] = useState(false);
+  if (!regularOpeningHours) return null;
+
   const todayIndex = date.getDay() - 1;
   const days = regularOpeningHours.weekdayDescriptions.map((desc) => {
     const [day, time] = desc.split(" ");

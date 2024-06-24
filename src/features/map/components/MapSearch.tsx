@@ -23,7 +23,6 @@ export default function MapSearch() {
     };
 
     setPlaceAutocomplete(new places.Autocomplete(inputRef.current, options));
-    resetCurrentPlace();
   }, [places]);
 
   useEffect(() => {
@@ -38,8 +37,14 @@ export default function MapSearch() {
       if (!lat || !lng || !placeId) return;
       const currentPlace = { placeId, position: { lat, lng } };
       updateCurrentPlace({ currentPlace });
+      resetInput();
     });
   }, [updateCurrentPlace, placeAutocomplete]);
+
+  function resetInput() {
+    if (!inputRef.current) return;
+    inputRef.current.value = "";
+  }
 
   return (
     <div className="absolute left-2 right-2 top-2 flex gap-2 rounded-lg bg-slate-100 p-2 shadow-lg">

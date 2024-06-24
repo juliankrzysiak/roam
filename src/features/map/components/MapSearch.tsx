@@ -2,11 +2,13 @@
 
 import { useCurrentPlaceStore } from "@/lib/store";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import { XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+// Main template stolen from https://github.com/visgl/react-google-maps/tree/main/examples/autocomplete
 export default function MapSearch() {
-  const updateCurrentPlace = useCurrentPlaceStore(
-    (state) => state.updateCurrentPlace,
+  const [updateCurrentPlace, resetCurrentPlace] = useCurrentPlaceStore(
+    (state) => [state.updateCurrentPlace, state.reset],
   );
   const [placeAutocomplete, setPlaceAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
@@ -36,11 +38,20 @@ export default function MapSearch() {
       const currentPlace = { placeId, position: { lat, lng } };
       updateCurrentPlace({ currentPlace });
     });
-  }, [placeAutocomplete]);
+  }, [updateCurrentPlace, placeAutocomplete]);
+
+  function resetInput() {
+    if (!inputRef.current) return;
+    inputRef.current.value = "";
+    resetCurrentPlace();
+  }
 
   return (
-    <div className="absolute left-2 right-2 top-2 rounded-lg bg-slate-100 p-2 shadow-lg">
+    <div className="absolute left-2 right-2 top-2 flex gap-2 rounded-lg bg-slate-100 p-2 shadow-lg">
       <input ref={inputRef} className="w-full rounded-lg px-2" />
+      <button onClick={resetInput}>
+        <XIcon />
+      </button>
     </div>
   );
 }

@@ -4,7 +4,7 @@ export type Place = {
   position: google.maps.LatLngLiteral;
   placeDuration: number;
   tripDuration: number;
-  placeId: string | null;
+  placeId: string;
 };
 
 export type Popup = Omit<Place, "placeDuration" | "tripDuration">;

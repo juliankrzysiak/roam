@@ -54,7 +54,7 @@ export type Database = {
           lng: number
           name: string
           place_duration: number
-          place_id: string | null
+          place_id: string
           trip_duration: number
         }
         Insert: {
@@ -66,7 +66,7 @@ export type Database = {
           lng: number
           name: string
           place_duration?: number
-          place_id?: string | null
+          place_id: string
           trip_duration?: number
         }
         Update: {
@@ -78,7 +78,7 @@ export type Database = {
           lng?: number
           name?: string
           place_duration?: number
-          place_id?: string | null
+          place_id?: string
           trip_duration?: number
         }
         Relationships: [
@@ -139,7 +139,7 @@ export type Database = {
           lng: number
           name: string
           place_duration: number
-          place_id: string | null
+          place_id: string
           trip_duration: number
         }[]
       }

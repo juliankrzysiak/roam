@@ -1,15 +1,13 @@
 "use client";
 
-import { useCurrentPlaceStore } from "@/lib/store";
+import { currentPlaceAtom } from "@/lib/atom";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { XIcon } from "lucide-react";
+import { useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 
 // Main template stolen from https://github.com/visgl/react-google-maps/tree/main/examples/autocomplete
 export default function MapSearch() {
-  const [updateCurrentPlace, resetCurrentPlace] = useCurrentPlaceStore(
-    (state) => [state.updateCurrentPlace, state.reset],
-  );
+  const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const [placeAutocomplete, setPlaceAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -36,10 +34,10 @@ export default function MapSearch() {
       const lng = place.geometry?.location?.lng();
       if (!lat || !lng || !placeId) return;
       const currentPlace = { placeId, position: { lat, lng } };
-      updateCurrentPlace({ currentPlace });
+      setCurrentPlace(currentPlace);
       resetInput();
     });
-  }, [updateCurrentPlace, placeAutocomplete]);
+  }, [placeAutocomplete]);
 
   function resetInput() {
     if (!inputRef.current) return;

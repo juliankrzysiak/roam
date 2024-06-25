@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useCurrentPlaceStore } from "@/lib/store";
+import { currentPlaceAtom } from "@/lib/atom";
 import { Day, Place } from "@/types";
 import { createPlace } from "@/utils/actions/crud/create";
 import { deletePlace } from "@/utils/actions/crud/delete";
@@ -14,6 +14,7 @@ import {
   Pin,
   useMap,
 } from "@vis.gl/react-google-maps";
+import { useAtom, useSetAtom } from "jotai";
 import { ChevronsUpDown, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSWR, { Fetcher } from "swr";
@@ -29,12 +30,7 @@ type MapProps = {
 
 export default function Map({ day, children }: MapProps) {
   const { places } = day;
-  const [currentPlace, updateCurrentPlace, resetCurrentPlace] =
-    useCurrentPlaceStore((state) => [
-      state.currentPlace,
-      state.updateCurrentPlace,
-      state.reset,
-    ]);
+  const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
     { lat: -34, lng: 118 },
   );
@@ -52,8 +48,8 @@ export default function Map({ day, children }: MapProps) {
 
   function handleMapClick(e: MapMouseEvent) {
     const { placeId, latLng: position } = e.detail;
-    if (!position || !placeId) resetCurrentPlace();
-    else updateCurrentPlace({ currentPlace: { placeId, position } });
+    if (!position || !placeId) setCurrentPlace(null);
+    else setCurrentPlace({ placeId, position });
     e.stop();
   }
 
@@ -78,7 +74,6 @@ export default function Map({ day, children }: MapProps) {
 /*                                 Info Window                                */
 /* -------------------------------------------------------------------------- */
 
-// ! Fix optional api properties like opening hours and ratings
 type PlaceDetails = {
   id: string;
   displayName: { languageCode: string; text: string };
@@ -105,10 +100,7 @@ type InfoWindowProps = {
 };
 
 function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
-  const [currentPlace, resetCurrentPlace] = useCurrentPlaceStore((state) => [
-    state.currentPlace,
-    state.reset,
-  ]);
+  const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const advancedMarkerRef = useRef<AdvancedMarkerRef>(null);
   const map = useMap();
 
@@ -138,13 +130,13 @@ function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
     const payload = { name, day_id, lng, lat, place_id };
 
     await createPlace(payload);
-    resetCurrentPlace();
+    setCurrentPlace(null);
   }
 
   async function handleDeletePlace() {
     if (!currentPlace?.id) return;
     await deletePlace(currentPlace.id);
-    resetCurrentPlace();
+    setCurrentPlace(null);
   }
 
   return (
@@ -159,7 +151,10 @@ function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
           <h2 className="text-xl font-bold text-slate-900">
             {data.displayName.text}
           </h2>
-          <button onClick={resetCurrentPlace} aria-label="Close info window">
+          <button
+            onClick={() => setCurrentPlace(null)}
+            aria-label="Close info window"
+          >
             <X />
           </button>
         </div>
@@ -273,14 +268,12 @@ type MarkersProps = {
 };
 
 function Markers({ places }: MarkersProps) {
-  const updateCurrentPlace = useCurrentPlaceStore(
-    (state) => state.updateCurrentPlace,
-  );
+  const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const handleClick = (place: Place) => {
     const { id, position } = place;
     const placeId = place.placeId;
     const currentPlace = { id, placeId, position };
-    updateCurrentPlace({ currentPlace });
+    setCurrentPlace(currentPlace);
   };
 
   return (

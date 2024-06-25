@@ -60,7 +60,6 @@ export default function Map({ day, children }: MapProps) {
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
       <GoogleMap
-        className="w-full"
         defaultZoom={13}
         defaultCenter={defaultCenter}
         mapId={"2b28f32837556830"}

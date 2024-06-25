@@ -54,7 +54,7 @@ export default function Planner({ day, tripId }: Props) {
   }, [day.places]);
 
   return (
-    <section className="relative flex w-full max-w-xs flex-col overflow-scroll border-2 border-emerald-600 bg-gray-100 px-4 shadow-lg">
+    <section className="z-10 flex h-full w-full flex-col overflow-scroll border-r-2 border-emerald-600 bg-slate-100 px-4 sm:max-w-xs">
       <div className="sticky top-0 bg-inherit">
         {/* <NavigateDays dayInfo={dayInfo} tripId={tripId} /> */}
         {/* <StartTime endTime={endTime} /> */}

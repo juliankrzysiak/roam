@@ -16,16 +16,15 @@ import NavigateDays from "./NavigateDays";
 import StartTime from "./StartTime";
 
 type Props = {
-  places: Place[];
-  dayInfo: Day;
-  tripId: number;
+  day: Day;
+  tripId: string;
 };
 
-export default function Planner({ places, dayInfo, tripId }: Props) {
+export default function Planner({ day, tripId }: Props) {
   // TODO: Optimistic updates can be used here
   // FIX: make it a date then convert
-  const startTime = parse(dayInfo.startTime, "HH:mm:ss", new Date());
-  const [items, setItems] = useState(() => calcItinerary(places));
+  const startTime = parse(day.startTime, "HH:mm:ss", new Date());
+  const [items, setItems] = useState(() => calcItinerary(day.places));
   const endTime = format(items.at(-1)?.departure ?? startTime, "h:mm a");
 
   // useMemo this, or just move it to server component
@@ -45,20 +44,20 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
     return calculatedPlaces;
   }
 
-  function handleDragEnd() {
-    reorderPlaces(places, items, dayInfo.currentDayId);
-  }
+  // function handleDragEnd() {
+  //   reorderPlaces(day.places, items, day.currentDayId);
+  // }
 
   // Code Smell
   useEffect(() => {
-    setItems(calcItinerary(places));
-  }, [places]);
+    setItems(calcItinerary(day.places));
+  }, [day.places]);
 
   return (
     <section className="relative flex w-full max-w-xs flex-col overflow-scroll border-2 border-emerald-600 bg-gray-100 px-4 shadow-lg">
       <div className="sticky top-0 bg-inherit">
-        <NavigateDays dayInfo={dayInfo} tripId={tripId} />
-        <StartTime endTime={endTime} />
+        {/* <NavigateDays dayInfo={dayInfo} tripId={tripId} /> */}
+        {/* <StartTime endTime={endTime} /> */}
       </div>
       <div className="py-2">
         <Reorder.Group
@@ -73,14 +72,14 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
               <Card
                 key={place.id}
                 place={place}
-                handleDragEnd={handleDragEnd}
+                // handleDragEnd={handleDragEnd}
                 last={isLast}
               />
             );
           })}
         </Reorder.Group>
       </div>
-      <form
+      {/* <form
         action={async () => {
           if (dayInfo.indexCurrentDay >= dayInfo.orderDays.length - 1)
             await updateDay(dayInfo.indexCurrentDay - 1, tripId);
@@ -105,7 +104,7 @@ export default function Planner({ places, dayInfo, tripId }: Props) {
         />
         <input type="hidden" name="dayId" defaultValue={dayInfo.currentDayId} />
         <button>delete day</button>
-      </form>
+      </form> */}
     </section>
   );
 }

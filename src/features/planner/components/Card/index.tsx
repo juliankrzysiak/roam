@@ -13,12 +13,12 @@ type Props = {
 
 export default function Card({ place, handleDragEnd, last }: Props) {
   const { id, arrival, placeDuration, tripDuration } = place;
-  const updatePopup = usePopupStore((state) => state.updatePopup);
+  // const updatePopup = usePopupStore((state) => state.updatePopup);
   const controls = useDragControls();
 
-  function onClickTitle() {
-    updatePopup(place);
-  }
+  // function onClickTitle() {
+  //   updatePopup(place);
+  // }
 
   return (
     <Reorder.Item
@@ -29,9 +29,7 @@ export default function Card({ place, handleDragEnd, last }: Props) {
       onDragEnd={handleDragEnd}
     >
       <article className="flex flex-col gap-2 rounded-lg bg-slate-300 p-4 shadow-lg">
-        <h1 className="font-bold underline" onClick={onClickTitle}>
-          {place.name}
-        </h1>
+        <h1 className="font-bold underline">{place.name}</h1>
         <PlaceTimes
           arrival={arrival}
           placeDuration={placeDuration}

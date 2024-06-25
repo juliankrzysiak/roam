@@ -73,6 +73,7 @@ async function getDay(
   const { data: dateData, error: dateError } = await supabase
     .from("trips")
     .select("current_date")
+    .eq("id", tripId)
     .limit(1)
     .single();
   if (dateError) throw new Error(`Supbase error: ${dateError.message}`);

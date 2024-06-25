@@ -12,31 +12,31 @@ export type Database = {
       days: {
         Row: {
           created_at: string
-          date: string | null
+          date: string
           id: string
           order_places: string[] | null
-          start_time: string | null
-          trip_id: number
+          start_time: string
+          trip_id: string
         }
         Insert: {
           created_at?: string
-          date?: string | null
+          date: string
           id?: string
           order_places?: string[] | null
-          start_time?: string | null
-          trip_id: number
+          start_time?: string
+          trip_id: string
         }
         Update: {
           created_at?: string
-          date?: string | null
+          date?: string
           id?: string
           order_places?: string[] | null
-          start_time?: string | null
-          trip_id?: number
+          start_time?: string
+          trip_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "public_days_trip_id_fkey"
+            foreignKeyName: "days_trip_id_fkey"
             columns: ["trip_id"]
             isOneToOne: false
             referencedRelation: "trips"
@@ -52,20 +52,22 @@ export type Database = {
           id: string
           lat: number
           lng: number
-          name: string | null
-          placeDuration: number | null
-          tripDuration: number | null
+          name: string
+          place_duration: number
+          place_id: string | null
+          trip_duration: number
         }
         Insert: {
           category?: string | null
           created_at?: string
           day_id: string
-          id: string
+          id?: string
           lat: number
           lng: number
-          name?: string | null
-          placeDuration?: number | null
-          tripDuration?: number | null
+          name: string
+          place_duration?: number
+          place_id?: string | null
+          trip_duration?: number
         }
         Update: {
           category?: string | null
@@ -74,9 +76,10 @@ export type Database = {
           id?: string
           lat?: number
           lng?: number
-          name?: string | null
-          placeDuration?: number | null
-          tripDuration?: number | null
+          name?: string
+          place_duration?: number
+          place_id?: string | null
+          trip_duration?: number
         }
         Relationships: [
           {
@@ -91,8 +94,8 @@ export type Database = {
       trips: {
         Row: {
           created_at: string
-          current_day: string | null
-          id: number
+          current_date: string | null
+          id: string
           index_current_day: number | null
           name: string
           order_days: string[]
@@ -100,8 +103,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          current_day?: string | null
-          id?: number
+          current_date?: string | null
+          id?: string
           index_current_day?: number | null
           name: string
           order_days?: string[]
@@ -109,8 +112,8 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          current_day?: string | null
-          id?: number
+          current_date?: string | null
+          id?: string
           index_current_day?: number | null
           name?: string
           order_days?: string[]
@@ -134,9 +137,10 @@ export type Database = {
           id: string
           lat: number
           lng: number
-          name: string | null
-          placeDuration: number | null
-          tripDuration: number | null
+          name: string
+          place_duration: number
+          place_id: string | null
+          trip_duration: number
         }[]
       }
     }

@@ -1,11 +1,10 @@
 export type Place = {
   id: string;
   name: string;
-  category: string;
-  lng: number;
-  lat: number;
+  position: google.maps.LatLngLiteral;
   placeDuration: number;
   tripDuration: number;
+  placeId: string | null;
 };
 
 export type Popup = Omit<Place, "placeDuration" | "tripDuration">;
@@ -22,10 +21,9 @@ export type Trip = {
   duration: number;
 };
 
-export type DayInfo = {
-  orderDays: string[];
-  indexCurrentDay: number;
-  currentDayId: string;
+export type Day = {
+  id: string;
+  date: Date;
   startTime: string;
-  date: string;
+  places: Place[];
 };

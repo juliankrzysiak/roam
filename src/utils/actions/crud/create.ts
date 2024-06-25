@@ -1,63 +1,53 @@
 "use server";
 
-import { Place, Popup } from "@/types";
-import { parseDate, sliceDate } from "@/utils";
+import { formatBulkDates } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
-import { add } from "date-fns";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
+import { v4 as uuidv4 } from "uuid";
 
-export async function createTrip(formData: FormData) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const name = formData.get("name");
+export async function createTrip(name: string, dates: Date[]) {
+  const supabase = createClient();
 
   try {
-    if (typeof name !== "string") return;
-    const { data, error } = await supabase
+    const tripId = uuidv4();
+    const bulkDates = formatBulkDates(tripId, dates);
+    // Saving the first date as the current date of the trip
+    const firstDate = bulkDates[0].date;
+
+    const payload = {
+      id: tripId,
+      name,
+      current_date: firstDate,
+    };
+
+    const { error } = await supabase
       .from("trips")
-      .insert({ name })
+      .insert(payload)
       .select()
       .limit(1)
       .single();
+
+    await supabase.from("days").insert(bulkDates);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/trips");
-    return data.id;
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function createDay(tripId: number, date: string) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+type CreatePlaceParams = {
+  name: string;
+  lng: number;
+  lat: number;
+  day_id: string;
+  place_id: string
+};
 
-  const nextDay = sliceDate(add(parseDate(date), { days: 1 }));
-
-  try {
-    const { data, error } = await supabase
-      .from("days")
-      .insert({ trip_id: tripId, date: nextDay })
-      .select("id")
-      .limit(1)
-      .single();
-    if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/maps");
-    return data.id;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function createPlace(place: Popup, day_id: string) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const placeWithId = { ...place, day_id };
+export async function createPlace(payload: CreatePlaceParams) {
+  const supabase = createClient();
 
   try {
-    const { error } = await supabase.from("places").insert(placeWithId);
+    const { error } = await supabase.from("places").insert(payload);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
   } catch (error) {

@@ -1,6 +1,7 @@
 import { Place } from "@/types";
-import { formatISO, parse } from "date-fns";
+import { format, formatISO, parse, parseISO } from "date-fns";
 import { updatePlaceOrder } from "./actions/crud/update";
+import { DateRange } from "react-day-picker";
 
 export async function reorderPlaces(
   oldPlaces: Place[],
@@ -37,4 +38,58 @@ export function parseDate(date: string, format: string = "yyyy-MM-dd") {
 
 export function sliceDate(date: Date, end: number = 10) {
   return formatISO(date).slice(0, end);
+}
+
+// Get what dates to add and remove comparing two arrays of dates]\
+
+export function calcDateDeltas(oldArr: Date[], newArr: Date[]) {
+  const removedItems = calcDateDelta(oldArr, newArr);
+  const addedItems = calcDateDelta(newArr, oldArr);
+
+  return [addedItems, removedItems];
+}
+
+function calcDateDelta(arr1: Date[], arr2: Date[]) {
+  return arr1.filter(
+    (date1) =>
+      !arr2.some((date2) => date2.toUTCString() === date1.toUTCString()),
+  );
+}
+
+//
+
+export function formatBulkDates(trip_id: string, dates: Date[]) {
+  return dates.map((date) => ({ trip_id, date: format(date, "yyyy-MM-dd") }));
+}
+
+//
+
+type Trip = {
+  id: string;
+  name: string;
+  days: { date: string }[];
+};
+
+// Calculate the min and max days and replace days with new property
+export function mapDateRange(trips: Trip[]) {
+  return trips.map((trip) => {
+    const dateRange = calcDateRange(trip.days);
+    // Remove a property and add a property
+    const { days, ...newTrip } = { ...trip, dateRange };
+
+    return newTrip;
+  });
+}
+
+export function calcDateRange(days: { date: string }[]) {
+  const sortedDays = days.map(({ date }) => date).sort();
+  const from = parseISO(sortedDays[0]);
+  const to = parseISO(sortedDays[days.length - 1]);
+
+  const dateRange: DateRange = {
+    from,
+  };
+  if (to && from !== to) dateRange.to = to;
+
+  return dateRange;
 }

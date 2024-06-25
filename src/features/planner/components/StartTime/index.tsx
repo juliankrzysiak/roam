@@ -1,4 +1,4 @@
-import { DayContext } from "@/app/map/[trip]/DayProvider";
+import { DayContext } from "@/app/[trip]/DayProvider";
 import { useContext } from "react";
 import { updateStartTime } from "@/utils/actions/crud/update";
 

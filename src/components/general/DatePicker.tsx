@@ -11,23 +11,31 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { updateDate } from "@/utils/actions/crud/update";
-import { useOptimistic } from "react";
+import { updateCurrentDate } from "@/utils/actions/crud/update";
+import { useOptimistic, useState } from "react";
+import { DateRange } from "react-day-picker";
 
 type Props = {
+  tripId: string;
   initialDate: Date;
-  dayId: string;
+  dateRange: DateRange;
 };
 
-export function DatePicker({ initialDate, dayId }: Props) {
+export function DatePicker({ tripId, initialDate, dateRange }: Props) {
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [optimisticDate, setOptimisticDate] = useOptimistic<Date | undefined>(
     initialDate,
     (state, newDate) => newDate,
   );
 
+  const dateMatcher = {
+    before: dateRange.from,
+    after: dateRange.to || dateRange,
+  };
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+      <PopoverTrigger onClick={() => setCalendarOpen(true)} asChild>
         <Button
           variant={"outline"}
           className={cn(
@@ -37,7 +45,7 @@ export function DatePicker({ initialDate, dayId }: Props) {
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {optimisticDate ? (
-            format(optimisticDate, "PPP")
+            format(optimisticDate, "eee, MMM d")
           ) : (
             <span>Pick a date</span>
           )}
@@ -46,11 +54,14 @@ export function DatePicker({ initialDate, dayId }: Props) {
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
+          requiredy
+          disabled={dateMatcher}
           selected={optimisticDate}
           onSelect={async (date) => {
             if (!date) return;
             setOptimisticDate(date);
-            await updateDate(date, dayId);
+            await updateCurrentDate(tripId, date);
+            setCalendarOpen(false);
           }}
           initialFocus
         />

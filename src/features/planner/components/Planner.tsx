@@ -14,6 +14,9 @@ import { useEffect, useState } from "react";
 import Card from "./Card";
 import NavigateDays from "./NavigateDays";
 import StartTime from "./StartTime";
+import { useAtomValue } from "jotai";
+import { isPlannerVisibleAtom } from "@/lib/atom";
+import clsx from "clsx";
 
 type Props = {
   day: Day;
@@ -23,6 +26,7 @@ type Props = {
 export default function Planner({ day, tripId }: Props) {
   // TODO: Optimistic updates can be used here
   // FIX: make it a date then convert
+  const isVisible = useAtomValue(isPlannerVisibleAtom);
   const startTime = parse(day.startTime, "HH:mm:ss", new Date());
   const [items, setItems] = useState(() => calcItinerary(day.places));
   const endTime = format(items.at(-1)?.departure ?? startTime, "h:mm a");
@@ -54,7 +58,12 @@ export default function Planner({ day, tripId }: Props) {
   }, [day.places]);
 
   return (
-    <section className="z-10 flex h-full w-full flex-col overflow-scroll border-r-2 border-emerald-600 bg-slate-100 px-4 sm:max-w-xs">
+    <section
+      className={clsx(
+        "absolute right-0 top-0 z-10 flex h-full w-full flex-col overflow-scroll border-r-2 border-emerald-600 bg-slate-100 px-4 sm:static sm:max-w-xs",
+        !isVisible && "hidden opacity-0",
+      )}
+    >
       <div className="sticky top-0 bg-inherit">
         {/* <NavigateDays dayInfo={dayInfo} tripId={tripId} /> */}
         {/* <StartTime endTime={endTime} /> */}

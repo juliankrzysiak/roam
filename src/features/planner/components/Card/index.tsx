@@ -2,7 +2,6 @@ import { PlaceInfo } from "@/types";
 import { Reorder, useDragControls } from "framer-motion";
 import PlaceTimes from "./PlaceTimes";
 import TripForm from "./TripForm";
-import { usePopupStore } from "@/lib/atom";
 import { ReorderIcon } from "@/components/general/ReorderIcon";
 
 type Props = {

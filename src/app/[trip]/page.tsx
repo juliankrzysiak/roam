@@ -10,6 +10,7 @@ import { parse } from "date-fns";
 import { calcDateRange } from "@/utils";
 import { Database } from "@/types/supabase";
 import MapSearch from "@/features/map/components/MapSearch";
+import TogglePlannerButton from "@/components/general/TogglePlannerButton";
 
 type Props = {
   params: { trip: string };
@@ -46,6 +47,7 @@ export default async function MapPage({ params }: Props) {
           dateRange={dateRange}
         />
       </Map>
+      <TogglePlannerButton />
     </main>
     // </DayProvider>
   );

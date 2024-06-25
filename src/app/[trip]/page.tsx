@@ -1,5 +1,5 @@
 import Map from "@/features/map/components/Map";
-import Planner from "@/features/planner/components";
+import Planner from "@/features/planner/components/Planner";
 import { Day, Place, Trip } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";

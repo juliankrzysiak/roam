@@ -17,14 +17,24 @@ import StartTime from "./StartTime";
 import { useAtomValue } from "jotai";
 import { isPlannerVisibleAtom } from "@/lib/atom";
 import clsx from "clsx";
+import { Car } from "lucide-react";
+import { TimePicker } from "@/features/map/components/MapControls";
+import { DatePicker } from "@/components/general/DatePicker";
+import { DateRange } from "react-day-picker";
 
 type PlannerProps = {
   day: Day;
   tripId: string;
   tripName: string;
+  dateRange: DateRange;
 };
 
-export default function Planner({ day, tripId, tripName }: PlannerProps) {
+export default function Planner({
+  day,
+  dateRange,
+  tripId,
+  tripName,
+}: PlannerProps) {
   // TODO: Optimistic updates can be used here
   // FIX: make it a date then convert
   const isVisible = useAtomValue(isPlannerVisibleAtom);
@@ -61,14 +71,23 @@ export default function Planner({ day, tripId, tripName }: PlannerProps) {
   return (
     <section
       className={clsx(
-        "absolute right-0 top-0 z-10 flex h-full w-full flex-col overflow-scroll border-r-2 border-emerald-600 bg-slate-100 p-4 sm:static sm:max-w-xs",
+        "absolute right-0 top-0 z-10 flex h-full w-full flex-col overflow-scroll border-r-2 border-emerald-600 bg-slate-100 px-4 py-2 sm:static sm:max-w-xs",
         !isVisible && "hidden opacity-0",
       )}
     >
-      <h2 className="text-xl">{tripName}</h2>
-      <div className="sticky top-0 bg-inherit">
-        {/* <NavigateDays dayInfo={dayInfo} tripId={tripId} /> */}
-        {/* <StartTime endTime={endTime} /> */}
+      <div className="sticky top-0 border-b-2 border-slate-500">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl">{tripName}</h2>
+          {/* <span className="flex gap-2">
+            <Car /> 5:30{" "}
+          </span> */}
+          <DatePicker
+            initialDate={day.date}
+            dateRange={dateRange}
+            tripId={tripId}
+          />
+        </div>
+        <TimePicker day={day} />
       </div>
       <div className="py-2">
         <Reorder.Group

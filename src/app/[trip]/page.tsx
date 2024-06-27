@@ -22,11 +22,7 @@ export default async function MapPage({ params }: Props) {
 
   const day = await getDay(supabase, tripId);
   const dateRange = await getDateRange(supabase, tripId);
-  const tripName = await getTripName(supabase, tripId)
-  const totalDuration = day.places.reduce(
-    (acc, cur) => acc + cur.placeDuration + cur.tripDuration,
-    0,
-  );
+  const tripName = await getTripName(supabase, tripId);
 
   // const endTime = add(parse(dayInfo.startTime, "HH:mm:ss", new Date()), {
   //   minutes: totalDuration,
@@ -38,15 +34,10 @@ export default async function MapPage({ params }: Props) {
   return (
     // <DayProvider dayInfo={dayInfo}>
     <main className="relative h-40 flex-grow sm:flex">
-      <Planner day={day} tripId={tripId} tripName={tripName} />
+      <Planner day={day} tripId={tripId} tripName={tripName} dateRange={dateRange} />
       <Map day={day}>
         <MapSearch />
-        <MapControls
-          tripId={tripId}
-          day={day}
-          totalDuration={totalDuration}
-          dateRange={dateRange}
-        />
+        <MapControls tripId={tripId} day={day} dateRange={dateRange} />
       </Map>
       <TogglePlannerButton />
     </main>
@@ -54,14 +45,13 @@ export default async function MapPage({ params }: Props) {
   );
 }
 
-async function getTripName(
-  supabase: SupabaseClient<Database>,
-  tripId: string,
-) {
+async function getTripName(supabase: SupabaseClient<Database>, tripId: string) {
   const { data, error } = await supabase
     .from("trips")
     .select("name")
-    .eq("id", tripId).limit(1).single();
+    .eq("id", tripId)
+    .limit(1)
+    .single();
   if (error) throw new Error(`${error.message}`);
   return data.name;
 }

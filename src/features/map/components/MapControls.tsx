@@ -12,35 +12,35 @@ import { DateRange } from "react-day-picker";
 type MapControlsProps = {
   tripId: string;
   day: Day;
-  totalDuration: number;
   dateRange: DateRange;
 };
 
 export default function MapControls({
   tripId,
   day,
-  totalDuration,
   dateRange,
 }: MapControlsProps) {
   return (
-    <div className="absolute bottom-8 left-1/2 flex w-full max-w-sm  -translate-x-1/2 flex-col items-center gap-1  rounded-lg">
-      <div className="flex gap-2 rounded-lg bg-background p-2 shadow-lg">
-        <DatePicker
-          initialDate={day.date}
-          dateRange={dateRange}
-          tripId={tripId}
-        />
-        <PlacePicker />
-      </div>
-      <TimePicker day={day} totalDuration={totalDuration} />
+    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-lg border-2 border-emerald-900">
+      {/* <TimePicker day={day} /> */}
+      <DatePicker
+        initialDate={day.date}
+        dateRange={dateRange}
+        tripId={tripId}
+      />
+      {/* <PlacePicker /> */}
     </div>
   );
 }
 
 type TimePickerProps = Omit<MapControlsProps, "tripId" | "dateRange">;
 
-function TimePicker({ day, totalDuration }: TimePickerProps) {
+export function TimePicker({ day }: TimePickerProps) {
   const [startTime, setStartTime] = useState(day.startTime.slice(0, 5));
+  const totalDuration = day.places.reduce(
+    (acc, cur) => acc + cur.placeDuration + cur.tripDuration,
+    0,
+  );
   const endTime = addMinutes(
     parse(startTime, "HH:mm", new Date()),
     totalDuration,

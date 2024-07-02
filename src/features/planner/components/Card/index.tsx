@@ -1,18 +1,22 @@
-import { PlaceInfo } from "@/types";
-import { Reorder, useDragControls } from "framer-motion";
-import PlaceTimes from "./PlaceTimes";
-import TripForm from "./TripForm";
-import { ReorderIcon } from "@/components/general/ReorderIcon";
-import { useSetAtom } from "jotai";
 import { currentPlaceAtom } from "@/lib/atom";
+import { PlaceInfo } from "@/types";
+import { convertTime } from "@/utils";
+import {
+  updatePlaceDuration,
+  updateTripDuration,
+} from "@/utils/actions/crud/update";
+import { add, format } from "date-fns";
+import { Reorder, useDragControls } from "framer-motion";
+import { useSetAtom } from "jotai";
+import { useState } from "react";
 
-type Props = {
+type CardProps = {
   place: PlaceInfo;
   handleDragEnd: () => void;
   last: boolean;
 };
 
-export default function Card({ place, handleDragEnd, last }: Props) {
+export default function Card({ place, handleDragEnd, last }: CardProps) {
   const { id, arrival, placeDuration, tripDuration } = place;
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const controls = useDragControls();
@@ -45,5 +49,94 @@ export default function Card({ place, handleDragEnd, last }: Props) {
       </article>
       {!last && <TripForm placeId={id} tripDuration={tripDuration} />}
     </Reorder.Item>
+  );
+}
+
+/* ------------------------------- PlaceTimes ------------------------------- */
+
+const timeFormat = "h:mm aaa";
+
+type PlaceTimesProps = {
+  arrival: Date;
+  placeDuration: number;
+  placeId: string;
+};
+
+function PlaceTimes({ arrival, placeDuration, placeId }: PlaceTimesProps) {
+  const { hours, minutes } = convertTime({ minutes: placeDuration });
+  const [hourDuration, setHourDuration] = useState(hours);
+  const [minuteDuration, setMinuteDuration] = useState(minutes);
+  const departure = add(arrival, {
+    hours: hourDuration,
+    minutes: minuteDuration,
+  });
+
+  return (
+    <form className="flex justify-between gap-2" action={updatePlaceDuration}>
+      <p className="text-center">{format(arrival, timeFormat)}</p>
+      <div className="flex flex-col gap-2">
+        <label className="flex items-center gap-1">
+          <input
+            className="max-w-xs px-1"
+            name="hours"
+            type="number"
+            min="0"
+            max="12"
+            defaultValue={hourDuration}
+            onChange={(e) => setHourDuration(Number(e.target.value))}
+          />
+          :
+          <input
+            className="max-w-xs px-1"
+            name="minutes"
+            type="number"
+            min="0"
+            max="59"
+            defaultValue={minuteDuration}
+            onChange={(e) => setMinuteDuration(Number(e.target.value))}
+          />
+        </label>
+        <input type="hidden" name="id" defaultValue={placeId} />
+        <button type="submit">Submit</button>
+      </div>
+      <p className="text-center">{format(departure, timeFormat)}</p>
+    </form>
+  );
+}
+
+/* -------------------------------- TripForm -------------------------------- */
+
+type TripFormProps = {
+  placeId: string;
+  tripDuration: number;
+};
+
+function TripForm({ placeId, tripDuration }: TripFormProps) {
+  const { hours, minutes } = convertTime({ minutes: tripDuration });
+
+  return (
+    <form className="flex items-end gap-2" action={updateTripDuration}>
+      <label className="flex">
+        <input
+          className="px-1"
+          name="hours"
+          type="number"
+          min="0"
+          max="12"
+          defaultValue={hours}
+        />
+        :
+        <input
+          className="px-1"
+          name="minutes"
+          type="number"
+          min="0"
+          max="59"
+          defaultValue={minutes}
+        />
+      </label>
+      <input type="hidden" name="id" defaultValue={placeId} />
+      <button>Submit</button>
+    </form>
   );
 }

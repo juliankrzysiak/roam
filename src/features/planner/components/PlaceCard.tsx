@@ -10,13 +10,13 @@ import { Reorder, useDragControls } from "framer-motion";
 import { useSetAtom } from "jotai";
 import { useState } from "react";
 
-type CardProps = {
+type PlaceCardProps = {
   place: PlaceInfo;
   handleDragEnd: () => void;
   last: boolean;
 };
 
-export default function Card({ place, handleDragEnd, last }: CardProps) {
+export default function PlaceCard({ place, handleDragEnd, last }: PlaceCardProps) {
   const { id, arrival, placeDuration, tripDuration } = place;
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const controls = useDragControls();

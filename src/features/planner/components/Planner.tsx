@@ -11,7 +11,6 @@ import {
 import { add, format, parse } from "date-fns";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
-import Card from "./Card";
 import NavigateDays from "./NavigateDays";
 import StartTime from "./StartTime";
 import { useAtomValue } from "jotai";
@@ -21,6 +20,7 @@ import { Car } from "lucide-react";
 import { TimePicker } from "@/features/map/components/MapControls";
 import { DatePicker } from "@/components/general/DatePicker";
 import { DateRange } from "react-day-picker";
+import PlaceCard from "@/features/planner/components/PlaceCard";
 
 type PlannerProps = {
   day: Day;
@@ -59,9 +59,9 @@ export default function Planner({
     return calculatedPlaces;
   }
 
-  // function handleDragEnd() {
-  //   reorderPlaces(day.places, items, day.currentDayId);
-  // }
+  function handleDragEnd() {
+    reorderPlaces(day.places, items, day.id);
+  }
 
   // Code Smell
   useEffect(() => {
@@ -99,10 +99,10 @@ export default function Planner({
           {items.map((place, i, arr) => {
             const isLast = i === arr.length - 1;
             return (
-              <Card
+              <PlaceCard
                 key={place.id}
                 place={place}
-                // handleDragEnd={handleDragEnd}
+                handleDragEnd={handleDragEnd}
                 last={isLast}
               />
             );

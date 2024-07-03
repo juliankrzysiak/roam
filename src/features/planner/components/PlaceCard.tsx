@@ -8,6 +8,7 @@ import {
 import { add, format } from "date-fns";
 import { Reorder, useDragControls } from "framer-motion";
 import { useSetAtom } from "jotai";
+import { ArrowLeft, ArrowRight, Clock, Undo2 } from "lucide-react";
 import { useState } from "react";
 
 type PlaceCardProps = {
@@ -16,7 +17,11 @@ type PlaceCardProps = {
   last: boolean;
 };
 
-export default function PlaceCard({ place, handleDragEnd, last }: PlaceCardProps) {
+export default function PlaceCard({
+  place,
+  handleDragEnd,
+  last,
+}: PlaceCardProps) {
   const { id, arrival, placeDuration, tripDuration } = place;
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const controls = useDragControls();
@@ -35,7 +40,7 @@ export default function PlaceCard({ place, handleDragEnd, last }: PlaceCardProps
       dragControls={controls}
       onDragEnd={handleDragEnd}
     >
-      <article className="flex flex-col gap-2 rounded-lg bg-slate-300 px-4 py-2 shadow-lg">
+      <article className="flex flex-col gap-2 rounded-lg bg-slate-200 px-4 py-2 shadow-lg">
         <h1 className="text-xl font-bold underline" onClick={handleClick}>
           {place.name}
         </h1>
@@ -71,36 +76,54 @@ function PlaceTimes({ arrival, placeDuration, placeId }: PlaceTimesProps) {
     minutes: minuteDuration,
   });
 
+  function handleReset() {
+    setHourDuration(hours);
+    setMinuteDuration(minutes);
+  }
+
   return (
-    <form className="flex justify-between gap-2" action={updatePlaceDuration}>
-      <p className="text-center">{format(arrival, timeFormat)}</p>
-      <div className="flex flex-col gap-2">
-        <label className="flex items-center gap-1">
-          <input
-            className="max-w-xs px-1"
-            name="hours"
-            type="number"
-            min="0"
-            max="12"
-            defaultValue={hourDuration}
-            onChange={(e) => setHourDuration(Number(e.target.value))}
-          />
-          :
-          <input
-            className="max-w-xs px-1"
-            name="minutes"
-            type="number"
-            min="0"
-            max="59"
-            defaultValue={minuteDuration}
-            onChange={(e) => setMinuteDuration(Number(e.target.value))}
-          />
+    <div className="flex flex-col gap-2">
+      <span className="flex items-center gap-2">
+        <ArrowRight size={16} /> {format(arrival, timeFormat)}
+      </span>
+      <form className="flex gap-2" action={updatePlaceDuration}>
+        <label
+          className="flex items-center gap-2"
+          aria-label="Duration at location"
+        >
+          <Clock size={16} />
+          <div className="flex gap-1">
+            <input
+              className="rounded-md pl-1"
+              name="hours"
+              type="number"
+              min="0"
+              max="12"
+              defaultValue={hourDuration}
+              onChange={(e) => setHourDuration(Number(e.target.value))}
+            />
+            :
+            <input
+              className="rounded-md pl-1"
+              name="minutes"
+              type="number"
+              min="0"
+              max="59"
+              defaultValue={minuteDuration}
+              onChange={(e) => setMinuteDuration(Number(e.target.value))}
+            />
+          </div>
+          <input type="hidden" name="id" defaultValue={placeId} />
         </label>
-        <input type="hidden" name="id" defaultValue={placeId} />
-        <button type="submit">Submit</button>
-      </div>
-      <p className="text-center">{format(departure, timeFormat)}</p>
-    </form>
+        <button type="submit">Save</button>
+        <button type="button" onClick={handleReset}>
+          <Undo2 size={16} />
+        </button>
+      </form>
+      <span className="flex items-center gap-2">
+        <ArrowLeft size={16} /> {format(departure, timeFormat)}
+      </span>
+    </div>
   );
 }
 

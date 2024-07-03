@@ -13,8 +13,7 @@ import { cookies } from "next/headers";
 import { DateRange } from "react-day-picker";
 
 export async function updateTrip(id: string, name: string) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   try {
     if (typeof name !== "string") return;
@@ -33,8 +32,7 @@ export async function updateTripDates(
   tripId: string,
   ranges: [DateRange, DateRange],
 ) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   const [initialDates, newDates] = ranges.map((range) =>
     eachDayOfInterval({ start: range.from, end: range.to }),
@@ -72,18 +70,19 @@ export async function updateTripDates(
 }
 
 export async function updatePlaceDuration(formData: FormData) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   const id = formData.get("id");
+  if (typeof id !== "string") return;
+
   const hours = Number(formData.get("hours"));
   const minutes = Number(formData.get("minutes"));
-  const { minutes: placeDuration } = convertTime({ hours, minutes });
+  const { minutes: place_duration } = convertTime({ hours, minutes });
 
   try {
     const { error } = await supabase
       .from("places")
-      .update({ placeDuration })
+      .update({ place_duration })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");

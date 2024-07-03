@@ -92,18 +92,19 @@ export async function updatePlaceDuration(formData: FormData) {
 }
 
 export async function updateTripDuration(formData: FormData) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   const id = formData.get("id");
+  if (typeof id !== "string") return;
+
   const hours = Number(formData.get("hours"));
   const minutes = Number(formData.get("minutes"));
-  const { minutes: tripDuration } = convertTime({ hours, minutes });
+  const { minutes: trip_duration } = convertTime({ hours, minutes });
 
   try {
     const { error } = await supabase
       .from("places")
-      .update({ tripDuration })
+      .update({ trip_duration })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/map");
@@ -113,10 +114,11 @@ export async function updateTripDuration(formData: FormData) {
 }
 
 export async function updateStartTime(formData: FormData) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   const id = formData.get("id");
+  if (typeof id !== "string") return;
+
   const startTime = formData.get("startTime") as string;
 
   try {
@@ -132,8 +134,7 @@ export async function updateStartTime(formData: FormData) {
 }
 
 export async function updateDay(index: number, tripId: number) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   try {
     const { error } = await supabase
@@ -148,8 +149,7 @@ export async function updateDay(index: number, tripId: number) {
 }
 
 export async function updatePlaceOrder(order: string[], dayId: string) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   try {
     const { error } = await supabase
@@ -164,8 +164,7 @@ export async function updatePlaceOrder(order: string[], dayId: string) {
 }
 
 export async function updateDayOrder(tripId: number, orderDays: string[]) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   try {
     const { error } = await supabase
@@ -180,8 +179,7 @@ export async function updateDayOrder(tripId: number, orderDays: string[]) {
 }
 
 export async function updateCurrentDate(tripId: string, date: Date) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   try {
     const { error } = await supabase

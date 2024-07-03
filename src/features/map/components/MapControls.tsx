@@ -38,7 +38,8 @@ type TimePickerProps = Omit<MapControlsProps, "tripId" | "dateRange">;
 export function TimePicker({ day }: TimePickerProps) {
   const [startTime, setStartTime] = useState(day.startTime.slice(0, 5));
   const totalDuration = day.places.reduce(
-    (acc, cur) => acc + cur.placeDuration + cur.tripDuration,
+    (acc, cur, i, arr) =>
+      acc + cur.placeDuration + (++i !== arr.length ? cur.tripDuration : 0),
     0,
   );
   const endTime = addMinutes(

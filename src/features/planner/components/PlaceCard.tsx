@@ -44,7 +44,7 @@ export default function PlaceCard({
         <h1 className="text-xl font-bold underline" onClick={handleClick}>
           {place.name}
         </h1>
-        <PlaceTimes
+        <PlaceDuration
           arrival={arrival}
           placeDuration={placeDuration}
           placeId={id}
@@ -52,22 +52,26 @@ export default function PlaceCard({
         {/* // BUG dragging is broken */}
         {/* <ReorderIcon dragControls={controls} /> */}
       </article>
-      {!last && <TripForm placeId={id} tripDuration={tripDuration} />}
+      {!last && <TravelDuration placeId={id} tripDuration={tripDuration} />}
     </Reorder.Item>
   );
 }
 
-/* ------------------------------- PlaceTimes ------------------------------- */
+/* ------------------------------- PlaceDuration ------------------------------- */
 
 const timeFormat = "h:mm aaa";
 
-type PlaceTimesProps = {
+type PlaceDurationProps = {
   arrival: Date;
   placeDuration: number;
   placeId: string;
 };
 
-function PlaceTimes({ arrival, placeDuration, placeId }: PlaceTimesProps) {
+function PlaceDuration({
+  arrival,
+  placeDuration,
+  placeId,
+}: PlaceDurationProps) {
   const { hours, minutes } = convertTime({ minutes: placeDuration });
   const [hourDuration, setHourDuration] = useState(hours);
   const [minuteDuration, setMinuteDuration] = useState(minutes);
@@ -127,14 +131,14 @@ function PlaceTimes({ arrival, placeDuration, placeId }: PlaceTimesProps) {
   );
 }
 
-/* -------------------------------- TripForm -------------------------------- */
+/* -------------------------------- TravelDuration -------------------------------- */
 
-type TripFormProps = {
+type TravelDurationProps = {
   placeId: string;
   tripDuration: number;
 };
 
-function TripForm({ placeId, tripDuration }: TripFormProps) {
+function TravelDuration({ placeId, tripDuration }: TravelDurationProps) {
   const { hours, minutes } = convertTime({ minutes: tripDuration });
 
   return (

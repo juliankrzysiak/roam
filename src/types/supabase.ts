@@ -14,7 +14,7 @@ export type Database = {
           created_at: string
           date: string
           id: string
-          order_places: string[] | null
+          order_places: string[]
           start_time: string
           trip_id: string
         }
@@ -22,7 +22,7 @@ export type Database = {
           created_at?: string
           date: string
           id?: string
-          order_places?: string[] | null
+          order_places?: string[]
           start_time?: string
           trip_id: string
         }
@@ -30,7 +30,7 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
-          order_places?: string[] | null
+          order_places?: string[]
           start_time?: string
           trip_id?: string
         }

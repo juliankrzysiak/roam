@@ -34,7 +34,12 @@ export default async function MapPage({ params }: Props) {
   return (
     // <DayProvider dayInfo={dayInfo}>
     <main className="relative h-40 flex-grow sm:flex">
-      <Planner day={day} tripId={tripId} tripName={tripName} dateRange={dateRange} />
+      <Planner
+        day={day}
+        tripId={tripId}
+        tripName={tripName}
+        dateRange={dateRange}
+      />
       <Map day={day}>
         <MapSearch />
         <MapControls tripId={tripId} day={day} dateRange={dateRange} />
@@ -83,7 +88,7 @@ async function getDay(
 
   const { data: dayData, error: dayError } = await supabase
     .from("days")
-    .select("id, date, startTime:start_time")
+    .select("id, date, startTime:start_time, orderPlaces:order_places")
     .match({ trip_id: tripId, date: dateData.current_date })
     .limit(1)
     .single();
@@ -97,7 +102,8 @@ async function getDay(
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
-  const places = placesData.map((place) => {
+  const places = dayData.orderPlaces.map((id) => {
+    const place = placesData.find((place) => place.id === id);
     const { lat, lng, ...placeProps } = place;
     return { ...placeProps, position: { lat, lng } };
   });

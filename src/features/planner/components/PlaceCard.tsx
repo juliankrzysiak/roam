@@ -8,7 +8,14 @@ import {
 import { add, format } from "date-fns";
 import { Reorder, useDragControls } from "framer-motion";
 import { useSetAtom } from "jotai";
-import { ArrowLeft, ArrowRight, Car, Clock, Undo2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Car,
+  Clock,
+  GripVertical,
+  Undo2,
+} from "lucide-react";
 import { useState } from "react";
 
 const svgSize = 16;
@@ -38,22 +45,27 @@ export default function PlaceCard({
     <Reorder.Item
       value={place}
       id={place.id}
+      className="touch-none"
       dragListener={false}
       dragControls={controls}
-      onDragEnd={handleDragEnd}
+      // onDragEnd={handleDragEnd}
     >
       <article className="flex flex-col gap-2 rounded-lg bg-slate-200 px-4 py-2 shadow-md">
         <h1 className="text-xl font-bold underline" onClick={handleClick}>
           {place.name}
         </h1>
-        <PlaceDuration
-          arrival={arrival}
-          placeDuration={placeDuration}
-          placeId={id}
-        />
-        {/* // BUG dragging is broken */}
-        {/* <ReorderIcon dragControls={controls} /> */}
+        <div className="flex items-end justify-between gap-2">
+          <PlaceDuration
+            arrival={arrival}
+            placeDuration={placeDuration}
+            placeId={id}
+          />
+          <div onPointerDown={(e) => controls.start(e)}>
+            <GripVertical size={32} />
+          </div>
+        </div>
       </article>
+      {/* Make this a child */}
       {!last && <TravelDuration placeId={id} tripDuration={tripDuration} />}
     </Reorder.Item>
   );

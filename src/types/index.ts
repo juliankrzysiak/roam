@@ -7,12 +7,16 @@ export type Place = {
   placeId: string;
 };
 
+type PlaceSchedule = Place & {
+  arrival: Date;
+  departure: Date;
+};
+
 export type Popup = Omit<Place, "placeDuration" | "tripDuration">;
 
 export type PlaceInfo = Place & {
   arrival: Date;
   departure: Date;
-  placeDuration: number;
 };
 
 // for auto calculated info
@@ -25,5 +29,5 @@ export type Day = {
   id: string;
   date: Date;
   startTime: string;
-  places: Place[];
+  places: PlaceSchedule[];
 };

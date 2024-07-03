@@ -1,16 +1,14 @@
+import TogglePlannerButton from "@/components/general/TogglePlannerButton";
 import Map from "@/features/map/components/Map";
+import MapControls from "@/features/map/components/MapControls";
+import MapSearch from "@/features/map/components/MapSearch";
 import Planner from "@/features/planner/components/Planner";
-import { Day, Place, Trip } from "@/types";
+import { Day, Place } from "@/types";
+import { Database } from "@/types/supabase";
+import { calcDateRange } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
-import DayProvider from "./DayProvider";
-import MapControls from "@/features/map/components/MapControls";
-import { add, addMinutes, parseISO } from "date-fns";
-import { parse } from "date-fns";
-import { calcDateRange } from "@/utils";
-import { Database } from "@/types/supabase";
-import MapSearch from "@/features/map/components/MapSearch";
-import TogglePlannerButton from "@/components/general/TogglePlannerButton";
+import { addMinutes, parse } from "date-fns";
 
 type Props = {
   params: { trip: string };
@@ -102,21 +100,47 @@ async function getDay(
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
-  const places = dayData.orderPlaces.map((id) => {
-    const place = placesData.find((place) => place.id === id);
-    const { lat, lng, ...placeProps } = place;
-    return { ...placeProps, position: { lat, lng } };
-  });
-
   const day = {
     ...dayData,
     date: parse(dayData.date, "yyyy-MM-dd", new Date()),
   };
 
+  const sortedPlaces = dayData.orderPlaces.map((id) => {
+    const place = placesData.find((place) => place.id === id);
+    const { lat, lng, ...placeProps } = place;
+    return { ...placeProps, position: { lat, lng } };
+  });
+
+  const startTime = parse(day.startTime, "HH:mm:ss", new Date());
+  const places = mapScheduleToPlaces(startTime, sortedPlaces);
+
   return {
     ...day,
     places,
   };
+}
+
+type PlaceSchedule = Place & {
+  arrival: Date;
+  departure: Date;
+};
+
+function mapScheduleToPlaces(
+  startTime: Date,
+  places: Place[],
+): PlaceSchedule[] {
+  let arrival = startTime;
+  let departure;
+
+  const calculatedPlaces = places.map((place) => {
+    const { placeDuration, tripDuration } = place;
+    departure = addMinutes(arrival, placeDuration);
+    const updatedPlace = { ...place, arrival, departure };
+    arrival = addMinutes(departure, tripDuration);
+    return updatedPlace;
+  });
+
+  return calculatedPlaces;
 }
 
 // function combineTripInfo(places: Place[], trips: Trip[] | null) {

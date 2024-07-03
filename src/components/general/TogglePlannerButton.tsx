@@ -12,7 +12,7 @@ export default function TogglePlannerButton() {
   }
   return (
     <button
-      className="absolute bottom-4 right-4 z-20 rounded-full bg-emerald-700 p-3 text-slate-300 shadow-md sm:hidden"
+      className="absolute bottom-6 right-4 z-20 rounded-full bg-emerald-700 p-3 text-slate-300 shadow-md sm:hidden"
       onClick={handleClick}
     >
       {visible ? <Map /> : <List />}

@@ -8,8 +8,10 @@ import {
 import { add, format } from "date-fns";
 import { Reorder, useDragControls } from "framer-motion";
 import { useSetAtom } from "jotai";
-import { ArrowLeft, ArrowRight, Clock, Undo2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Car, Clock, Undo2 } from "lucide-react";
 import { useState } from "react";
+
+const svgSize = 16;
 
 type PlaceCardProps = {
   place: PlaceInfo;
@@ -40,7 +42,7 @@ export default function PlaceCard({
       dragControls={controls}
       onDragEnd={handleDragEnd}
     >
-      <article className="flex flex-col gap-2 rounded-lg bg-slate-200 px-4 py-2 shadow-lg">
+      <article className="flex flex-col gap-2 rounded-lg bg-slate-200 px-4 py-2 shadow-md">
         <h1 className="text-xl font-bold underline" onClick={handleClick}>
           {place.name}
         </h1>
@@ -88,14 +90,14 @@ function PlaceDuration({
   return (
     <div className="flex flex-col gap-2">
       <span className="flex items-center gap-2">
-        <ArrowRight size={16} /> {format(arrival, timeFormat)}
+        <ArrowRight size={svgSize} /> {format(arrival, timeFormat)}
       </span>
       <form className="flex gap-2" action={updatePlaceDuration}>
         <label
           className="flex items-center gap-2"
           aria-label="Duration at location"
         >
-          <Clock size={16} />
+          <Clock size={svgSize} />
           <div className="flex gap-1">
             <input
               className="rounded-md pl-1"
@@ -121,11 +123,11 @@ function PlaceDuration({
         </label>
         <button type="submit">Save</button>
         <button type="button" onClick={handleReset}>
-          <Undo2 size={16} />
+          <Undo2 size={svgSize} />
         </button>
       </form>
       <span className="flex items-center gap-2">
-        <ArrowLeft size={16} /> {format(departure, timeFormat)}
+        <ArrowLeft size={svgSize} /> {format(departure, timeFormat)}
       </span>
     </div>
   );
@@ -140,30 +142,38 @@ type TravelDurationProps = {
 
 function TravelDuration({ placeId, tripDuration }: TravelDurationProps) {
   const { hours, minutes } = convertTime({ minutes: tripDuration });
+  const [hourDuration, setHourDuration] = useState(hours);
+  const [minuteDuration, setMinuteDuration] = useState(minutes);
 
   return (
-    <form className="flex items-end gap-2" action={updateTripDuration}>
-      <label className="flex">
+    <form
+      className="flex items-end gap-2 py-2 pl-4"
+      action={updateTripDuration}
+    >
+      <label className="flex items-center gap-1">
+        <Car size={svgSize} />
         <input
-          className="px-1"
+          className="rounded-md pl-1"
           name="hours"
           type="number"
           min="0"
           max="12"
-          defaultValue={hours}
+          value={hourDuration}
+          onChange={(e) => setHourDuration(Number(e.target.value))}
         />
         :
         <input
-          className="px-1"
+          className="rounded-md pl-1"
           name="minutes"
           type="number"
           min="0"
           max="59"
-          defaultValue={minutes}
+          value={minuteDuration}
+          onChange={(e) => setMinuteDuration(Number(e.target.value))}
         />
       </label>
       <input type="hidden" name="id" defaultValue={placeId} />
-      <button>Submit</button>
+      <button>Save</button>
     </form>
   );
 }

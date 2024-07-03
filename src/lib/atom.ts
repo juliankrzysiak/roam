@@ -8,5 +8,4 @@ type CurrentPlace = {
 
 export const currentPlaceAtom = atom<CurrentPlace>(null);
 
-
-export const isPlannerVisibleAtom = atom(false) 
+export const isPlannerVisibleAtom = atom(true);

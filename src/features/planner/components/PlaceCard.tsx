@@ -99,7 +99,7 @@ function PlaceTimes({ arrival, placeDuration, placeId }: PlaceTimesProps) {
               type="number"
               min="0"
               max="12"
-              defaultValue={hourDuration}
+              value={hourDuration}
               onChange={(e) => setHourDuration(Number(e.target.value))}
             />
             :
@@ -109,7 +109,7 @@ function PlaceTimes({ arrival, placeDuration, placeId }: PlaceTimesProps) {
               type="number"
               min="0"
               max="59"
-              defaultValue={minuteDuration}
+              value={minuteDuration}
               onChange={(e) => setMinuteDuration(Number(e.target.value))}
             />
           </div>

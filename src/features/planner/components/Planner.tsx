@@ -5,6 +5,7 @@ import { TimePicker } from "@/features/map/components/MapControls";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
 import { Day } from "@/types";
+import { checkSameArr, mapId } from "@/utils";
 import { updatePlaceOrder } from "@/utils/actions/crud/update";
 import clsx from "clsx";
 import { Reorder } from "framer-motion";
@@ -26,11 +27,13 @@ export default function Planner({
   tripName,
 }: PlannerProps) {
   const isVisible = useAtomValue(isPlannerVisibleAtom);
-  const [items, setItems] = useState(day.places);
+  const [places, setPlaces] = useState(day.places);
 
   function handleDragEnd() {
-    const orderPlaces = items.map((item) => item.id);
-    updatePlaceOrder(orderPlaces, day.id);
+    const [orderOriginalPlaces, orderPlaces] = [day.places, places].map(mapId);
+    const isSameArr = checkSameArr(orderOriginalPlaces, orderPlaces);
+
+    if (!isSameArr) updatePlaceOrder(orderPlaces, day.id);
   }
 
   return (
@@ -54,12 +57,12 @@ export default function Planner({
       <div className="py-2">
         <Reorder.Group
           axis="y"
-          values={items}
-          onReorder={setItems}
+          values={places}
+          onReorder={setPlaces}
           layoutScroll
           className="flex h-full flex-col gap-4"
         >
-          {items.map((place, i, arr) => {
+          {places.map((place, i, arr) => {
             const isLast = i === arr.length - 1;
             return (
               <PlaceCard

@@ -1,24 +1,12 @@
 import { Place } from "@/types";
 import { format, formatISO, parse, parseISO } from "date-fns";
-import { updatePlaceOrder } from "./actions/crud/update";
 import { DateRange } from "react-day-picker";
 
-export async function reorderPlaces(
-  oldPlaces: Place[],
-  newPlaces: Place[],
-  dayId: string,
-) {
-  const [oldOrder, newOrder] = [oldPlaces, newPlaces].map(parseOrder);
-  // Don't want to invoke a server action when dragging and dropping to the same position
-  if (checkEqualArrays(oldOrder, newOrder)) return;
-  await updatePlaceOrder(newOrder, dayId);
-}
-
-export function parseOrder(places: Place[]) {
+export function mapId(places: Place[]) {
   return places.map((place) => place.id);
 }
 
-function checkEqualArrays(arr1: string[], arr2: string[]) {
+export function checkSameArr(arr1: string[], arr2: string[]) {
   return arr1.join("") === arr2.join("");
 }
 
@@ -56,13 +44,11 @@ function calcDateDelta(arr1: Date[], arr2: Date[]) {
   );
 }
 
-//
-
 export function formatBulkDates(trip_id: string, dates: Date[]) {
   return dates.map((date) => ({ trip_id, date: format(date, "yyyy-MM-dd") }));
 }
 
-//
+/* -------------------------------- dateRange ------------------------------- */
 
 type Trip = {
   id: string;

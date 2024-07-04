@@ -1,6 +1,3 @@
-import Link from "next/link";
-import SignOutSVG from "@/assets/sign-out.svg";
-import UserSVG from "@/assets/user.svg";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +9,12 @@ import Login from "@/features/auth/components/Login";
 import SignUp from "@/features/auth/components/SignUp";
 import { signOut } from "@/utils/actions/auth";
 import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
+import { LogOut, UserIcon } from "lucide-react";
+import Link from "next/link";
 
 export default async function Header() {
   const supabase = createClient();
-  const { data, error } = await supabase.auth.getSession();
+  const { data } = await supabase.auth.getSession();
   const user = data.session?.user;
 
   return (
@@ -56,8 +54,8 @@ function User({ name }: UserProps) {
         className="text-emerald-50"
         aria-label="Open dropdown menu for account"
       >
-        <div className="border-slate-00 grid aspect-square h-8 place-content-center  rounded-full border ">
-          <p>{letter ?? ":)"}</p>
+        <div className="border-slate-00 grid aspect-square h-8 place-content-center  rounded-full border-2 ">
+          {letter ?? <UserIcon size={18} />}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -66,15 +64,15 @@ function User({ name }: UserProps) {
             href="/user"
             className="flex items-center justify-between gap-2"
           >
-            <UserSVG className="h-6 w-6" /> <p>My Account</p>
+            <UserIcon size={18} /> My Account
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <form action={signOut}>
             <button className="flex items-center justify-between gap-2">
-              <SignOutSVG className="h-6 w-6" />
-              <p>Sign Out</p>
+              <LogOut size={18} />
+              Sign Out
             </button>
           </form>
         </DropdownMenuItem>

@@ -48,7 +48,7 @@ export default function PlaceCard({
       className="touch-none"
       dragListener={false}
       dragControls={controls}
-      // onDragEnd={handleDragEnd}
+      onDragEnd={handleDragEnd}
     >
       <article className="flex flex-col gap-2 rounded-lg bg-slate-200 px-4 py-2 shadow-md">
         <h1 className="text-xl font-bold underline" onClick={handleClick}>
@@ -61,7 +61,7 @@ export default function PlaceCard({
             placeId={id}
           />
           <div onPointerDown={(e) => controls.start(e)}>
-            <GripVertical size={32} />
+            <GripVertical size={32} className="text-slate-400" />
           </div>
         </div>
       </article>

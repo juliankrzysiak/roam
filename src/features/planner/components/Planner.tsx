@@ -5,6 +5,7 @@ import { TimePicker } from "@/features/map/components/MapControls";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
 import { Day } from "@/types";
+import { updatePlaceOrder } from "@/utils/actions/crud/update";
 import clsx from "clsx";
 import { Reorder } from "framer-motion";
 import { useAtomValue } from "jotai";
@@ -24,23 +25,18 @@ export default function Planner({
   tripId,
   tripName,
 }: PlannerProps) {
-  // TODO: Optimistic updates can be used here
   const isVisible = useAtomValue(isPlannerVisibleAtom);
   const [items, setItems] = useState(day.places);
 
-  // function handleDragEnd() {
-  //   reorderPlaces(day.places, items, day.id);
-  // }
-
-  // Code Smell
-  // useEffect(() => {
-  //   setItems(day.places);
-  // }, [day.places]);
+  function handleDragEnd() {
+    const orderPlaces = items.map((item) => item.id);
+    updatePlaceOrder(orderPlaces, day.id);
+  }
 
   return (
     <section
       className={clsx(
-        "absolute right-0 top-0 z-10 flex h-full w-full flex-col overflow-scroll border-r-2 border-emerald-600 bg-slate-100 px-4 py-2 sm:static sm:max-w-xs",
+        "absolute right-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 px-4 py-2 sm:static sm:max-w-xs",
         !isVisible && "hidden opacity-0",
       )}
     >
@@ -69,7 +65,7 @@ export default function Planner({
               <PlaceCard
                 key={place.id}
                 place={place}
-                // handleDragEnd={handleDragEnd}
+                handleDragEnd={handleDragEnd}
                 last={isLast}
               />
             );

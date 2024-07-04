@@ -148,16 +148,16 @@ export async function updateDay(index: number, tripId: number) {
   }
 }
 
-export async function updatePlaceOrder(order: string[], dayId: string) {
+export async function updatePlaceOrder(order_places: string[], dayId: string) {
   const supabase = createClient();
 
   try {
     const { error } = await supabase
       .from("days")
-      .update({ order_places: order })
+      .update({ order_places })
       .eq("id", dayId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
+    revalidatePath("/[trip]");
   } catch (error) {
     console.log(error);
   }

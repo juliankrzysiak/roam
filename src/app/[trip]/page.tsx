@@ -3,7 +3,7 @@ import Map from "@/features/map/components/Map";
 import MapControls from "@/features/map/components/MapControls";
 import MapSearch from "@/features/map/components/MapSearch";
 import Planner from "@/features/planner/components/Planner";
-import { Day, Place } from "@/types";
+import { Day, Place, PlaceNoSchedule } from "@/types";
 import { Database } from "@/types/supabase";
 import { calcDateRange } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
@@ -120,15 +120,10 @@ async function getDay(
   };
 }
 
-type PlaceSchedule = Place & {
-  arrival: Date;
-  departure: Date;
-};
-
 function mapScheduleToPlaces(
   startTime: Date,
-  places: Place[],
-): PlaceSchedule[] {
+  places: PlaceNoSchedule[],
+): Place[] {
   let arrival = startTime;
   let departure;
 

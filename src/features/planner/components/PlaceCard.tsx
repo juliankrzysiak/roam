@@ -1,5 +1,5 @@
 import { currentPlaceAtom } from "@/lib/atom";
-import { PlaceInfo } from "@/types";
+import { Place } from "@/types";
 import { convertTime } from "@/utils";
 import {
   updatePlaceDuration,
@@ -21,9 +21,9 @@ import { useState } from "react";
 const svgSize = 16;
 
 type PlaceCardProps = {
-  place: PlaceInfo;
-  handleDragEnd: () => void;
+  place: Place;
   last: boolean;
+  handleDragEnd: () => void;
 };
 
 export default function PlaceCard({
@@ -65,7 +65,6 @@ export default function PlaceCard({
           </div>
         </div>
       </article>
-      {/* Make this a child */}
       {!last && <TravelDuration placeId={id} tripDuration={tripDuration} />}
     </Reorder.Item>
   );

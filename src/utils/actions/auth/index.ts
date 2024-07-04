@@ -15,8 +15,7 @@ export async function updateAccount({
   email,
   emailChanged,
 }: AccountArgs) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   const payload: { [k: string]: any } = {
     data: { name },
@@ -34,8 +33,7 @@ export async function updateAccount({
 }
 
 export async function updatePassword(password: string) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   const { error } = await supabase.auth.updateUser({ password });
   if (error) {
@@ -45,10 +43,8 @@ export async function updatePassword(password: string) {
 }
 
 export async function signOut() {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
+  const supabase = createClient();
   const { error } = await supabase.auth.signOut();
-  if (error) console.log(error);
-  redirect("/");
+  if (error) throw new Error(error.message);
+  else redirect("/");
 }

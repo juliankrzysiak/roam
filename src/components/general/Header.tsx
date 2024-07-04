@@ -15,8 +15,7 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 
 export default async function Header() {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
   const { data, error } = await supabase.auth.getSession();
   const user = data.session?.user;
 
@@ -27,14 +26,9 @@ export default async function Header() {
           ROAM
         </Link>
         {user && (
-          <>
-            <Link href="/trips" className="text-xl text-emerald-50">
-              Trips
-            </Link>
-            <Link href="#" className="text-xl text-emerald-50">
-              Places
-            </Link>
-          </>
+          <Link href="/trips" className="text-xl text-emerald-50">
+            Trips
+          </Link>
         )}
       </nav>
       {user ? (
@@ -77,10 +71,12 @@ function User({ name }: UserProps) {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <span className="flex items-center justify-between gap-2">
-            <SignOutSVG className="h-6 w-6" />
-            <p>Sign Out</p>
-          </span>
+          <form action={signOut}>
+            <button className="flex items-center justify-between gap-2">
+              <SignOutSVG className="h-6 w-6" />
+              <p>Sign Out</p>
+            </button>
+          </form>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,11 +1,13 @@
 "use client";
 
 import { DatePicker } from "@/components/general/DatePicker";
+import { Button } from "@/components/ui/button";
 import { TimePicker } from "@/features/map/components/MapControls";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
 import { Day } from "@/types";
 import { checkSameArr, mapId } from "@/utils";
+import { getRoute } from "@/utils/actions/api";
 import { updatePlaceOrder } from "@/utils/actions/crud/update";
 import clsx from "clsx";
 import { Reorder } from "framer-motion";
@@ -53,6 +55,7 @@ export default function Planner({
           />
         </div>
         <TimePicker day={day} />
+        <CalculateRouteButton places={places} />
       </div>
       <div className="py-2">
         <Reorder.Group
@@ -76,5 +79,22 @@ export default function Planner({
         </Reorder.Group>
       </div>
     </section>
+  );
+}
+
+type GetRouteButtonProps = {
+  places: Day["places"];
+};
+
+function CalculateRouteButton({ places }: GetRouteButtonProps) {
+  async function handleSubmit() {
+    const route = await getRoute(places);
+    console.log(route);
+  }
+
+  return (
+    <form action={handleSubmit}>
+      <Button>Calculate Route</Button>
+    </form>
   );
 }

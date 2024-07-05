@@ -90,8 +90,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.0
       lucide-react:
-        specifier: ^0.263.1
-        version: 0.263.1(react@18.3.0-canary-c5b937576-20231219)
+        specifier: ^0.400.0
+        version: 0.400.0(react@18.3.0-canary-c5b937576-20231219)
       mapbox-gl:
         specifier: ^3.0.0
         version: 3.0.0
@@ -2776,10 +2776,10 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  lucide-react@0.263.1:
-    resolution: {integrity: sha512-keqxAx97PlaEN89PXZ6ki1N8nRjGWtDa4021GFYLNj0RgruM5odbpl8GHTExj0hhPq3sF6Up0gnxt6TSHu+ovw==}
+  lucide-react@0.400.0:
+    resolution: {integrity: sha512-rpp7pFHh3Xd93KHixNgB0SqThMHpYNzsGUu69UaQbSZ75Q/J3m5t6EhKyMT3m4w2WOxmJ2mY0tD3vebnXqQryQ==}
     peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   mapbox-gl@3.0.0:
     resolution: {integrity: sha512-4DRPdBcmI0crPgsieaXd2GFyGNy1HZQwcGbItdeRtEwGoJEcFi/y4bhPWbF+oxP6cHeYtmoBmgDoenm9N/+6qg==}
@@ -6569,7 +6569,7 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-react@0.263.1(react@18.3.0-canary-c5b937576-20231219):
+  lucide-react@0.400.0(react@18.3.0-canary-c5b937576-20231219):
     dependencies:
       react: 18.3.0-canary-c5b937576-20231219
 

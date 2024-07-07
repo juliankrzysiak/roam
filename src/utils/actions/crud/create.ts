@@ -40,16 +40,22 @@ type CreatePlaceParams = {
   lng: number;
   lat: number;
   day_id: string;
-  place_id: string
+  place_id: string;
 };
 
 export async function createPlace(payload: CreatePlaceParams) {
   const supabase = createClient();
 
   try {
-    const { error } = await supabase.from("places").insert(payload);
+    const { data, error } = await supabase
+      .from("places")
+      .insert(payload)
+      .select("id")
+      .limit(1)
+      .single();
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
+    revalidatePath("/[trip]");
+    return data.id;
   } catch (error) {
     console.log(error);
   }

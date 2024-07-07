@@ -3,8 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Day, Place } from "@/types";
+import { mapId } from "@/utils";
 import { createPlace } from "@/utils/actions/crud/create";
 import { deletePlace } from "@/utils/actions/crud/delete";
+import { updatePlaceOrder } from "@/utils/actions/crud/update";
 import {
   APIProvider,
   AdvancedMarker,
@@ -64,7 +66,9 @@ export default function Map({ day, children }: MapProps) {
       >
         {children}
         <Markers places={places} />
-        {currentPlace && <InfoWindow date={day.date} dayId={day.id} />}
+        {currentPlace && (
+          <InfoWindow date={day.date} dayId={day.id} places={places} />
+        )}
       </GoogleMap>
     </APIProvider>
   );
@@ -97,9 +101,10 @@ const placeDetailsFetcher: Fetcher<PlaceDetails, string> = (id) =>
 type InfoWindowProps = {
   date: Day["date"];
   dayId: Day["id"];
+  places: Day["places"];
 };
 
-function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
+function InfoWindow({ date, dayId: day_id, places }: InfoWindowProps) {
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const advancedMarkerRef = useRef<AdvancedMarkerRef>(null);
   const map = useMap();
@@ -129,7 +134,10 @@ function InfoWindow({ date, dayId: day_id }: InfoWindowProps) {
     if (!place_id) return;
     const payload = { name, day_id, lng, lat, place_id };
 
-    await createPlace(payload);
+    const newPlaceId = await createPlace(payload);
+    if (!newPlaceId) return;
+    const newOrder = [...mapId(places), newPlaceId];
+    await updatePlaceOrder(newOrder, day_id);
     setCurrentPlace(null);
   }
 

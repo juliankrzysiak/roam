@@ -12,7 +12,7 @@ import { updatePlaceOrder } from "@/utils/actions/crud/update";
 import clsx from "clsx";
 import { Reorder } from "framer-motion";
 import { useAtomValue } from "jotai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 type PlannerProps = {
@@ -37,6 +37,10 @@ export default function Planner({
 
     if (!isSameArr) updatePlaceOrder(orderPlaces, day.id);
   }
+
+  useEffect(() => {
+    setPlaces(day.places);
+  }, [day.places]);
 
   return (
     <section

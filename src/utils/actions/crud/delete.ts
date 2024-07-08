@@ -8,7 +8,7 @@ export async function deletePlace(id: string) {
   try {
     const { error } = await supabase.from("places").delete().eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
+    revalidatePath("/[trip]", "page");
   } catch (error) {
     console.log(error);
   }

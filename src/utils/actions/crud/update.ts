@@ -85,7 +85,7 @@ export async function updatePlaceDuration(formData: FormData) {
       .update({ place_duration })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
+    revalidatePath("/[trip]", "page");
   } catch (error) {
     console.log(error);
   }
@@ -107,7 +107,7 @@ export async function updateTripDuration(formData: FormData) {
       .update({ trip_duration })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
+    revalidatePath("/[trip]", "page");
   } catch (error) {
     console.log(error);
   }
@@ -127,7 +127,7 @@ export async function updateStartTime(formData: FormData) {
       .update({ start_time: startTime })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
+    revalidatePath("/[trip]", "page");
   } catch (error) {
     console.log(error);
   }
@@ -142,7 +142,7 @@ export async function updateDay(index: number, tripId: number) {
       .update({ index_current_day: index })
       .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
+    revalidatePath("/[trip]", "page");
   } catch (error) {
     console.log(error);
   }
@@ -172,7 +172,7 @@ export async function updateDayOrder(tripId: number, order_days: string[]) {
       .update({ order_days })
       .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
+    revalidatePath("/[trip]", "page");
   } catch (error) {
     console.log(error);
   }
@@ -187,7 +187,7 @@ export async function updateCurrentDate(tripId: string, date: Date) {
       .update({ current_date: date })
       .eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/map");
+    revalidatePath("/[trip]", "page");
   } catch (error) {
     console.log(error);
   }

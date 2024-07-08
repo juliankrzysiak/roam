@@ -117,27 +117,25 @@ function InfoWindow({ date, dayId: day_id, places }: InfoWindowProps) {
     map.panTo(currentPlace.position);
   }, []);
 
-  const { data, error, isLoading } = useSWR(
-    currentPlace?.placeId,
-    placeDetailsFetcher,
-  );
-  if (error || !data) return <div>failed to load</div>;
+  const {
+    data: placeDetails,
+    error,
+    isLoading,
+  } = useSWR(currentPlace?.placeId, placeDetailsFetcher);
+  if (error || !placeDetails) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
 
   async function handleCreatePlace() {
-    const name = data?.displayName.text ?? "";
-    if (!currentPlace) return;
+    const name = placeDetails?.displayName.text;
+    if (!currentPlace || !name) return;
     const {
       placeId: place_id,
       position: { lng, lat },
     } = currentPlace;
     if (!place_id) return;
-    const payload = { name, day_id, lng, lat, place_id };
 
-    const newPlaceId = await createPlace(payload);
-    if (!newPlaceId) return;
-    const newOrder = [...mapId(places), newPlaceId];
-    await updatePlaceOrder(newOrder, day_id);
+    const newPlace = { name, day_id, lng, lat, place_id };
+    await createPlace(newPlace, places);
     setCurrentPlace(null);
   }
 
@@ -161,7 +159,7 @@ function InfoWindow({ date, dayId: day_id, places }: InfoWindowProps) {
       <div>
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-bold text-slate-900">
-            {data.displayName.text}
+            {placeDetails.displayName.text}
           </h2>
           <button
             onClick={() => setCurrentPlace(null)}
@@ -171,36 +169,36 @@ function InfoWindow({ date, dayId: day_id, places }: InfoWindowProps) {
           </button>
         </div>
         <h3 className=" text-sm text-slate-600">
-          {data.shortFormattedAddress}
+          {placeDetails.shortFormattedAddress}
         </h3>
       </div>
       <div className="flex flex-col gap-2 text-sm">
         <div className="flex flex-col">
-          <span>{data?.primaryTypeDisplayName?.text || "place"}</span>
-          {data.rating && (
+          <span>{placeDetails?.primaryTypeDisplayName?.text || "place"}</span>
+          {placeDetails.rating && (
             <span className="flex items-center gap-2 text-sm">
               <span className="flex items-center gap-1">
-                {data.rating}
+                {placeDetails.rating}
                 <Star size={14} />
               </span>
-              ({data.userRatingCount})
+              ({placeDetails.userRatingCount})
             </span>
           )}
           <OpeningHours
-            regularOpeningHours={data.regularOpeningHours}
+            regularOpeningHours={placeDetails.regularOpeningHours}
             date={date}
           />
         </div>
         <div className="mb-2 flex gap-1 text-slate-500">
-          {data.websiteUri && (
+          {placeDetails.websiteUri && (
             <>
-              <a href={data.websiteUri} className="underline">
+              <a href={placeDetails.websiteUri} className="underline">
                 Website
               </a>
               •
             </>
           )}
-          <a href={data.googleMapsUri} className="underline">
+          <a href={placeDetails.googleMapsUri} className="underline">
             Google Maps
           </a>
         </div>

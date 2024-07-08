@@ -1,6 +1,7 @@
 "use server";
 
-import { formatBulkDates } from "@/utils";
+import { Place } from "@/types";
+import { formatBulkDates, mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
@@ -35,7 +36,7 @@ export async function createTrip(name: string, dates: Date[]) {
   }
 }
 
-type CreatePlaceParams = {
+type NewPlace = {
   name: string;
   lng: number;
   lat: number;
@@ -43,19 +44,27 @@ type CreatePlaceParams = {
   place_id: string;
 };
 
-export async function createPlace(payload: CreatePlaceParams) {
+export async function createPlace(newPlace: NewPlace, places: Place[]) {
   const supabase = createClient();
 
   try {
-    const { data, error } = await supabase
+    const { data: place, error } = await supabase
       .from("places")
-      .insert(payload)
+      .insert(newPlace)
       .select("id")
       .limit(1)
       .single();
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/[trip]");
-    return data.id;
+
+    const order_places = [...mapId(places), place.id];
+
+    const { error: orderError } = await supabase
+      .from("days")
+      .update({ order_places })
+      .eq("id", newPlace.day_id);
+    if (orderError) throw new Error(`Supabase error: ${orderError.message}`);
+
+    revalidatePath("/[trip]", "page");
   } catch (error) {
     console.log(error);
   }

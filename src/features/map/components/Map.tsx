@@ -144,6 +144,10 @@ function InfoWindow({ date, dayId: day_id, places }: InfoWindowProps) {
   async function handleDeletePlace() {
     if (!currentPlace?.id) return;
     await deletePlace(currentPlace.id);
+    const newOrder = mapId(
+      places.filter((place) => place.id !== currentPlace.id),
+    );
+    await updatePlaceOrder(newOrder, day_id);
     setCurrentPlace(null);
   }
 

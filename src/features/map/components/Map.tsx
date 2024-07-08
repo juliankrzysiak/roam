@@ -3,10 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Day, Place } from "@/types";
-import { mapId } from "@/utils";
 import { createPlace } from "@/utils/actions/crud/create";
 import { deletePlace } from "@/utils/actions/crud/delete";
-import { updatePlaceOrder } from "@/utils/actions/crud/update";
 import {
   APIProvider,
   AdvancedMarker,
@@ -115,6 +113,7 @@ function InfoWindow({ date, dayId: day_id, places }: InfoWindowProps) {
     });
     if (!map || !currentPlace?.position) return;
     map.panTo(currentPlace.position);
+    map.panBy(0, -150);
   }, []);
 
   const {

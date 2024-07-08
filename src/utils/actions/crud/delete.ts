@@ -1,13 +1,28 @@
 "use server";
 
+import { Place } from "@/types";
+import { mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
-export async function deletePlace(id: string) {
+export async function deletePlace(
+  places: Place[],
+  placeId: string,
+  dayId: string,
+) {
   const supabase = createClient();
   try {
-    const { error } = await supabase.from("places").delete().eq("id", id);
+    const { error } = await supabase.from("places").delete().eq("id", placeId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
+
+    const order_places = mapId(places.filter((place) => place.id !== placeId));
+
+    const { error: orderError } = await supabase
+      .from("days")
+      .update({ order_places })
+      .eq("id", dayId);
+    if (orderError) throw new Error(`Supabase error: ${orderError.message}`);
+
     revalidatePath("/[trip]", "page");
   } catch (error) {
     console.log(error);

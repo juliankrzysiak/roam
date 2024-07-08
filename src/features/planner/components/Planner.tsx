@@ -34,7 +34,6 @@ export default function Planner({
   function handleDragEnd() {
     const [orderOriginalPlaces, orderPlaces] = [day.places, places].map(mapId);
     const isSameArr = checkSameArr(orderOriginalPlaces, orderPlaces);
-
     if (!isSameArr) updatePlaceOrder(orderPlaces, day.id);
   }
 
@@ -61,7 +60,7 @@ export default function Planner({
         <TimePicker day={day} />
         <CalculateRouteButton places={places} />
       </div>
-      <div className="py-2">
+      <div className="overflow-auto py-2">
         <Reorder.Group
           axis="y"
           values={places}

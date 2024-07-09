@@ -1,21 +1,21 @@
 export type Place = {
   id: string;
+  placeId: string;
   name: string;
   position: google.maps.LatLngLiteral;
   placeDuration: number;
   tripDuration: number;
-  placeId: string;
-  arrival: Date;
-  departure: Date;
+  schedule: {
+    arrival: Date;
+    departure: Date;
+  };
   travel?: {
     distance: number;
     duration: number;
   };
 };
 
-// TODO: Refactor arrival and departure into object
-
-export type PlaceNoSchedule = Omit<Place, "arrival" | "departure">;
+export type PlaceNoSchedule = Omit<Place, "schedule">;
 
 export type Day = {
   id: string;

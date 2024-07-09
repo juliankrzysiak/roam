@@ -136,9 +136,10 @@ function mapSchedule(places: PlaceNoSchedule[], startTime: Date): Place[] {
   let departure;
 
   const calculatedPlaces = places.map((place) => {
-    const { placeDuration, tripDuration } = place;
+    const { placeDuration } = place;
     departure = addMinutes(arrival, placeDuration);
-    const updatedPlace = { ...place, arrival, departure };
+    const schedule = { arrival, departure };
+    const updatedPlace = { ...place, schedule };
     arrival = addMinutes(departure, place.travel?.duration || 0);
     return updatedPlace;
   });

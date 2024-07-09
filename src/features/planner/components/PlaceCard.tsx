@@ -22,21 +22,16 @@ const svgSize = 16;
 
 type PlaceCardProps = {
   place: Place;
-  last: boolean;
   handleDragEnd: () => void;
 };
 
-export default function PlaceCard({
-  place,
-  handleDragEnd,
-  last,
-}: PlaceCardProps) {
-  const { id, arrival, placeDuration, tripDuration } = place;
+export default function PlaceCard({ place, handleDragEnd }: PlaceCardProps) {
+  const { id, placeId, position, name, schedule, placeDuration, travel } =
+    place;
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const controls = useDragControls();
 
   function handleClick() {
-    const { id, placeId, position } = place;
     const currentPlace = { id, placeId, position };
     setCurrentPlace(currentPlace);
   }
@@ -44,7 +39,7 @@ export default function PlaceCard({
   return (
     <Reorder.Item
       value={place}
-      id={place.id}
+      id={id}
       className="touch-none"
       dragListener={false}
       dragControls={controls}
@@ -52,11 +47,11 @@ export default function PlaceCard({
     >
       <article className="flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 px-4 py-2 shadow-sm">
         <h2 className="text-xl font-bold underline" onClick={handleClick}>
-          {place.name}
+          {name}
         </h2>
         <div className="flex items-end justify-between gap-2">
           <PlaceDuration
-            arrival={arrival}
+            arrival={schedule.arrival}
             placeDuration={placeDuration}
             placeId={id}
           />
@@ -65,10 +60,10 @@ export default function PlaceCard({
           </div>
         </div>
       </article>
-      {place.travel && (
+      {travel && (
         <div className="flex justify-between gap-2 px-4 py-1 text-sm">
-          <span>{place.travel.duration} min</span>
-          <span>{place.travel.distance} mi</span>
+          <span>{travel.duration} min</span>
+          <span>{travel.distance} mi</span>
         </div>
       )}
 

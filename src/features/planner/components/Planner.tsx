@@ -62,13 +62,12 @@ export default function Planner({
           className="flex h-full flex-col gap-4 px-4 py-2"
         >
           {places.map((place, i, arr) => {
-            const isLast = i === arr.length - 1;
+            // const isLast = i === arr.length - 1;
             return (
               <PlaceCard
                 key={place.id}
                 place={place}
                 handleDragEnd={handleDragEnd}
-                last={isLast}
               />
             );
           })}

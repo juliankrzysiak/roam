@@ -22,6 +22,12 @@ export default async function MapPage({ params }: Props) {
   const dateRange = await getDateRange(supabase, tripId);
   const tripName = await getTripName(supabase, tripId);
 
+  const totalDuration = day.places.reduce(
+    (total, current) =>
+      total + (current.travel?.duration || 0) + current.placeDuration,
+    0,
+  );
+
   // const endTime = add(parse(dayInfo.startTime, "HH:mm:ss", new Date()), {
   //   minutes: totalDuration,
   // });
@@ -37,6 +43,7 @@ export default async function MapPage({ params }: Props) {
         tripId={tripId}
         tripName={tripName}
         dateRange={dateRange}
+        totalDuration={totalDuration}
       />
       <Map day={day}>
         <MapSearch />

@@ -50,10 +50,10 @@ export default function PlaceCard({
       dragControls={controls}
       onDragEnd={handleDragEnd}
     >
-      <article className="flex flex-col gap-2 rounded-lg bg-slate-200 px-4 py-2 shadow-md">
-        <h1 className="text-xl font-bold underline" onClick={handleClick}>
+      <article className="flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 px-4 py-2 shadow-sm">
+        <h2 className="text-xl font-bold underline" onClick={handleClick}>
           {place.name}
-        </h1>
+        </h2>
         <div className="flex items-end justify-between gap-2">
           <PlaceDuration
             arrival={arrival}
@@ -66,7 +66,7 @@ export default function PlaceCard({
         </div>
       </article>
       {place.travel && (
-        <div className="flex justify-between gap-2 px-4 py-2 text-sm">
+        <div className="flex justify-between gap-2 px-4 py-1 text-sm">
           <span>{place.travel.duration} min</span>
           <span>{place.travel.distance} mi</span>
         </div>

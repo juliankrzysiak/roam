@@ -50,10 +50,9 @@ export default function Planner({
     >
       <div className="sticky top-0 flex flex-col">
         <h2 className="px-2 pt-1 text-xl tracking-wide">{tripName}</h2>
-
         <TimePicker day={day} totalDuration={totalDuration} />
       </div>
-      <div className="overflow-auto py-2">
+      <div className="flex-1 overflow-auto py-2">
         <Reorder.Group
           axis="y"
           values={places}
@@ -91,6 +90,7 @@ type TimePickerProps = {
 
 function TimePicker({ day, totalDuration }: TimePickerProps) {
   const [startTime, setStartTime] = useState(day.startTime.slice(0, 5));
+  // TODO: Switch to date so i don't have to make a new date each time state changes
   const endTime = addMinutes(
     parse(startTime, "HH:mm", new Date()),
     totalDuration,
@@ -106,8 +106,8 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
       action={updateStartTime}
     >
       <div className="flex flex-col items-center gap-1">
-        <span className="flex items-center gap-2">
-          <Sun size={18} />
+        <label className="flex items-center gap-2">
+          <Sun size={18} aria-label="Start time" />
           <input
             className="rounded-sm p-1 "
             type="time"
@@ -120,16 +120,16 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
           <button type="button" aria-label="Reset time" onClick={resetTime}>
             <Undo2 size={18} />
           </button>
-        </span>
+        </label>
       </div>
       <div className="flex flex-col items-center gap-1">
-        <span className="flex items-center gap-2">
-          <Moon size={18} />
+        <label className="flex items-center gap-2">
+          <Moon size={18} aria-label="End Time" />
           <span id="endTime">{format(endTime, "HH:mm aa")}</span>
           <button aria-label="Save time">
             <Check size={18} />
           </button>
-        </span>
+        </label>
       </div>
     </form>
   );

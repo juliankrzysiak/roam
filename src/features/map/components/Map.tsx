@@ -290,7 +290,9 @@ function Markers({ places }: MarkersProps) {
           clickable={true}
           onClick={() => handleClick(place)}
         >
-          <Pin>{i + 1}</Pin>
+          <Pin>
+            <span className="text-lg font-bold text-slate-100">{i + 1}</span>
+          </Pin>
         </AdvancedMarker>
       ))}
     </>

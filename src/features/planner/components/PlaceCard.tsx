@@ -45,7 +45,7 @@ export default function PlaceCard({ place, handleDragEnd }: PlaceCardProps) {
       dragControls={controls}
       onDragEnd={handleDragEnd}
     >
-      <article className="flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 px-4 py-2 shadow-sm">
+      <article className="relative flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 px-4 py-2 shadow-sm">
         <h2 className="text-xl font-bold underline" onClick={handleClick}>
           {name}
         </h2>
@@ -55,9 +55,11 @@ export default function PlaceCard({ place, handleDragEnd }: PlaceCardProps) {
             placeDuration={placeDuration}
             placeId={id}
           />
-          <div onPointerDown={(e) => controls.start(e)}>
-            <GripVertical size={32} className="text-slate-400" />
-          </div>
+          <GripVertical
+            size={24}
+            className="absolute bottom-2 right-1 text-slate-400"
+            onPointerDown={(e) => controls.start(e)}
+          />
         </div>
       </article>
       {travel && (

@@ -17,6 +17,7 @@ export type Place = {
 
 export type PlaceNoSchedule = Omit<Place, "schedule">;
 
+// TODO: Convert startTime to Date, but would need to combine that with date at that point
 export type Day = {
   id: string;
   date: Date;

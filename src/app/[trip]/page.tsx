@@ -107,6 +107,7 @@ async function getDay(
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
+  // TODO: Replace this with rpc
   const sortedPlaces = dayData.orderPlaces.map((id) => {
     const place = placesData.find((place) => place.id === id);
     const { lat, lng, ...placeProps } = place;

@@ -79,3 +79,8 @@ export function calcDateRange(days: { date: string }[]) {
 
   return dateRange;
 }
+
+/* --------------------------------- Convert -------------------------------- */
+
+export const convertKmToMi = (km: number) => Math.round(km / 1609);
+export const convertSecToMi = (sec: number) => Math.round(sec / 60);

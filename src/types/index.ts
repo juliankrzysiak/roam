@@ -6,20 +6,23 @@ export type Place = {
   tripDuration: number;
   placeId: string;
   arrival: Date;
-  departure: Date
+  departure: Date;
+  travel?: {
+    distance: number;
+    duration: number;
+  };
 };
 
-export type PlaceNoSchedule = Omit<Place, 'arrival' | 'departure'>
-
-// for auto calculated info
-export type Trip = {
-  distance: number;
-  duration: number;
-};
+export type PlaceNoSchedule = Omit<Place, "arrival" | "departure">;
 
 export type Day = {
   id: string;
   date: Date;
   startTime: string;
   places: Place[];
+};
+
+export type Travel = {
+  distance: number;
+  duration: number;
 };

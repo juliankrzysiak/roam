@@ -51,14 +51,14 @@ export default function Planner({
       <div className="sticky top-0 border-b-2 border-slate-500">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl">{tripName}</h2>
-          <DatePicker
+          {/* <DatePicker
             initialDate={day.date}
             dateRange={dateRange}
             tripId={tripId}
-          />
+          /> */}
         </div>
         <TimePicker day={day} />
-        <CalculateRouteButton places={places} />
+        {/* <CalculateRouteButton places={places} /> */}
       </div>
       <div className="overflow-auto py-2">
         <Reorder.Group

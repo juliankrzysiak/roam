@@ -65,7 +65,14 @@ export default function PlaceCard({
           </div>
         </div>
       </article>
-      {!last && <TravelDuration placeId={id} tripDuration={tripDuration} />}
+      {place.travel && (
+        <div className="flex justify-between gap-2 px-4 py-2 text-sm">
+          <span>{place.travel.duration} min</span>
+          <span>{place.travel.distance} mi</span>
+        </div>
+      )}
+
+      {/* {!last && <TravelDuration placeId={id} tripDuration={tripDuration} />} */}
     </Reorder.Item>
   );
 }

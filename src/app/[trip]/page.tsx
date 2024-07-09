@@ -3,9 +3,9 @@ import Map from "@/features/map/components/Map";
 import MapControls from "@/features/map/components/MapControls";
 import MapSearch from "@/features/map/components/MapSearch";
 import Planner from "@/features/planner/components/Planner";
-import { Day, Place, PlaceNoSchedule } from "@/types";
+import { Day, Place, PlaceNoSchedule, Travel } from "@/types";
 import { Database } from "@/types/supabase";
-import { calcDateRange } from "@/utils";
+import { calcDateRange, convertKmToMi, convertSecToMi } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { addMinutes, parse } from "date-fns";
@@ -111,19 +111,18 @@ async function getDay(
     return { ...placeProps, position: { lat, lng } };
   });
 
+  const travelPlaces = await mapTravelInfo(sortedPlaces);
+
   const startTime = parse(day.startTime, "HH:mm:ss", new Date());
-  const places = mapScheduleToPlaces(startTime, sortedPlaces);
+  const scheduledPlaces = mapSchedule(travelPlaces, startTime);
 
   return {
     ...day,
-    places,
+    places: scheduledPlaces,
   };
 }
 
-function mapScheduleToPlaces(
-  startTime: Date,
-  places: PlaceNoSchedule[],
-): Place[] {
+function mapSchedule(places: PlaceNoSchedule[], startTime: Date): Place[] {
   let arrival = startTime;
   let departure;
 
@@ -131,41 +130,46 @@ function mapScheduleToPlaces(
     const { placeDuration, tripDuration } = place;
     departure = addMinutes(arrival, placeDuration);
     const updatedPlace = { ...place, arrival, departure };
-    arrival = addMinutes(departure, tripDuration);
+    arrival = addMinutes(departure, place.travel?.duration || 0);
     return updatedPlace;
   });
 
   return calculatedPlaces;
 }
 
-// function combineTripInfo(places: Place[], trips: Trip[] | null) {
-//   if (!trips) return places;
-//   return places.map((place, i) => {
-//     const tripInfo = trips[i];
-//     return { ...place, tripInfo };
-//   });
-// }
+async function mapTravelInfo(
+  places: PlaceNoSchedule[],
+): Promise<PlaceNoSchedule[]> {
+  const travelInfo = await getTravelInfo(places);
+  if (!travelInfo) return places;
+  else
+    return places.map((place, i) => {
+      const travel = travelInfo[i];
+      return { ...place, travel };
+    });
+}
 
-// async function getTrips(places: Place[]): Promise<Trip[] | null> {
-//   if (places.length < 2) return null;
-//   const coordinates = places
-//     .map((place) => `${place.lng},${place.lat}`)
-//     .join(";");
+async function getTravelInfo(
+  places: PlaceNoSchedule[],
+): Promise<Travel[] | undefined> {
+  if (places.length < 2) return;
+  const coordinates = places
+    .map((place) => `${place.position.lng},${place.position.lat}`)
+    .join(";");
 
-//   const profile = "mapbox/driving";
-//   const res = await fetch(
-//     `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`,
-//   );
-//   const tripInformation = await res.json();
+  const profile = "mapbox/driving";
+  const res = await fetch(
+    `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`,
+  );
+  const tripInformation = await res.json();
 
-//   const meterToMileFactor = 1 / (1000 * 1.609);
-//   const secondToMinuteFactor = 1 / 60;
+  const trips = tripInformation.routes[0].legs.map(
+    (leg: { distance: number; duration: number }) => {
+      const distance = convertKmToMi(leg.distance);
+      const duration = convertSecToMi(leg.duration);
+      return { distance, duration };
+    },
+  );
 
-//   const trips = tripInformation.routes.at(0).legs.map((leg: Trip) => {
-//     const distance = Math.round(leg.distance * meterToMileFactor);
-//     const duration = Math.round(leg.duration * secondToMinuteFactor);
-//     return { distance, duration };
-//   });
-
-//   return trips;
-// }
+  return trips;
+}

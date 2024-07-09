@@ -51,6 +51,10 @@ export default function Planner({
       <div className="sticky top-0 border-b-2 border-slate-500">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl">{tripName}</h2>
+          <div className="flex gap-2 text-sm">
+            <span>{day.travel?.duration} min</span>
+            <span>{day.travel?.distance} mi</span>
+          </div>
           {/* <DatePicker
             initialDate={day.date}
             dateRange={dateRange}

@@ -13,12 +13,15 @@ export type Place = {
   };
 };
 
+// TODO: Refactor arrival and departure into object
+
 export type PlaceNoSchedule = Omit<Place, "arrival" | "departure">;
 
 export type Day = {
   id: string;
   date: Date;
   startTime: string;
+  travel?: Travel;
   places: Place[];
 };
 

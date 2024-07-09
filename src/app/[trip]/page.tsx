@@ -100,21 +100,23 @@ async function getDay(
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
-  const day = {
-    ...dayData,
-    date: parse(dayData.date, "yyyy-MM-dd", new Date()),
-  };
-
   const sortedPlaces = dayData.orderPlaces.map((id) => {
     const place = placesData.find((place) => place.id === id);
     const { lat, lng, ...placeProps } = place;
     return { ...placeProps, position: { lat, lng } };
   });
 
-  const travelPlaces = await mapTravelInfo(sortedPlaces);
+  const travelInfo = await getTravelInfo(sortedPlaces);
+  const travelPlaces = await mapTravelInfo(sortedPlaces, travelInfo?.trips);
 
-  const startTime = parse(day.startTime, "HH:mm:ss", new Date());
+  const startTime = parse(dayData.startTime, "HH:mm:ss", new Date());
   const scheduledPlaces = mapSchedule(travelPlaces, startTime);
+
+  const day = {
+    ...dayData,
+    date: parse(dayData.date, "yyyy-MM-dd", new Date()),
+    travel: travelInfo?.travel,
+  };
 
   return {
     ...day,
@@ -139,19 +141,19 @@ function mapSchedule(places: PlaceNoSchedule[], startTime: Date): Place[] {
 
 async function mapTravelInfo(
   places: PlaceNoSchedule[],
+  trips: Travel[] | undefined,
 ): Promise<PlaceNoSchedule[]> {
-  const travelInfo = await getTravelInfo(places);
-  if (!travelInfo) return places;
+  if (!trips) return places;
   else
     return places.map((place, i) => {
-      const travel = travelInfo[i];
+      const travel = trips[i];
       return { ...place, travel };
     });
 }
 
 async function getTravelInfo(
   places: PlaceNoSchedule[],
-): Promise<Travel[] | undefined> {
+): Promise<{ trips: Travel[]; travel: Travel } | undefined> {
   if (places.length < 2) return;
   const coordinates = places
     .map((place) => `${place.position.lng},${place.position.lat}`)
@@ -162,6 +164,10 @@ async function getTravelInfo(
     `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`,
   );
   const tripInformation = await res.json();
+  const travel = {
+    distance: convertKmToMi(tripInformation.routes[0].distance),
+    duration: convertSecToMi(tripInformation.routes[0].duration),
+  };
 
   const trips = tripInformation.routes[0].legs.map(
     (leg: { distance: number; duration: number }) => {
@@ -171,5 +177,8 @@ async function getTravelInfo(
     },
   );
 
-  return trips;
+  return {
+    trips,
+    travel,
+  };
 }

@@ -2,7 +2,6 @@ import NewTripForm from "@/features/trips/components/NewTripForm";
 import TripCard from "@/features/trips/components/TripCard";
 import { createClient } from "@/utils/supabase/server";
 import { parseISO } from "date-fns";
-import { cookies } from "next/headers";
 import { DateRange } from "react-day-picker";
 
 type Trip = {
@@ -12,8 +11,7 @@ type Trip = {
 };
 
 export default async function Trips() {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("trips")

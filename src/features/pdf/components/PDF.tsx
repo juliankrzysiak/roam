@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Document as PDF,
+  Document,
   Page,
   Text,
   View,
@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Document() {
+export default function PDF() {
   return (
-    <PDF>
+    <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.section}>
           <Text>Section #1 poop</Text>
@@ -31,7 +31,7 @@ export default function Document() {
           <Text>Section #2</Text>
         </View>
       </Page>
-    </PDF>
+    </Document>
   );
 }
 

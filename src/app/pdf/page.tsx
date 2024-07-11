@@ -1,6 +1,6 @@
 "use client";
 
-import Document from "@/features/document/components/Document";
+import PDF from "@/features/pdf/components/PDF";
 import dynamic from "next/dynamic";
 
 const PDFViewer = dynamic(
@@ -11,10 +11,10 @@ const PDFViewer = dynamic(
   },
 );
 
-export default function DocumentPage() {
+export default function PDFPage() {
   return (
     <PDFViewer className="w-full flex-grow">
-      <Document />
+      <PDF />
     </PDFViewer>
   );
 }

@@ -1,5 +1,5 @@
 import TogglePlannerButton from "@/components/general/TogglePlannerButton";
-import DocumentButton from "@/features/document/components/DocumentButton";
+import PDFButton from "@/features/pdf/components/PDFButton";
 import Map from "@/features/map/components/Map";
 import MapControls from "@/features/map/components/MapControls";
 import MapSearch from "@/features/map/components/MapSearch";
@@ -49,7 +49,7 @@ export default async function MapPage({ params }: Props) {
       <Map day={day}>
         <MapSearch />
         <MapControls tripId={tripId} day={day} dateRange={dateRange} />
-        <DocumentButton />
+        <PDFButton />
       </Map>
       <TogglePlannerButton />
     </main>

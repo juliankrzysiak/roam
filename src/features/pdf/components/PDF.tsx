@@ -1,16 +1,23 @@
+"use client";
+
 import React from "react";
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Place } from "@/types";
+import { format } from "date-fns";
+import dynamic from "next/dynamic";
+
+const PDFViewer = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  },
+);
 
 // Create styles
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "row",
+    flexDirection: "column",
     backgroundColor: "#E4E4E4",
   },
   section: {
@@ -20,18 +27,35 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function PDF() {
+type PDFProps = {
+  places: Place[];
+};
+
+const timeFormat = "h:mm aaa";
+
+export default function PDF({ places }: PDFProps) {
   return (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text>Section #1 poop</Text>
-        </View>
-        <View style={styles.section}>
-          <Text>Section #2</Text>
-        </View>
-      </Page>
-    </Document>
+    <PDFViewer className="flex w-full items-stretch">
+      <Document>
+        <Page size="A4" style={styles.page}>
+          {places.map((place) => {
+            return (
+              <View style={styles.section}>
+                <Text>{place.name}</Text>
+                <View>
+                  <Text>
+                    Arrival: {format(place.schedule.arrival, timeFormat)}
+                  </Text>
+                  <Text>Duration: {place.placeDuration}</Text>
+                  <Text>
+                    Departure: {format(place.schedule.departure, timeFormat)}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        </Page>
+      </Document>
+    </PDFViewer>
   );
 }
-

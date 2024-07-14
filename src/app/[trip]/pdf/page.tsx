@@ -14,7 +14,7 @@ export default async function PDFPage({ params }: Props) {
 
   return (
     <main className="flex w-full flex-grow">
-      <PDF places={day.places} />
+      <PDF day={day} />
     </main>
   );
 }

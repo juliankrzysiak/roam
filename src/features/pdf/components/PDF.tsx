@@ -23,6 +23,7 @@ const PDFViewer = dynamic(
 // Create styles
 const styles = StyleSheet.create({
   page: {
+    fontFamily: "Courier",
     flexDirection: "column",
     padding: 24,
     gap: 8,
@@ -71,19 +72,21 @@ export default function PDF({ day }: PDFProps) {
             {places.map((place) => {
               return (
                 <View style={styles.place} key={place.id}>
-                  <Text style={styles.title}>{place.name}</Text>
+                  <View>
+                    <Text style={styles.title}>{place.name}</Text>
+                    <Text style={{ fontSize: 12 }}>{place.address}</Text>
+                  </View>
                   <View style={styles.times}>
                     <Text>A: {format(place.schedule.arrival, timeFormat)}</Text>
-                    {/* <Text>D: {place.placeDuration} min</Text> */}
                     <Text>
                       D: {format(place.schedule.departure, timeFormat)}
                     </Text>
-                    {place.travel && (
-                      <Text style={{ marginTop: 4 }}>
-                        T: {place.travel.duration} min
-                      </Text>
-                    )}
                   </View>
+                  {place.travel && (
+                    <Text style={styles.times}>
+                      T: {place.travel.duration} min
+                    </Text>
+                  )}
                 </View>
               );
             })}

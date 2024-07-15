@@ -42,6 +42,7 @@ type NewPlace = {
   lat: number;
   day_id: string;
   place_id: string;
+  address: string;
 };
 
 export async function createPlace(newPlace: NewPlace, places: Place[]) {

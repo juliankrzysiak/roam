@@ -125,15 +125,15 @@ function InfoWindow({ date, dayId: day_id, places }: InfoWindowProps) {
   if (isLoading) return <div>loading...</div>;
 
   async function handleCreatePlace() {
-    const name = placeDetails?.displayName.text;
-    if (!currentPlace || !name) return;
+    if (!currentPlace || !placeDetails) return;
+    const name = placeDetails.displayName.text;
+    const address = placeDetails.shortFormattedAddress;
     const {
       placeId: place_id,
       position: { lng, lat },
     } = currentPlace;
-    if (!place_id) return;
 
-    const newPlace = { name, day_id, lng, lat, place_id };
+    const newPlace = { name, day_id, lng, lat, place_id, address };
     await createPlace(newPlace, places);
     setCurrentPlace(null);
   }

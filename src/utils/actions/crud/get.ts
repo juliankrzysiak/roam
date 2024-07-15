@@ -4,7 +4,6 @@ import { convertKmToMi, convertSecToMi } from "@/utils";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { addMinutes, parse } from "date-fns";
 
-
 export async function getDay(
   supabase: SupabaseClient<Database>,
   tripId: string,
@@ -28,7 +27,7 @@ export async function getDay(
   const { data: placesData, error } = await supabase
     .from("places")
     .select(
-      "id, name, lat, lng, placeDuration:place_duration, tripDuration:trip_duration, placeId:place_id",
+      "id, name, lat, lng, placeDuration:place_duration, tripDuration:trip_duration, placeId:place_id, address",
     )
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);

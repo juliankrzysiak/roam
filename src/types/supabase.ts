@@ -46,6 +46,7 @@ export type Database = {
       }
       places: {
         Row: {
+          address: string
           category: string | null
           created_at: string
           day_id: string
@@ -58,6 +59,7 @@ export type Database = {
           trip_duration: number
         }
         Insert: {
+          address: string
           category?: string | null
           created_at?: string
           day_id: string
@@ -70,6 +72,7 @@ export type Database = {
           trip_duration?: number
         }
         Update: {
+          address?: string
           category?: string | null
           created_at?: string
           day_id?: string
@@ -131,6 +134,7 @@ export type Database = {
           day: string
         }
         Returns: {
+          address: string
           category: string | null
           created_at: string
           day_id: string

@@ -83,6 +83,8 @@ export default function Planner({
   );
 }
 
+/* ------------------------------- TimePicker ------------------------------- */
+
 type TimePickerProps = {
   day: Day;
   totalDuration: number;
@@ -95,6 +97,11 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
     parse(startTime, "HH:mm", new Date()),
     totalDuration,
   );
+
+  // Set state when new data
+  useEffect(() => {
+    setStartTime(day.startTime.slice(0, 5));
+  }, [day.id]);
 
   function resetTime() {
     setStartTime(day.startTime.slice(0, 5));

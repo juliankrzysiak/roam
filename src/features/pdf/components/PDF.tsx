@@ -22,33 +22,11 @@ const PDFViewer = dynamic(
 
 // Create styles
 const styles = StyleSheet.create({
-  page: {
-    fontFamily: "Courier",
-    flexDirection: "column",
-    padding: 24,
-    gap: 8,
-  },
-  places: {
-    flexDirection: "column",
-    gap: 16,
-  },
-  place: {
-    flexDirection: "column",
-    gap: 4,
-  },
-
-  date: {
+  fontBase: {
     fontSize: 16,
   },
-  title: {
-    fontSize: 16,
-    textDecoration: "underline",
-  },
-  times: {
+  fontXs: {
     fontSize: 12,
-  },
-  bold: {
-    fontWeight: "bold",
   },
 });
 
@@ -64,29 +42,62 @@ export default function PDF({ day }: PDFProps) {
   return (
     <PDFViewer className="flex w-full items-stretch">
       <Document>
-        <Page size="A4" style={styles.page}>
-          <View>
-            <Text style={styles.date}>{format(day.date, "EEEE, MMMM d")}</Text>
-          </View>
-          <View style={styles.places}>
+        <Page
+          size="A4"
+          style={{
+            fontFamily: "Courier",
+            flexDirection: "column",
+            padding: 24,
+            gap: 16,
+          }}
+        >
+          <Text
+            fixed
+            style={{
+              position: "absolute",
+              right: 12,
+              bottom: 12,
+              fontSize: 12,
+            }}
+          >
+            Roam
+          </Text>
+          <Text style={styles.fontBase}>
+            {format(day.date, "EEEE, MMMM d")}
+          </Text>
+          <View
+            style={{
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
             {places.map((place) => {
               return (
-                <View style={styles.place} key={place.id}>
+                <View
+                  style={{ flexDirection: "column", gap: 4 }}
+                  key={place.id}
+                >
                   <View>
-                    <Text style={styles.title}>{place.name}</Text>
-                    <Text style={{ fontSize: 12 }}>{place.address}</Text>
-                  </View>
-                  <View style={styles.times}>
-                    <Text>A: {format(place.schedule.arrival, timeFormat)}</Text>
-                    <Text>
-                      D: {format(place.schedule.departure, timeFormat)}
+                    <Text
+                      style={[styles.fontBase, { textDecoration: "underline" }]}
+                    >
+                      {place.name}
                     </Text>
+                    <Text style={styles.fontXs}>{place.address}</Text>
                   </View>
-                  {place.travel && (
-                    <Text style={styles.times}>
-                      T: {place.travel.duration} min
-                    </Text>
-                  )}
+                  <View style={styles.fontXs}>
+                    <View>
+                      <Text>
+                        A: {format(place.schedule.arrival, timeFormat)}
+                      </Text>
+                      <Text>
+                        D: {format(place.schedule.departure, timeFormat)}
+                      </Text>
+                    </View>
+                    {place.travel && (
+                      <Text>T: {place.travel.duration} min</Text>
+                    )}
+                  </View>
                 </View>
               );
             })}

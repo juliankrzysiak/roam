@@ -7,9 +7,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { DateRange } from "react-day-picker";
 import TripOptions from "./TripOptions";
 import { format } from "date-fns";
+import { DateRange } from "@/types";
 
 type Props = {
   id: string;
@@ -20,10 +20,8 @@ type Props = {
 const dateFormat = "MMM dd";
 
 export default async function TripCard({ id, name, dateRange }: Props) {
-  const range = `${format(dateRange.from, dateFormat)} - ${format(
-    dateRange.to,
-    dateFormat,
-  )}`;
+  let range = `${format(dateRange.from, dateFormat)}`;
+  if (dateRange.to) range += ` - ${format(dateRange.to, dateFormat)}`;
 
   return (
     <Card className="relative flex flex-col items-center justify-between">
@@ -32,11 +30,9 @@ export default async function TripCard({ id, name, dateRange }: Props) {
         <CardTitle className="w-fit">{name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>Days: {range}</p>
-        {/* <p>Date</p> */}
-        {/* <p>Miles</p> */}
+        <p>{range}</p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex gap-2">
         <Button asChild>
           <Link href={`/${id}`}>Go To Schedule</Link>
         </Button>

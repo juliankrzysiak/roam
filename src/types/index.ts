@@ -31,3 +31,8 @@ export type Travel = {
   distance: number;
   duration: number;
 };
+
+export type DateRange = {
+  from: Date;
+  to?: Date;
+};

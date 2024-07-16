@@ -2,7 +2,7 @@ import NewTripForm from "@/features/trips/components/NewTripForm";
 import TripCard from "@/features/trips/components/TripCard";
 import { createClient } from "@/utils/supabase/server";
 import { parseISO } from "date-fns";
-import { DateRange } from "react-day-picker";
+import { DateRange } from "@/types";
 
 type Trip = {
   id: string;
@@ -46,7 +46,7 @@ function mapDateRange(trips: Trip[]) {
       dateRange.to = parseISO(end);
     }
 
-    // Remove a property and adds a property
+    // Remove a property and add a property
     const { days, ...newTrip } = { ...trip, dateRange };
 
     return newTrip;

@@ -13,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { updateCurrentDate } from "@/utils/actions/crud/update";
 import { useOptimistic, useState } from "react";
-import { DateRange } from "react-day-picker";
+import { DateRange } from "@/types";
 
 type Props = {
   tripId: string;
@@ -25,6 +25,7 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [optimisticDate, setOptimisticDate] = useOptimistic<Date | undefined>(
     initialDate,
+    // @ts-expect-error
     (_state, newDate) => newDate,
   );
 

@@ -1,13 +1,7 @@
 "use client";
 
 import { DatePicker } from "@/components/general/DatePicker";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Day } from "@/types";
-import { updateStartTime } from "@/utils/actions/crud/update";
-import { addMinutes, format, parse } from "date-fns";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
+import { DateRange, Day } from "@/types";
 
 type MapControlsProps = {
   tripId: string;

@@ -1,6 +1,6 @@
 import { Place } from "@/types";
 import { format, formatISO, parse, parseISO } from "date-fns";
-import { DateRange } from "react-day-picker";
+import { DateRange } from "@/types";
 
 export function mapId(places: Place[]) {
   return places.map((place) => place.id);

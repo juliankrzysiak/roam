@@ -2,7 +2,6 @@ import TogglePlannerButton from "@/components/general/TogglePlannerButton";
 import Map from "@/features/map/components/Map";
 import MapControls from "@/features/map/components/MapControls";
 import MapSearch from "@/features/map/components/MapSearch";
-import PDFButton from "@/features/pdf/components/PDFButton";
 import Planner from "@/features/planner/components/Planner";
 import { Database } from "@/types/supabase";
 import { calcDateRange } from "@/utils";
@@ -41,7 +40,6 @@ export default async function MapPage({ params }: Props) {
       <Map day={day}>
         <MapSearch />
         <MapControls tripId={tripId} day={day} dateRange={dateRange} />
-        <PDFButton />
       </Map>
       <TogglePlannerButton />
     </main>

@@ -37,6 +37,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "../schema";
 import { z } from "zod";
+import Link from "next/link";
 
 type Props = {
   id: string;
@@ -58,11 +59,21 @@ export default function TripOptions({ id, name, dateRange }: Props) {
           <MoreSVG />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setOpenEdit(true)}
+          >
             <span>Edit</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+          <DropdownMenuItem className="cursor-pointer" asChild>
+            <Link href={`/${id}/pdf`}>Print</Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setOpenDelete(true)}
+          >
             <span>Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -78,6 +89,8 @@ export default function TripOptions({ id, name, dateRange }: Props) {
     </>
   );
 }
+
+/* -------------------------------- EditTrip -------------------------------- */
 
 type EditTripProps = {
   id: string;
@@ -161,6 +174,8 @@ function EditTrip({
     </Dialog>
   );
 }
+
+/* ------------------------------- DeleteTrip ------------------------------- */
 
 function DeleteTrip({
   id,

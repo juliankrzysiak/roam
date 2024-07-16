@@ -31,78 +31,83 @@ const styles = StyleSheet.create({
 });
 
 type PDFProps = {
-  day: Day;
+  days: Day[];
 };
 
 const timeFormat = "h:mm aaa";
 
-export default function PDF({ day }: PDFProps) {
-  const { places } = day;
-
+export default function PDF({ days }: PDFProps) {
   return (
     <PDFViewer className="flex w-full items-stretch">
       <Document>
-        <Page
-          size="A4"
-          style={{
-            fontFamily: "Courier",
-            flexDirection: "column",
-            padding: 24,
-            gap: 16,
-          }}
-        >
-          <Text
-            fixed
+        {days.map((day) => (
+          <Page
+            key={day.id}
+            size="A4"
             style={{
-              position: "absolute",
-              right: 12,
-              bottom: 12,
-              fontSize: 12,
-            }}
-          >
-            Roam
-          </Text>
-          <Text style={styles.fontBase}>
-            {format(day.date, "EEEE, MMMM d")}
-          </Text>
-          <View
-            style={{
+              fontFamily: "Courier",
               flexDirection: "column",
+              padding: 24,
               gap: 16,
             }}
           >
-            {places.map((place) => {
-              return (
-                <View
-                  style={{ flexDirection: "column", gap: 4 }}
-                  key={place.id}
-                >
-                  <View>
-                    <Text
-                      style={[styles.fontBase, { textDecoration: "underline" }]}
-                    >
-                      {place.name}
-                    </Text>
-                    <Text style={styles.fontXs}>{place.address}</Text>
-                  </View>
-                  <View style={styles.fontXs}>
+            <Text
+              fixed
+              style={{
+                position: "absolute",
+                right: 12,
+                bottom: 12,
+                fontSize: 12,
+              }}
+            >
+              Roam
+            </Text>
+            <Text style={styles.fontBase}>
+              {format(day.date, "EEEE, MMMM d")}
+            </Text>
+            <View
+              style={{
+                flexDirection: "column",
+                gap: 16,
+              }}
+            >
+              {day.places.map((place) => {
+                return (
+                  <View
+                    wrap={false}
+                    style={{ flexDirection: "column", gap: 4 }}
+                    key={place.id}
+                  >
                     <View>
-                      <Text>
-                        A: {format(place.schedule.arrival, timeFormat)}
+                      <Text
+                        style={[
+                          styles.fontBase,
+                          { textDecoration: "underline" },
+                        ]}
+                      >
+                        {place.name}
                       </Text>
-                      <Text>
-                        D: {format(place.schedule.departure, timeFormat)}
-                      </Text>
+                      <Text style={styles.fontXs}>{place.address}</Text>
                     </View>
-                    {place.travel && (
-                      <Text>T: {place.travel.duration} min</Text>
-                    )}
+                    <View style={styles.fontXs}>
+                      <View>
+                        <Text>
+                          A: {format(place.schedule.arrival, timeFormat)}
+                        </Text>
+                        <Text>
+                          D: {format(place.schedule.departure, timeFormat)}
+                        </Text>
+                      </View>
+                      {place.travel && (
+                        <Text>T: {place.travel.duration} min</Text>
+                      )}
+                    </View>
                   </View>
-                </View>
-              );
-            })}
-          </View>
-        </Page>
+                );
+              })}
+            </View>
+          </Page>
+        ))}
       </Document>
     </PDFViewer>
   );

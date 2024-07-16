@@ -10,11 +10,23 @@ export default async function PDFPage({ params }: Props) {
   const { trip: tripId } = params;
   const supabase = createClient();
 
-  const day = await getDay(supabase, tripId);
+  const { data, error } = await supabase
+    .from("days")
+    .select("id, date")
+    .eq("trip_id", tripId);
+  if (error) return;
+  const sortedDays = data.map((day) => day.date).sort();
+
+  const days = await Promise.all(
+    sortedDays.map(async (date) => {
+      const day = await getDay(supabase, tripId, date);
+      return day;
+    }),
+  );
 
   return (
     <main className="flex w-full flex-grow">
-      <PDF day={day} />
+      <PDF days={days} />
     </main>
   );
 }

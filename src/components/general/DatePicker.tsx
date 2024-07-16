@@ -25,7 +25,7 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [optimisticDate, setOptimisticDate] = useOptimistic<Date | undefined>(
     initialDate,
-    (state, newDate) => newDate,
+    (_state, newDate) => newDate,
   );
 
   const dateMatcher = {
@@ -54,7 +54,8 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          requiredy
+          required
+          defaultMonth={optimisticDate}
           disabled={dateMatcher}
           selected={optimisticDate}
           onSelect={async (date) => {

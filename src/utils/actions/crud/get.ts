@@ -7,19 +7,25 @@ import { addMinutes, parse } from "date-fns";
 export async function getDay(
   supabase: SupabaseClient<Database>,
   tripId: string,
+  currentDate?: string,
 ): Promise<Day> {
-  const { data: dateData, error: dateError } = await supabase
-    .from("trips")
-    .select("current_date")
-    .eq("id", tripId)
-    .limit(1)
-    .single();
-  if (dateError) throw new Error(`Supbase error: ${dateError.message}`);
+  let date = currentDate;
+
+  if (!date) {
+    const { data: dateData, error: dateError } = await supabase
+      .from("trips")
+      .select("current_date")
+      .eq("id", tripId)
+      .limit(1)
+      .single();
+    if (dateError) throw new Error(`Supbase error: ${dateError.message}`);
+    date = dateData.current_date || undefined;
+  }
 
   const { data: dayData, error: dayError } = await supabase
     .from("days")
     .select("id, date, startTime:start_time, orderPlaces:order_places")
-    .match({ trip_id: tripId, date: dateData.current_date })
+    .match({ trip_id: tripId, date })
     .limit(1)
     .single();
   if (dayError) throw new Error(`Supbase error: ${dayError.message}`);
@@ -35,6 +41,7 @@ export async function getDay(
   // TODO: Replace this with rpc
   const sortedPlaces = dayData.orderPlaces.map((id) => {
     const place = placesData.find((place) => place.id === id);
+    if (!place) throw new Error("Couldn't find place.");
     const { lat, lng, ...placeProps } = place;
     return { ...placeProps, position: { lat, lng } };
   });

@@ -44,15 +44,16 @@ export default function Planner({
   return (
     <section
       className={clsx(
-        "absolute right-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 sm:relative sm:max-w-xs",
+        "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 sm:relative sm:max-w-xs",
         !isVisible && "hidden opacity-0",
       )}
     >
-      <div className="sticky top-0 flex flex-col">
-        <h2 className="px-2 pt-1 text-xl tracking-wide">{tripName}</h2>
+      <div className="sticky top-0 m-2 flex flex-col items-center rounded-md border-2 border-slate-400 shadow-md">
+        <h2 className="text-center text-xl tracking-wide">{tripName}</h2>
+        <hr className="w-full border-slate-400 " />
         <TimePicker day={day} totalDuration={totalDuration} />
       </div>
-      <div className="flex-1 overflow-auto py-2">
+      <div className="flex-1 overflow-auto">
         <Reorder.Group
           axis="y"
           values={places}
@@ -61,7 +62,6 @@ export default function Planner({
           className="flex h-full flex-col gap-4 px-4 py-2"
         >
           {places.map((place, i, arr) => {
-            // const isLast = i === arr.length - 1;
             return (
               <PlaceCard
                 key={place.id}
@@ -109,14 +109,14 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
 
   return (
     <form
-      className="flex flex-col items-center justify-between gap-2 border-y-2 border-slate-700 py-1"
+      className=" flex flex-col items-center justify-between gap-2 border-slate-400 py-2"
       action={updateStartTime}
     >
-      <div className="flex flex-col items-center gap-1">
+      <div className="flex flex-col gap-1">
         <label className="flex items-center gap-2">
           <Sun size={18} aria-label="Start time" />
           <input
-            className="rounded-sm p-1 "
+            className="rounded-sm border border-slate-500 pl-1"
             type="time"
             id="startTime"
             name="startTime"
@@ -124,8 +124,14 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
             onChange={(e) => setStartTime(e.target.value)}
           />
           <input type="hidden" name="id" defaultValue={day.id} />
-          <button type="button" aria-label="Reset time" onClick={resetTime}>
-            <Undo2 size={18} />
+          <button
+            className="rounded-lg border border-slate-500 bg-slate-200 px-2"
+            type="button"
+            aria-label="Reset time"
+            onClick={resetTime}
+          >
+            Reset
+            {/* <Undo2 size={18} /> */}
           </button>
         </label>
       </div>
@@ -133,8 +139,12 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
         <label className="flex items-center gap-2">
           <Moon size={18} aria-label="End Time" />
           <span id="endTime">{format(endTime, "HH:mm aa")}</span>
-          <button aria-label="Save time">
-            <Check size={18} />
+          <button
+            className="rounded-lg border border-slate-500 bg-slate-200 px-2"
+            aria-label="Save time"
+          >
+            Save
+            {/* <Check size={18} /> */}
           </button>
         </label>
       </div>

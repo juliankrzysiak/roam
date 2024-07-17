@@ -115,7 +115,7 @@ function PlaceDuration({
           <Clock size={svgSize} />
           <div className="flex gap-1">
             <input
-              className="rounded-md pl-1"
+              className="w-fit rounded-md pl-1"
               name="hours"
               type="number"
               min="0"

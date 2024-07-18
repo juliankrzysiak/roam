@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
 import { Day } from "@/types";
@@ -44,7 +45,7 @@ export default function Planner({
   return (
     <section
       className={clsx(
-        "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 sm:relative sm:max-w-xs",
+        "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 sm:relative sm:max-w-sm",
         !isVisible && "hidden opacity-0",
       )}
     >
@@ -76,7 +77,7 @@ export default function Planner({
         <h4>On the road</h4>
         <div className="flex gap-2">
           <span>{day.travel?.duration} min</span>
-          <span>{day.travel?.distance} mi</span>
+          <span>{day.travel?.distance} miles</span>
         </div>
       </div>
     </section>
@@ -109,7 +110,7 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
 
   return (
     <form
-      className=" flex flex-col items-center justify-between gap-2 border-slate-400 py-2"
+      className="flex flex-col items-center justify-between gap-2 border-slate-400 py-2"
       action={updateStartTime}
     >
       <div className="flex flex-col gap-1">
@@ -124,28 +125,24 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
             onChange={(e) => setStartTime(e.target.value)}
           />
           <input type="hidden" name="id" defaultValue={day.id} />
-          <button
-            className="rounded-lg border border-slate-500 bg-slate-200 px-2"
+          <Button
+            size="sm"
             type="button"
             aria-label="Reset time"
             onClick={resetTime}
           >
             Reset
-            {/* <Undo2 size={18} /> */}
-          </button>
+          </Button>
         </label>
       </div>
       <div className="flex flex-col items-center gap-1">
         <label className="flex items-center gap-2">
           <Moon size={18} aria-label="End Time" />
           <span id="endTime">{format(endTime, "HH:mm aa")}</span>
-          <button
-            className="rounded-lg border border-slate-500 bg-slate-200 px-2"
-            aria-label="Save time"
-          >
+          <Button size="sm" aria-label="Save time">
             Save
             {/* <Check size={18} /> */}
-          </button>
+          </Button>
         </label>
       </div>
     </form>

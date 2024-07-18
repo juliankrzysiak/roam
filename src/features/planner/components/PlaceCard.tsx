@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { convertTime } from "@/utils";
@@ -65,11 +66,11 @@ export default function PlaceCard({ place, handleDragEnd }: PlaceCardProps) {
       {travel && (
         <div className="flex justify-between gap-2 px-4 py-1 text-sm">
           <span>{travel.duration} min</span>
-          <span>{travel.distance} mi</span>
+          <span>
+            {travel.distance} {travel.duration > 1 ? "miles" : "mile"}
+          </span>
         </div>
       )}
-
-      {/* {!last && <TravelDuration placeId={id} tripDuration={tripDuration} />} */}
     </Reorder.Item>
   );
 }
@@ -103,7 +104,7 @@ function PlaceDuration({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1">
       <span className="flex items-center gap-2">
         <ArrowRight size={svgSize} /> {format(arrival, timeFormat)}
       </span>
@@ -136,10 +137,18 @@ function PlaceDuration({
           </div>
           <input type="hidden" name="id" defaultValue={placeId} />
         </label>
-        <button type="submit">Save</button>
-        <button type="button" onClick={handleReset}>
-          <Undo2 size={svgSize} />
-        </button>
+        <Button size="sm" variant="secondary" type="submit">
+          Save
+        </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          type="button"
+          onClick={handleReset}
+        >
+          {/* <Undo2 size={svgSize} /> */}
+          Reset
+        </Button>
       </form>
       <span className="flex items-center gap-2">
         <ArrowLeft size={svgSize} /> {format(departure, timeFormat)}

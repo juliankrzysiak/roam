@@ -22,7 +22,7 @@ export type PlaceNoSchedule = Omit<Place, "schedule">;
 export type Day = {
   id: string;
   date: Date;
-  startTime: string;
+  startTime: Date;
   timezone: string;
   travel?: Travel;
   places: Place[];

@@ -7,25 +7,22 @@ import { Day } from "@/types";
 import { checkSameArr, mapId } from "@/utils";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
 import clsx from "clsx";
-import { addMinutes, format, parse } from "date-fns";
+import { addMinutes, parse } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { Reorder } from "framer-motion";
 import { useAtomValue } from "jotai";
-import { Check, Moon, Sun, Undo2 } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 type PlannerProps = {
   day: Day;
-  tripId: string;
   tripName: string;
-  dateRange: DateRange;
   totalDuration: number;
 };
 
 export default function Planner({
   day,
-  dateRange,
-  tripId,
   tripName,
   totalDuration,
 }: PlannerProps) {
@@ -62,7 +59,7 @@ export default function Planner({
           layoutScroll
           className="flex h-full flex-col gap-4 px-4 py-2"
         >
-          {places.map((place, i, arr) => {
+          {places.map((place) => {
             return (
               <PlaceCard
                 key={place.id}
@@ -93,20 +90,21 @@ type TimePickerProps = {
 };
 
 function TimePicker({ day, totalDuration }: TimePickerProps) {
-  const [startTime, setStartTime] = useState(day.startTime.slice(0, 5));
-  // TODO: Switch to date so i don't have to make a new date each time state changes
-  const endTime = addMinutes(
-    parse(startTime, "HH:mm", new Date()),
-    totalDuration,
+  const [date, setDate] = useState(day.startTime);
+  const startTime = formatInTimeZone(date, day.timezone, "HH:mm");
+  const endTime = formatInTimeZone(
+    addMinutes(date, totalDuration),
+    day.timezone,
+    "HH:mm aaa",
   );
 
   // Set state when new data
   useEffect(() => {
-    setStartTime(day.startTime.slice(0, 5));
+    setDate(day.startTime);
   }, [day.id]);
 
   function resetTime() {
-    setStartTime(day.startTime.slice(0, 5));
+    setDate(day.startTime);
   }
 
   return (
@@ -123,7 +121,9 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
             id="startTime"
             name="startTime"
             value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            onChange={(e) =>
+              setDate(parse(e.target.value, "HH:mm", new Date()))
+            }
           />
           <input type="hidden" name="id" defaultValue={day.id} />
           <Button
@@ -139,7 +139,7 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
       <div className="flex flex-col items-center gap-1">
         <label className="flex items-center gap-2">
           <Moon size={18} aria-label="End Time" />
-          <span id="endTime">{format(endTime, "HH:mm aa")}</span>
+          <span id="endTime">{endTime}</span>
           <Button size="sm" aria-label="Save time">
             Save
             {/* <Check size={18} /> */}

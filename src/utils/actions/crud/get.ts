@@ -58,6 +58,7 @@ export async function getDay(
   const day = {
     ...dayData,
     date: parse(dayData.date, "yyyy-MM-dd", new Date()),
+    startTime,
     travel: travelInfo?.travel,
   };
 

@@ -13,11 +13,12 @@ import {
   ArrowLeft,
   ArrowRight,
   Car,
+  ChevronRight,
   Clock,
   GripVertical,
-  Undo2,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useDetectOutsideClick } from "../hooks";
 
 const svgSize = 16;
 
@@ -90,6 +91,10 @@ function PlaceDuration({
   placeDuration,
   placeId,
 }: PlaceDurationProps) {
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [formVisible, setFormVisible] = useState(false);
+  useDetectOutsideClick(formRef, () => setFormVisible(false));
+
   const { hours, minutes } = convertTime({ minutes: placeDuration });
   const [hourDuration, setHourDuration] = useState(hours);
   const [minuteDuration, setMinuteDuration] = useState(minutes);
@@ -108,47 +113,60 @@ function PlaceDuration({
       <span className="flex items-center gap-2">
         <ArrowRight size={svgSize} /> {format(arrival, timeFormat)}
       </span>
-      <form className="flex gap-2" action={updatePlaceDuration}>
+      <form
+        className="flex gap-2"
+        action={updatePlaceDuration}
+        ref={formRef}
+        onClick={() => setFormVisible(true)}
+      >
         <label
-          className="flex items-center gap-2"
+          className="flex cursor-pointer items-center gap-2"
           aria-label="Duration at location"
         >
           <Clock size={svgSize} />
-          <div className="flex gap-1">
-            <input
-              className="w-fit rounded-md pl-1"
-              name="hours"
-              type="number"
-              min="0"
-              max="12"
-              value={hourDuration}
-              onChange={(e) => setHourDuration(Number(e.target.value))}
-            />
-            :
-            <input
-              className="rounded-md pl-1"
-              name="minutes"
-              type="number"
-              min="0"
-              max="59"
-              value={minuteDuration}
-              onChange={(e) => setMinuteDuration(Number(e.target.value))}
-            />
-          </div>
+          {formVisible ? (
+            <div className="flex gap-1">
+              <input
+                className="w-12 rounded-md border border-slate-500 pl-1"
+                name="hours"
+                type="number"
+                min="0"
+                max="12"
+                value={hourDuration}
+                onChange={(e) => setHourDuration(Number(e.target.value))}
+              />
+              :
+              <input
+                className="w-12 rounded-md border border-slate-500 pl-1"
+                name="minutes"
+                type="number"
+                min="0"
+                max="59"
+                value={minuteDuration}
+                onChange={(e) => setMinuteDuration(Number(e.target.value))}
+              />
+              <Button size="sm" variant="secondary" type="submit">
+                Save
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                type="button"
+                onClick={handleReset}
+              >
+                Reset
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1">
+              <span>
+                {hourDuration}:{minuteDuration.toString().padStart(2, "0")}
+              </span>
+              <ChevronRight size={svgSize} />
+            </div>
+          )}
           <input type="hidden" name="id" defaultValue={placeId} />
         </label>
-        <Button size="sm" variant="secondary" type="submit">
-          Save
-        </Button>
-        <Button
-          size="sm"
-          variant="secondary"
-          type="button"
-          onClick={handleReset}
-        >
-          {/* <Undo2 size={svgSize} /> */}
-          Reset
-        </Button>
       </form>
       <span className="flex items-center gap-2">
         <ArrowLeft size={svgSize} /> {format(departure, timeFormat)}

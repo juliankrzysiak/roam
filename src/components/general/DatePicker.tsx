@@ -40,7 +40,7 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
         <Button
           variant={"outline"}
           className={cn(
-            "min-w-max max-w-xs justify-start text-left font-normal",
+            "min-w-max max-w-xs justify-start bg-slate-100 text-left font-normal",
             !optimisticDate && "text-muted-foreground",
           )}
         >

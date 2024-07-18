@@ -12,7 +12,8 @@ import { formatInTimeZone } from "date-fns-tz";
 import { Reorder } from "framer-motion";
 import { useAtomValue } from "jotai";
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useDetectOutsideClick } from "../hooks";
 
 type PlannerProps = {
   day: Day;
@@ -46,7 +47,7 @@ export default function Planner({
       )}
     >
       <div className="sticky top-0 m-2 flex flex-col items-center rounded-md border-2 border-slate-400 shadow-md">
-        <h2 className="text-center text-xl tracking-wide">{tripName}</h2>
+        <h2 className="py-1 text-center text-xl tracking-wide">{tripName}</h2>
         <hr className="w-full border-slate-400 " />
         <TimePicker day={day} totalDuration={totalDuration} />
       </div>
@@ -89,6 +90,10 @@ type TimePickerProps = {
 };
 
 function TimePicker({ day, totalDuration }: TimePickerProps) {
+  const formRef = useRef(null);
+  useDetectOutsideClick(formRef, handleClickOutside);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
   const [date, setDate] = useState(day.date);
   const startTime = formatInTimeZone(date, day.timezone, "HH:mm");
   const endTime = formatInTimeZone(
@@ -102,48 +107,51 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
     setDate(day.date);
   }, [day.id]);
 
-  function resetTime() {
+  function handleClickOutside() {
+    setIsFormVisible(false);
     setDate(day.date);
   }
 
   return (
     <form
-      className="flex flex-col items-center justify-between gap-2 border-slate-400 py-2"
+      className={clsx(
+        "flex w-full items-center justify-evenly gap-2 px-2 py-2",
+        isFormVisible && "flex-row",
+      )}
       action={updateStartTime}
+      ref={formRef}
+      onClick={() => setIsFormVisible(true)}
     >
-      <div className="flex flex-col gap-1">
-        <label className="flex items-center gap-2">
-          <Sun size={18} aria-label="Start time" />
-          <input
-            className="rounded-sm border border-slate-500 pl-1"
-            type="time"
-            id="startTime"
-            name="startTime"
-            value={startTime}
-            onChange={(e) =>
-              setDate(parse(e.target.value, "HH:mm", new Date()))
-            }
-          />
-          <input type="hidden" name="id" defaultValue={day.id} />
-          <Button
-            size="sm"
-            type="button"
-            aria-label="Reset time"
-            onClick={resetTime}
-          >
-            Reset
-          </Button>
-        </label>
-      </div>
-      <div className="flex flex-col items-center gap-1">
-        <label className="flex items-center gap-2">
-          <Moon size={18} aria-label="End Time" />
-          <span id="endTime">{endTime}</span>
+      <label className="flex items-center gap-2">
+        <Sun size={18} aria-label="Start time" />
+        {isFormVisible ? (
+          <>
+            <input
+              className="rounded-sm border border-slate-500 pl-1"
+              type="time"
+              id="startTime"
+              name="startTime"
+              value={startTime}
+              autoFocus
+              onChange={(e) =>
+                setDate(parse(e.target.value, "HH:mm", new Date()))
+              }
+            />
+            <input type="hidden" name="id" defaultValue={day.id} />
+          </>
+        ) : (
+          <span>{startTime}</span>
+        )}
+      </label>
+      <label className="flex items-center gap-2">
+        <Moon size={18} aria-label="End Time" />
+        <span id="endTime">{endTime}</span>
+        {isFormVisible && (
           <Button size="sm" aria-label="Save time">
             Save
           </Button>
-        </label>
-      </div>
+        )}
+      </label>
     </form>
   );
 }

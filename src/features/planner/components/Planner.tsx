@@ -67,6 +67,7 @@ export default function Planner({
               <PlaceCard
                 key={place.id}
                 place={place}
+                timezone={day.timezone}
                 handleDragEnd={handleDragEnd}
               />
             );

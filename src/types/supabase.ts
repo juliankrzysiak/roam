@@ -16,6 +16,7 @@ export type Database = {
           id: string
           order_places: string[]
           start_time: string
+          timezone: string
           trip_id: string
         }
         Insert: {
@@ -24,6 +25,7 @@ export type Database = {
           id?: string
           order_places?: string[]
           start_time?: string
+          timezone: string
           trip_id: string
         }
         Update: {
@@ -32,6 +34,7 @@ export type Database = {
           id?: string
           order_places?: string[]
           start_time?: string
+          timezone?: string
           trip_id?: string
         }
         Relationships: [
@@ -47,7 +50,6 @@ export type Database = {
       places: {
         Row: {
           address: string
-          category: string | null
           created_at: string
           day_id: string
           id: string
@@ -60,7 +62,6 @@ export type Database = {
         }
         Insert: {
           address: string
-          category?: string | null
           created_at?: string
           day_id: string
           id?: string
@@ -73,7 +74,6 @@ export type Database = {
         }
         Update: {
           address?: string
-          category?: string | null
           created_at?: string
           day_id?: string
           id?: string
@@ -135,7 +135,6 @@ export type Database = {
         }
         Returns: {
           address: string
-          category: string | null
           created_at: string
           day_id: string
           id: string

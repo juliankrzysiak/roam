@@ -2,7 +2,8 @@ import { Day, Place, PlaceNoSchedule, Travel } from "@/types";
 import { Database } from "@/types/supabase";
 import { convertKmToMi, convertSecToMi } from "@/utils";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { addMinutes, parse } from "date-fns";
+import { addMinutes, parse, parseISO } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 
 export async function getDay(
   supabase: SupabaseClient<Database>,
@@ -24,7 +25,9 @@ export async function getDay(
 
   const { data: dayData, error: dayError } = await supabase
     .from("days")
-    .select("id, date, startTime:start_time, orderPlaces:order_places")
+    .select(
+      "id, date, startTime:start_time, timezone, orderPlaces:order_places",
+    )
     .match({ trip_id: tripId, date })
     .limit(1)
     .single();
@@ -49,7 +52,7 @@ export async function getDay(
   const travelInfo = await getTravelInfo(sortedPlaces);
   const travelPlaces = await mapTravelInfo(sortedPlaces, travelInfo?.trips);
 
-  const startTime = parse(dayData.startTime, "HH:mm:ss", new Date());
+  const startTime = parseISO(dayData.date + "T" + dayData.startTime);
   const scheduledPlaces = mapSchedule(travelPlaces, startTime);
 
   const day = {

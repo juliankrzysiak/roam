@@ -19,15 +19,17 @@ import {
 } from "lucide-react";
 import { useRef, useState } from "react";
 import { useDetectOutsideClick } from "../hooks";
+import { formatInTimeZone } from "date-fns-tz";
 
 const svgSize = 16;
 
 type PlaceCardProps = {
   place: Place;
   handleDragEnd: () => void;
+  timezone: string; 
 };
 
-export default function PlaceCard({ place, handleDragEnd }: PlaceCardProps) {
+export default function PlaceCard({ place, handleDragEnd, timezone }: PlaceCardProps) {
   const { id, placeId, position, name, schedule, placeDuration, travel } =
     place;
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
@@ -55,6 +57,7 @@ export default function PlaceCard({ place, handleDragEnd }: PlaceCardProps) {
           arrival={schedule.arrival}
           placeDuration={placeDuration}
           placeId={id}
+          timezone={timezone}
         />
         <GripVertical
           size={24}
@@ -82,12 +85,14 @@ type PlaceDurationProps = {
   arrival: Date;
   placeDuration: number;
   placeId: string;
+  timezone: string
 };
 
 function PlaceDuration({
   arrival,
   placeDuration,
   placeId,
+  timezone,
 }: PlaceDurationProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [formVisible, setFormVisible] = useState(false);
@@ -111,7 +116,8 @@ function PlaceDuration({
   return (
     <div className="flex flex-col gap-1">
       <span className="flex items-center gap-2">
-        <ArrowRight size={svgSize} /> {format(arrival, timeFormat)}
+        <ArrowRight size={svgSize} />{" "}
+        {formatInTimeZone(arrival, timezone, timeFormat)}
       </span>
       <form
         className="flex gap-2"
@@ -168,7 +174,8 @@ function PlaceDuration({
         </label>
       </form>
       <span className="flex items-center gap-2">
-        <ArrowLeft size={svgSize} /> {format(departure, timeFormat)}
+        <ArrowLeft size={svgSize} />{" "}
+        {formatInTimeZone(departure, timezone, timeFormat)}
       </span>
     </div>
   );

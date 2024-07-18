@@ -51,18 +51,16 @@ export default function PlaceCard({ place, handleDragEnd }: PlaceCardProps) {
         <h2 className="text-xl font-bold underline" onClick={handleClick}>
           {name}
         </h2>
-        <div className="flex items-end justify-between gap-2">
-          <PlaceDuration
-            arrival={schedule.arrival}
-            placeDuration={placeDuration}
-            placeId={id}
-          />
-          <GripVertical
-            size={24}
-            className="absolute bottom-2 right-1 text-slate-400"
-            onPointerDown={(e) => controls.start(e)}
-          />
-        </div>
+        <PlaceDuration
+          arrival={schedule.arrival}
+          placeDuration={placeDuration}
+          placeId={id}
+        />
+        <GripVertical
+          size={24}
+          className="absolute bottom-2 right-1 cursor-pointer text-slate-400"
+          onPointerDown={(e) => controls.start(e)}
+        />
       </article>
       {travel && (
         <div className="flex justify-between gap-2 px-4 py-1 text-sm">

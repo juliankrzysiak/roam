@@ -93,7 +93,7 @@ function PlaceDuration({
 }: PlaceDurationProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [formVisible, setFormVisible] = useState(false);
-  useDetectOutsideClick(formRef, () => setFormVisible(false));
+  useDetectOutsideClick(formRef, handleClickOutside);
 
   const { hours, minutes } = convertTime({ minutes: placeDuration });
   const [hourDuration, setHourDuration] = useState(hours);
@@ -103,7 +103,9 @@ function PlaceDuration({
     minutes: minuteDuration,
   });
 
-  function handleReset() {
+  function handleClickOutside() {
+    setFormVisible(false);
+    // Resets current input
     setHourDuration(hours);
     setMinuteDuration(minutes);
   }
@@ -147,14 +149,6 @@ function PlaceDuration({
               />
               <Button size="sm" variant="secondary" type="submit">
                 Save
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                type="button"
-                onClick={handleReset}
-              >
-                Reset
               </Button>
             </div>
           ) : (

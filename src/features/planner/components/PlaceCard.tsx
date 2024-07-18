@@ -127,30 +127,37 @@ function PlaceDuration({
         >
           <Clock size={svgSize} />
           {formVisible ? (
-            <div className="flex gap-1">
-              <input
-                className="w-12 rounded-md border border-slate-500 pl-1"
-                name="hours"
-                type="number"
-                min="0"
-                max="12"
-                value={hourDuration}
-                onChange={(e) => setHourDuration(Number(e.target.value))}
-              />
-              :
-              <input
-                className="w-12 rounded-md border border-slate-500 pl-1"
-                name="minutes"
-                type="number"
-                min="0"
-                max="59"
-                value={minuteDuration}
-                onChange={(e) => setMinuteDuration(Number(e.target.value))}
-              />
-              <Button size="sm" variant="secondary" type="submit">
+            <>
+              <div className="flex gap-1">
+                <input
+                  className="w-12 rounded-md border border-slate-500 pl-1"
+                  name="hours"
+                  type="number"
+                  min="0"
+                  max="12"
+                  value={hourDuration}
+                  onChange={(e) => setHourDuration(Number(e.target.value))}
+                />
+                :
+                <input
+                  className="w-12 rounded-md border border-slate-500 pl-1"
+                  name="minutes"
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={minuteDuration.toString().padStart(2, "0")}
+                  onChange={(e) => setMinuteDuration(Number(e.target.value))}
+                />
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                type="submit"
+                className="ml-1"
+              >
                 Save
               </Button>
-            </div>
+            </>
           ) : (
             <div className="flex items-center gap-1">
               <span>

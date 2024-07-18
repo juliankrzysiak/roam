@@ -45,7 +45,12 @@ function calcDateDelta(arr1: Date[], arr2: Date[]) {
 }
 
 export function formatBulkDates(trip_id: string, dates: Date[]) {
-  return dates.map((date) => ({ trip_id, date: format(date, "yyyy-MM-dd") }));
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return dates.map((date) => ({
+    trip_id,
+    date: format(date, "yyyy-MM-dd"),
+    timezone,
+  }));
 }
 
 /* -------------------------------- dateRange ------------------------------- */

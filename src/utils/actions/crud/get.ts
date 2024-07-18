@@ -10,9 +10,9 @@ export async function getDay(
   tripId: string,
   currentDate?: string,
 ): Promise<Day> {
-  let date = currentDate;
+  let tripDate;
 
-  if (!date) {
+  if (!currentDate) {
     const { data: dateData, error: dateError } = await supabase
       .from("trips")
       .select("current_date")
@@ -20,7 +20,7 @@ export async function getDay(
       .limit(1)
       .single();
     if (dateError) throw new Error(`Supbase error: ${dateError.message}`);
-    date = dateData.current_date || undefined;
+    tripDate = dateData.current_date;
   }
 
   const { data: dayData, error: dayError } = await supabase
@@ -28,7 +28,7 @@ export async function getDay(
     .select(
       "id, date, startTime:start_time, timezone, orderPlaces:order_places",
     )
-    .match({ trip_id: tripId, date })
+    .match({ trip_id: tripId, date: currentDate || tripDate })
     .limit(1)
     .single();
   if (dayError) throw new Error(`Supbase error: ${dayError.message}`);
@@ -52,13 +52,12 @@ export async function getDay(
   const travelInfo = await getTravelInfo(sortedPlaces);
   const travelPlaces = await mapTravelInfo(sortedPlaces, travelInfo?.trips);
 
-  const startTime = parseISO(dayData.date + "T" + dayData.startTime);
-  const scheduledPlaces = mapSchedule(travelPlaces, startTime);
+  const date = parseISO(dayData.date + "T" + dayData.startTime);
+  const scheduledPlaces = mapSchedule(travelPlaces, date);
 
   const day = {
     ...dayData,
-    date: parse(dayData.date, "yyyy-MM-dd", new Date()),
-    startTime,
+    date,
     travel: travelInfo?.travel,
   };
 

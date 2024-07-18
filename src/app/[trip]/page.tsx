@@ -29,13 +29,7 @@ export default async function MapPage({ params }: Props) {
 
   return (
     <main className="relative h-40 flex-grow sm:flex">
-      <Planner
-        day={day}
-        tripId={tripId}
-        tripName={tripName}
-        dateRange={dateRange}
-        totalDuration={totalDuration}
-      />
+      <Planner day={day} tripName={tripName} totalDuration={totalDuration} />
       <Map day={day}>
         <MapSearch />
         <MapControls tripId={tripId} day={day} dateRange={dateRange} />

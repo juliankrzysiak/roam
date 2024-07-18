@@ -13,7 +13,6 @@ import { Reorder } from "framer-motion";
 import { useAtomValue } from "jotai";
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
-import { DateRange } from "react-day-picker";
 
 type PlannerProps = {
   day: Day;
@@ -90,7 +89,7 @@ type TimePickerProps = {
 };
 
 function TimePicker({ day, totalDuration }: TimePickerProps) {
-  const [date, setDate] = useState(day.startTime);
+  const [date, setDate] = useState(day.date);
   const startTime = formatInTimeZone(date, day.timezone, "HH:mm");
   const endTime = formatInTimeZone(
     addMinutes(date, totalDuration),
@@ -100,11 +99,11 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
 
   // Set state when new data
   useEffect(() => {
-    setDate(day.startTime);
+    setDate(day.date);
   }, [day.id]);
 
   function resetTime() {
-    setDate(day.startTime);
+    setDate(day.date);
   }
 
   return (
@@ -142,7 +141,6 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
           <span id="endTime">{endTime}</span>
           <Button size="sm" aria-label="Save time">
             Save
-            {/* <Check size={18} /> */}
           </Button>
         </label>
       </div>

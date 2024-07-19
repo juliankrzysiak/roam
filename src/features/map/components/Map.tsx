@@ -62,11 +62,11 @@ export default function Map({ day, children }: MapProps) {
         onClick={handleMapClick}
         disableDefaultUI
       >
-        {children}
         <Markers places={places} />
         {currentPlace && (
           <InfoWindow date={day.date} dayId={day.id} places={places} />
         )}
+        {children}
       </GoogleMap>
     </APIProvider>
   );

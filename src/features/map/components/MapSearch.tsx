@@ -2,15 +2,16 @@
 
 import { currentPlaceAtom } from "@/lib/atom";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import clsx from "clsx";
 import { useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 
 // Main template stolen from https://github.com/visgl/react-google-maps/tree/main/examples/autocomplete
 export default function MapSearch() {
+  const inputRef = useRef<HTMLInputElement>(null);
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const [placeAutocomplete, setPlaceAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const places = useMapsLibrary("places");
 
   useEffect(() => {
@@ -45,12 +46,14 @@ export default function MapSearch() {
   }
 
   return (
-    <div className="absolute left-2 right-2 top-2 flex gap-2 rounded-lg bg-slate-100 p-2 shadow-lg">
+    <div className="absolute left-1/2 top-4 w-full max-w-xl -translate-x-1/2 px-2">
       <input
         ref={inputRef}
         type="search"
         placeholder="Search location"
-        className="w-full rounded-lg px-2"
+        className={clsx(
+          "w-full rounded-lg border-2 border-emerald-900 px-2 py-1",
+        )}
       />
     </div>
   );

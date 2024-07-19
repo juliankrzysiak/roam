@@ -1996,11 +1996,8 @@ packages:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
 
-  caniuse-lite@1.0.30001519:
-    resolution: {integrity: sha512-0QHgqR+Jv4bxHMp8kZ1Kn8CH55OikjKJ6JmKkZYP1F3D7w+lnFXF70nG5eNfsZS89jadi5Ywy5UCSKLAglIRkg==}
-
-  caniuse-lite@1.0.30001584:
-    resolution: {integrity: sha512-LOz7CCQ9M1G7OjJOF9/mzmqmj3jE/7VOmrfw6Mgs0E8cjOsbRXQJHsPBfmBOXDskXKrHLyyW3n7kpDW/4BsfpQ==}
+  caniuse-lite@1.0.30001642:
+    resolution: {integrity: sha512-3XQ0DoRgLijXJErLSl+bLnJ+Et4KqV1PY6JJBGAFlsNsz31zeAIncyeZfLCabHK/jtSh+671RM9YMldxjUPZtA==}
 
   chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -3691,6 +3688,9 @@ packages:
 
   tslib@2.6.1:
     resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
+
+  tslib@2.6.3:
+    resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
   tsx@4.7.0:
     resolution: {integrity: sha512-I+t79RYPlEYlHn9a+KzwrvEwhJg35h/1zHsLC2JXvhC2mdynMv6Zxzvhv5EMV6VF5qJlLlkSnMVvdZV3PSIGcg==}
@@ -5598,7 +5598,7 @@ snapshots:
   '@swc/helpers@0.5.5':
     dependencies:
       '@swc/counter': 0.1.3
-      tslib: 2.6.1
+      tslib: 2.6.3
 
   '@trysound/sax@0.2.0': {}
 
@@ -5797,7 +5797,7 @@ snapshots:
   autoprefixer@10.4.14(postcss@8.4.27):
     dependencies:
       browserslist: 4.21.10
-      caniuse-lite: 1.0.30001519
+      caniuse-lite: 1.0.30001642
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -5880,14 +5880,14 @@ snapshots:
 
   browserslist@4.21.10:
     dependencies:
-      caniuse-lite: 1.0.30001519
+      caniuse-lite: 1.0.30001642
       electron-to-chromium: 1.4.487
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
 
   browserslist@4.22.3:
     dependencies:
-      caniuse-lite: 1.0.30001584
+      caniuse-lite: 1.0.30001642
       electron-to-chromium: 1.4.657
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.22.3)
@@ -5920,9 +5920,7 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  caniuse-lite@1.0.30001519: {}
-
-  caniuse-lite@1.0.30001584: {}
+  caniuse-lite@1.0.30001642: {}
 
   chalk@2.4.2:
     dependencies:
@@ -6252,7 +6250,7 @@ snapshots:
       eslint: 8.46.0
       eslint-import-resolver-node: 0.3.8
       eslint-import-resolver-typescript: 3.5.5(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-node@0.3.8)(eslint-plugin-import@2.28.0(eslint@8.46.0))(eslint@8.46.0)
-      eslint-plugin-import: 2.28.0(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-typescript@3.5.5)(eslint@8.46.0)
+      eslint-plugin-import: 2.28.0(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-typescript@3.5.5(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-node@0.3.8)(eslint-plugin-import@2.28.0(eslint@8.46.0))(eslint@8.46.0))(eslint@8.46.0)
       eslint-plugin-jsx-a11y: 6.7.1(eslint@8.46.0)
       eslint-plugin-react: 7.33.1(eslint@8.46.0)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.46.0)
@@ -6276,7 +6274,7 @@ snapshots:
       enhanced-resolve: 5.15.0
       eslint: 8.46.0
       eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-node@0.3.8)(eslint-import-resolver-typescript@3.5.5(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-node@0.3.8)(eslint-plugin-import@2.28.0(eslint@8.46.0))(eslint@8.46.0))(eslint@8.46.0)
-      eslint-plugin-import: 2.28.0(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-typescript@3.5.5)(eslint@8.46.0)
+      eslint-plugin-import: 2.28.0(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-typescript@3.5.5(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-node@0.3.8)(eslint-plugin-import@2.28.0(eslint@8.46.0))(eslint@8.46.0))(eslint@8.46.0)
       get-tsconfig: 4.6.2
       globby: 13.2.2
       is-core-module: 2.13.0
@@ -6299,7 +6297,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.28.0(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-typescript@3.5.5)(eslint@8.46.0):
+  eslint-plugin-import@2.28.0(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-typescript@3.5.5(@typescript-eslint/parser@6.3.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-node@0.3.8)(eslint-plugin-import@2.28.0(eslint@8.46.0))(eslint@8.46.0))(eslint@8.46.0):
     dependencies:
       array-includes: 3.1.6
       array.prototype.findlastindex: 1.2.2
@@ -7022,7 +7020,7 @@ snapshots:
       '@next/env': 14.2.3
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001584
+      caniuse-lite: 1.0.30001642
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.0-canary-c5b937576-20231219
@@ -7703,6 +7701,8 @@ snapshots:
       strip-bom: 3.0.0
 
   tslib@2.6.1: {}
+
+  tslib@2.6.3: {}
 
   tsx@4.7.0:
     dependencies:

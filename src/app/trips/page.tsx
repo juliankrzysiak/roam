@@ -18,7 +18,15 @@ export default async function Trips() {
     .select("id, name, days (date)");
   if (error) throw new Error(`${error.message}`);
 
-  const trips = mapDateRange(data);
+  // sort by startDates
+  const trips = mapDateRange(data).sort((a, b) => {
+    const startDateA = a.dateRange.from;
+    const startDateB = b.dateRange.from;
+
+    if (startDateA > startDateB) return 1;
+    if (startDateA < startDateB) return -1;
+    else return 0;
+  });
 
   return (
     <main className="flex flex-col items-center gap-4 px-8 py-8">

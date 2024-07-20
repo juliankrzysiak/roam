@@ -1,8 +1,8 @@
 import NewTripForm from "@/features/trips/components/NewTripForm";
 import TripCard from "@/features/trips/components/TripCard";
+import { DateRange } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { parseISO } from "date-fns";
-import { DateRange } from "@/types";
 
 type Trip = {
   id: string;
@@ -21,10 +21,9 @@ export default async function Trips() {
   const trips = mapDateRange(data);
 
   return (
-    <main className="flex flex-col items-center px-8 py-4">
-      <h1 className="mb-2 text-4xl underline">Trips</h1>
+    <main className="flex flex-col items-center gap-4 px-8 py-8">
       <NewTripForm />
-      <section className="m-4 grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-sm bg-slate-400 p-4">
+      <section className="grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-md bg-slate-500 p-4">
         {trips.map((trip) => {
           return <TripCard key={trip.id} {...trip} />;
         })}

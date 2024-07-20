@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import MoreSVG from "@/assets/more-vertical.svg";
 import { DatePickerWithRange } from "@/components/general/DatePickerWithRange";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,11 +19,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { deleteTrip } from "@/utils/actions/crud/delete";
-import { updateTrip, updateTripDates } from "@/utils/actions/crud/update";
-import { DialogDescription } from "@radix-ui/react-dialog";
-import { DateRange } from "react-day-picker";
 import {
   Form,
   FormControl,
@@ -33,11 +27,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { deleteTrip } from "@/utils/actions/crud/delete";
+import { updateTrip, updateTripDates } from "@/utils/actions/crud/update";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema } from "../schema";
-import { z } from "zod";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
+import { DateRange } from "react-day-picker";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { formSchema } from "../schema";
 
 type Props = {
   id: string;
@@ -56,7 +56,7 @@ export default function TripOptions({ id, name, dateRange }: Props) {
           className="absolute right-2 top-2"
           aria-label="Open options"
         >
-          <MoreSVG />
+          <EllipsisVertical size={20} className="text-slate-500" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem

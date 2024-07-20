@@ -24,8 +24,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { getEachDateInRange } from "../utils";
 import { formSchema } from "../schema";
+import { getEachDateInRange } from "../utils";
 
 export default function NewTripForm() {
   const [open, setOpen] = useState(false);
@@ -48,7 +48,7 @@ export default function NewTripForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary">Add Trip</Button>
+        <Button variant="default">Create New Trip</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

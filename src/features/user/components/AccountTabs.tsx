@@ -18,7 +18,7 @@ type Props = {
 
 export default function AccountTabs({ name, email }: Props) {
   return (
-    <Tabs defaultValue="account" className="">
+    <Tabs defaultValue="account" className="w-full max-w-xl">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="account">Account</TabsTrigger>
         <TabsTrigger value="password">Password</TabsTrigger>

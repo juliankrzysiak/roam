@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { signOut, updatePassword } from "@/utils/actions";
+import { signOut, updatePassword } from "@/utils/actions/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -56,7 +56,7 @@ export default function PasswordForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>New Password*</FormLabel>
+              <FormLabel>New Password *</FormLabel>
               <FormControl>
                 <Input
                   required

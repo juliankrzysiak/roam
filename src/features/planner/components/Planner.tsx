@@ -51,26 +51,24 @@ export default function Planner({
         <hr className="w-full border-slate-400 " />
         <TimePicker day={day} totalDuration={totalDuration} />
       </div>
-      <div className="flex-1 overflow-auto">
-        <Reorder.Group
-          axis="y"
-          values={places}
-          onReorder={setPlaces}
-          layoutScroll
-          className="flex h-full flex-col gap-4 px-4 py-2"
-        >
-          {places.map((place) => {
-            return (
-              <PlaceCard
-                key={place.id}
-                place={place}
-                timezone={day.timezone}
-                handleDragEnd={handleDragEnd}
-              />
-            );
-          })}
-        </Reorder.Group>
-      </div>
+      <Reorder.Group
+        axis="y"
+        values={places}
+        onReorder={setPlaces}
+        layoutScroll
+        className="flex h-full flex-1 flex-col gap-4 overflow-auto px-4 py-2"
+      >
+        {places.map((place) => {
+          return (
+            <PlaceCard
+              key={place.id}
+              place={place}
+              timezone={day.timezone}
+              handleDragEnd={handleDragEnd}
+            />
+          );
+        })}
+      </Reorder.Group>
       <div className="sticky bottom-0 left-0 right-0 flex justify-between gap-2 bg-slate-100 px-2 py-1 text-sm">
         <h4>On the road</h4>
         <div className="flex gap-2">

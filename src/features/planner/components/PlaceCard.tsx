@@ -8,7 +8,7 @@ import {
 } from "@/utils/actions/crud/update";
 import { add, format } from "date-fns";
 import { Reorder, useDragControls } from "framer-motion";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
   ArrowLeft,
   ArrowRight,
@@ -17,7 +17,7 @@ import {
   Clock,
   GripVertical,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDetectOutsideClick } from "../hooks";
 import { formatInTimeZone } from "date-fns-tz";
 
@@ -26,14 +26,26 @@ const svgSize = 16;
 type PlaceCardProps = {
   place: Place;
   handleDragEnd: () => void;
-  timezone: string; 
+  timezone: string;
 };
 
-export default function PlaceCard({ place, handleDragEnd, timezone }: PlaceCardProps) {
+export default function PlaceCard({
+  place,
+  handleDragEnd,
+  timezone,
+}: PlaceCardProps) {
+  const itemRef = useRef<HTMLDivElement | null>(null);
   const { id, placeId, position, name, schedule, placeDuration, travel } =
     place;
+  const currentPlace = useAtomValue(currentPlaceAtom);
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const controls = useDragControls();
+
+  useEffect(() => {
+    if (currentPlace && currentPlace.placeId === placeId) {
+      itemRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentPlace]);
 
   function handleClick() {
     const currentPlace = { id, placeId, position };
@@ -48,6 +60,7 @@ export default function PlaceCard({ place, handleDragEnd, timezone }: PlaceCardP
       dragListener={false}
       dragControls={controls}
       onDragEnd={handleDragEnd}
+      ref={itemRef}
     >
       <article className="relative flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 px-4 py-2 shadow-sm">
         <h2 className="text-xl font-bold underline" onClick={handleClick}>
@@ -85,7 +98,7 @@ type PlaceDurationProps = {
   arrival: Date;
   placeDuration: number;
   placeId: string;
-  timezone: string
+  timezone: string;
 };
 
 function PlaceDuration({

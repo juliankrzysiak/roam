@@ -102,19 +102,16 @@ type InfoWindowProps = {
   places: Day["places"];
 };
 
-function InfoWindow({ date, dayId: day_id, places }: InfoWindowProps) {
+function InfoWindow({ date, dayId, places }: InfoWindowProps) {
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const advancedMarkerRef = useRef<AdvancedMarkerRef>(null);
   const map = useMap();
 
   useEffect(() => {
-    advancedMarkerRef?.current?.addEventListener("click", (e) => {
-      console.log(e);
-    });
     if (!map || !currentPlace?.position) return;
     map.panTo(currentPlace.position);
     map.panBy(0, -150);
-  }, []);
+  }, [currentPlace?.placeId]);
 
   const {
     data: placeDetails,
@@ -133,14 +130,14 @@ function InfoWindow({ date, dayId: day_id, places }: InfoWindowProps) {
       position: { lng, lat },
     } = currentPlace;
 
-    const newPlace = { name, day_id, lng, lat, place_id, address };
+    const newPlace = { name, day_id: dayId, lng, lat, place_id, address };
     await createPlace(newPlace, places);
     setCurrentPlace(null);
   }
 
   async function handleDeletePlace() {
     if (!currentPlace?.id) return;
-    await deletePlace(places, currentPlace.id, day_id);
+    await deletePlace(places, currentPlace.id, dayId);
     setCurrentPlace(null);
   }
 

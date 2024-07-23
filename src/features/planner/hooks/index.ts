@@ -1,6 +1,6 @@
 import { MutableRefObject, useEffect } from "react";
 
-export function useDetectOutsideClick(
+export function useExit(
   ref: MutableRefObject<null | HTMLElement>,
   callback: () => void,
 ) {
@@ -12,8 +12,17 @@ export function useDetectOutsideClick(
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    function handleEscapeKey(event: KeyboardEvent) {
+      const key = event.key;
+      if (key === "Escape") callback();
+    }
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
   });
 }

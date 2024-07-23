@@ -18,7 +18,7 @@ import {
   GripVertical,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useDetectOutsideClick } from "../hooks";
+import { useExit } from "../hooks";
 import { formatInTimeZone } from "date-fns-tz";
 
 const svgSize = 16;
@@ -109,7 +109,7 @@ function PlaceDuration({
 }: PlaceDurationProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  useDetectOutsideClick(formRef, handleClickOutside);
+  useExit(formRef, handleClickOutside);
 
   const { hours, minutes } = convertTime({ minutes: placeDuration });
   const [hourDuration, setHourDuration] = useState(hours);

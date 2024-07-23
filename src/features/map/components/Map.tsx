@@ -143,21 +143,22 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
 
   return (
     <AdvancedMarker
-      className="font-['Nunito Sans'] mb-8 flex flex-col gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
+      className=" mb-8 flex flex-col gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
       position={currentPlace?.position}
       onClick={(e) => e.stop()}
       ref={advancedMarkerRef}
     >
       <div>
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex justify-between gap-2">
           <h2 className="text-xl font-bold text-slate-900">
             {placeDetails.displayName.text}
           </h2>
           <button
+            className="-translate-y-3 translate-x-2"
             onClick={() => setCurrentPlace(null)}
             aria-label="Close info window"
           >
-            <X />
+            <X size={18} />
           </button>
         </div>
         <h3 className=" text-sm text-slate-600">

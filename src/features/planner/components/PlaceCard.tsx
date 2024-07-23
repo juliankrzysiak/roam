@@ -34,9 +34,9 @@ export default function PlaceCard({
   handleDragEnd,
   timezone,
 }: PlaceCardProps) {
-  const itemRef = useRef<HTMLDivElement | null>(null);
   const { id, placeId, position, name, schedule, placeDuration, travel } =
     place;
+  const itemRef = useRef<HTMLDivElement | null>(null);
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const controls = useDragControls();
 
@@ -44,7 +44,7 @@ export default function PlaceCard({
     if (currentPlace && currentPlace.placeId === placeId) {
       itemRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [currentPlace]);
+  }, [currentPlace?.placeId]);
 
   function handleClick() {
     const currentPlace = { id, placeId, position };
@@ -78,14 +78,32 @@ export default function PlaceCard({
         />
       </article>
       {travel && (
-        <div className="flex justify-between gap-2 px-4 py-1 text-sm">
-          <span>{travel.duration} min</span>
-          <span>
-            {travel.distance} {travel.duration > 1 ? "miles" : "mile"}
-          </span>
-        </div>
+        <TripDetails duration={travel.duration} distance={travel.distance} />
       )}
     </Reorder.Item>
+  );
+}
+
+/* ------------------------------- TripDetails ------------------------------ */
+
+type TripDetailsProps = {
+  duration: number;
+  distance: number;
+};
+
+export function TripDetails({ duration, distance }: TripDetailsProps) {
+  const { hours, minutes } = convertTime({ minutes: duration });
+  const formattedHours = hours ? hours + (hours > 1 ? " hrs" : " hr") : "";
+
+  return (
+    <div className="flex justify-between gap-2 px-5 py-1 text-sm">
+      <span>
+        {formattedHours} {minutes} mins
+      </span>
+      <span>
+        {distance} {distance > 1 ? "miles" : "mile"}
+      </span>
+    </div>
   );
 }
 

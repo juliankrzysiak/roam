@@ -17,7 +17,7 @@ export default async function TripCard({ id, name, dateRange }: Props) {
   if (dateRange.to) range += ` - ${format(dateRange.to, dateFormat)}`;
 
   return (
-    <article className="relative flex flex-col items-center justify-between gap-2 rounded-lg bg-slate-100 p-4">
+    <article className="relative flex flex-col items-center justify-between gap-2 rounded-lg bg-slate-100 p-4 ">
       <TripOptions id={id} name={name} dateRange={dateRange} />
       <h3 className="text-2xl font-semibold">{name}</h3>
       <p>{range}</p>

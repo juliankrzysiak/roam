@@ -53,7 +53,7 @@ export default function TripOptions({ id, name, dateRange }: Props) {
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
-          className="absolute right-2 top-2"
+          className="absolute right-1 top-2"
           aria-label="Open options"
         >
           <EllipsisVertical size={20} className="text-slate-500" />

@@ -13,7 +13,7 @@ import { Reorder } from "framer-motion";
 import { useAtomValue } from "jotai";
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useDetectOutsideClick } from "../hooks";
+import { useExit } from "../hooks";
 
 type PlannerProps = {
   day: Day;
@@ -89,17 +89,17 @@ type TimePickerProps = {
 
 function TimePicker({ day, totalDuration }: TimePickerProps) {
   const formRef = useRef(null);
-  useDetectOutsideClick(formRef, handleClickOutside);
   const [isFormVisible, setIsFormVisible] = useState(false);
-
   const [date, setDate] = useState(day.date);
   const startTime = formatInTimeZone(date, day.timezone, "HH:mm");
+  const formattedStartTime = formatInTimeZone(date, day.timezone, "h:mm aa");
   const endTime = formatInTimeZone(
     addMinutes(date, totalDuration),
     day.timezone,
-    "HH:mm aaa",
+    "h:mm aa",
   );
 
+  useExit(formRef, handleClickOutside);
   // Set state when new data
   useEffect(() => {
     setDate(day.date);
@@ -141,18 +141,18 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
             <input type="hidden" name="id" defaultValue={day.id} />
           </>
         ) : (
-          <span>{startTime}</span>
+          <span>{formattedStartTime}</span>
         )}
       </label>
-      <label className="flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <Moon size={18} aria-label="End Time" />
         <span id="endTime">{endTime}</span>
         {isFormVisible && (
-          <Button size="sm" aria-label="Save time">
+          <Button size="sm" aria-label="Save time" type="button">
             Save
           </Button>
         )}
-      </label>
+      </div>
     </form>
   );
 }

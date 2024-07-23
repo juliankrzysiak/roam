@@ -108,7 +108,7 @@ function PlaceDuration({
   timezone,
 }: PlaceDurationProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
-  const [formVisible, setFormVisible] = useState(false);
+  const [isFormVisible, setIsFormVisible] = useState(false);
   useDetectOutsideClick(formRef, handleClickOutside);
 
   const { hours, minutes } = convertTime({ minutes: placeDuration });
@@ -120,7 +120,7 @@ function PlaceDuration({
   });
 
   function handleClickOutside() {
-    setFormVisible(false);
+    setIsFormVisible(false);
     // Resets current input
     setHourDuration(hours);
     setMinuteDuration(minutes);
@@ -134,16 +134,19 @@ function PlaceDuration({
       </span>
       <form
         className="flex gap-2"
-        action={updatePlaceDuration}
+        action={async (formData) => {
+          await updatePlaceDuration(formData);
+          setIsFormVisible(false);
+        }}
         ref={formRef}
-        onClick={() => setFormVisible(true)}
+        onClick={() => setIsFormVisible(true)}
       >
         <label
           className="flex cursor-pointer items-center gap-2"
           aria-label="Duration at location"
         >
           <Clock size={svgSize} />
-          {formVisible ? (
+          {isFormVisible ? (
             <>
               <div className="flex gap-1">
                 <input

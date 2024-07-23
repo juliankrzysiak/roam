@@ -116,7 +116,10 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
         "flex w-full items-center justify-evenly gap-2 px-2 py-2",
         isFormVisible && "flex-row",
       )}
-      action={updateStartTime}
+      action={async (formData) => {
+        await updateStartTime(formData);
+        setIsFormVisible(false);
+      }}
       ref={formRef}
       onClick={() => setIsFormVisible(true)}
     >

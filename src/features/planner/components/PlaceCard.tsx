@@ -6,9 +6,10 @@ import {
   updatePlaceDuration,
   updateTripDuration,
 } from "@/utils/actions/crud/update";
-import { add, format } from "date-fns";
+import { add } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { Reorder, useDragControls } from "framer-motion";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import {
   ArrowLeft,
   ArrowRight,
@@ -19,7 +20,6 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
-import { formatInTimeZone } from "date-fns-tz";
 
 const svgSize = 16;
 
@@ -37,8 +37,7 @@ export default function PlaceCard({
   const itemRef = useRef<HTMLDivElement | null>(null);
   const { id, placeId, position, name, schedule, placeDuration, travel } =
     place;
-  const currentPlace = useAtomValue(currentPlaceAtom);
-  const setCurrentPlace = useSetAtom(currentPlaceAtom);
+  const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const controls = useDragControls();
 
   useEffect(() => {

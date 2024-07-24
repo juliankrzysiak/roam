@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
+import { Separator } from "@/components/ui/separator";
 
 const svgSize = 16;
 
@@ -62,18 +63,24 @@ export default function PlaceCard({
       ref={itemRef}
     >
       <article className="relative flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 px-4 py-2 shadow-sm">
-        <h2 className="text-xl font-bold underline" onClick={handleClick}>
-          {name}
-        </h2>
-        <PlaceDuration
-          arrival={schedule.arrival}
-          placeDuration={placeDuration}
-          placeId={id}
-          timezone={timezone}
-        />
+        <button onClick={handleClick} className="w-fit">
+          <h2 className="text-lg font-bold underline underline-offset-2">
+            {name}
+          </h2>
+        </button>
+        <div className="flex h-full gap-4">
+          <PlaceDuration
+            arrival={schedule.arrival}
+            placeDuration={placeDuration}
+            placeId={id}
+            timezone={timezone}
+          />
+          <Separator orientation="vertical" />
+          <Notes />
+        </div>
         <GripVertical
           size={24}
-          className="absolute bottom-2 right-1 cursor-pointer text-slate-400"
+          className="absolute right-1 top-2 cursor-pointer text-slate-400"
           onPointerDown={(e) => controls.start(e)}
         />
       </article>
@@ -84,6 +91,20 @@ export default function PlaceCard({
   );
 }
 
+/* ---------------------------------- Notes --------------------------------- */
+
+export function Notes() {
+  return (
+    <form className="">
+      <textarea
+        className="h-full max-h-96 min-h-full w-full bg-inherit px-1"
+        maxLength={1000}
+        placeholder="Add notes"
+      ></textarea>
+    </form>
+  );
+}
+
 /* ------------------------------- TripDetails ------------------------------ */
 
 type TripDetailsProps = {
@@ -91,7 +112,7 @@ type TripDetailsProps = {
   distance: number;
 };
 
-export function TripDetails({ duration, distance }: TripDetailsProps) {
+function TripDetails({ duration, distance }: TripDetailsProps) {
   const { hours, minutes } = convertTime({ minutes: duration });
   const formattedHours = hours ? hours + (hours > 1 ? " hrs" : " hr") : "";
 
@@ -144,7 +165,7 @@ function PlaceDuration({
   }
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-shrink-0 flex-col gap-1">
       <span className="flex items-center gap-2">
         <ArrowRight size={svgSize} />{" "}
         {formatInTimeZone(arrival, timezone, timeFormat)}

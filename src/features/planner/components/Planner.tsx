@@ -148,7 +148,7 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
         <Moon size={18} aria-label="End Time" />
         <span id="endTime">{endTime}</span>
         {isFormVisible && (
-          <Button size="sm" aria-label="Save time" type="button">
+          <Button size="sm" aria-label="Save time">
             Save
           </Button>
         )}

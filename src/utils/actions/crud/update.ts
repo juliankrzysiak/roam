@@ -1,16 +1,10 @@
 "use server";
 
-import {
-  convertTime,
-  calcDateDeltas,
-  sliceDate,
-  formatBulkDates,
-} from "@/utils";
+import { calcDateDeltas, convertTime, formatBulkDates } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { eachDayOfInterval, format } from "date-fns";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
-import { DateRange } from "react-day-picker";
+import { DateRange } from "@/types";
 
 export async function updateTrip(id: string, name: string) {
   const supabase = createClient();
@@ -35,7 +29,7 @@ export async function updateTripDates(
   const supabase = createClient();
 
   const [initialDates, newDates] = ranges.map((range) =>
-    eachDayOfInterval({ start: range.from, end: range.to }),
+    eachDayOfInterval({ start: range.from, end: range.to ?? range.from }),
   );
 
   const [daysToAdd, daysToRemove] = calcDateDeltas(initialDates, newDates);
@@ -178,20 +172,21 @@ export async function updatePlaceOrder(order_places: string[], dayId: string) {
 //   }
 // }
 
-// export async function updateCurrentDate(tripId: string, date: Date) {
-//   const supabase = createClient();
+export async function updateCurrentDate(tripId: string, date: Date) {
+  const supabase = createClient();
+  const current_date = date.toISOString();
 
-//   try {
-//     const { error } = await supabase
-//       .from("trips")
-//       .update({ current_date: date })
-//       .eq("id", tripId);
-//     if (error) throw new Error(`Supabase error: ${error.message}`);
-//     revalidatePath("/[trip]", "page");
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+  try {
+    const { error } = await supabase
+      .from("trips")
+      .update({ current_date })
+      .eq("id", tripId);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/[trip]", "page");
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export async function updateNotes(notes: string, id: string) {
   const supabase = createClient();

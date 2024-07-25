@@ -46,7 +46,7 @@ export default function PlaceCard({
     if (currentPlace && currentPlace.placeId === placeId) {
       itemRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [currentPlace?.placeId]);
+  }, [currentPlace, placeId]);
 
   function handleClick() {
     const currentPlace = { id, placeId, position };
@@ -103,8 +103,9 @@ export function Notes({ placeId, notes }: NotesProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   async function handleSubmit(formData: FormData) {
-    const notes = formData.get("notes") as string;
-    await updateNotes(notes, placeId)
+    const newNotes = formData.get("notes") as string;
+    if (newNotes === notes) return;
+    await updateNotes(newNotes, placeId);
   }
 
   return (

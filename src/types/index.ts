@@ -5,7 +5,7 @@ export type Place = {
   position: google.maps.LatLngLiteral;
   address: string;
   placeDuration: number;
-  tripDuration: number;
+  notes: string;
   schedule: {
     arrival: Date;
     departure: Date;

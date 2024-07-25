@@ -3,6 +3,7 @@ import { currentPlaceAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { convertTime } from "@/utils";
 import {
+  updateNotes,
   updatePlaceDuration,
   updateTripDuration,
 } from "@/utils/actions/crud/update";
@@ -76,7 +77,7 @@ export default function PlaceCard({
             timezone={timezone}
           />
           <Separator orientation="vertical" />
-          <Notes />
+          <Notes placeId={place.id} notes={place.notes} />
         </div>
         <GripVertical
           size={24}
@@ -93,14 +94,32 @@ export default function PlaceCard({
 
 /* ---------------------------------- Notes --------------------------------- */
 
-export function Notes() {
+type NotesProps = {
+  placeId: string;
+  notes: Place["notes"];
+};
+
+export function Notes({ placeId, notes }: NotesProps) {
+  const formRef = useRef<HTMLFormElement | null>(null);
+
+  async function handleSubmit(formData: FormData) {
+    const notes = formData.get("notes") as string;
+    await updateNotes(notes, placeId)
+  }
+
   return (
-    <form className="">
+    <form
+      action={handleSubmit}
+      ref={formRef}
+      onBlur={() => formRef.current?.requestSubmit()}
+    >
       <textarea
+        name="notes"
         className="h-full max-h-96 min-h-full w-full bg-inherit px-1"
+        defaultValue={notes}
         maxLength={1000}
         placeholder="Add notes"
-      ></textarea>
+      />
     </form>
   );
 }

@@ -56,6 +56,7 @@ export type Database = {
           lat: number
           lng: number
           name: string
+          notes: string
           place_duration: number
           place_id: string
           trip_duration: number
@@ -68,6 +69,7 @@ export type Database = {
           lat: number
           lng: number
           name: string
+          notes?: string
           place_duration?: number
           place_id: string
           trip_duration?: number
@@ -80,6 +82,7 @@ export type Database = {
           lat?: number
           lng?: number
           name?: string
+          notes?: string
           place_duration?: number
           place_id?: string
           trip_duration?: number
@@ -99,27 +102,21 @@ export type Database = {
           created_at: string
           current_date: string | null
           id: string
-          index_current_day: number | null
           name: string
-          order_days: string[]
           user_id: string | null
         }
         Insert: {
           created_at?: string
           current_date?: string | null
           id?: string
-          index_current_day?: number | null
           name: string
-          order_days?: string[]
           user_id?: string | null
         }
         Update: {
           created_at?: string
           current_date?: string | null
           id?: string
-          index_current_day?: number | null
           name?: string
-          order_days?: string[]
           user_id?: string | null
         }
         Relationships: []
@@ -141,6 +138,7 @@ export type Database = {
           lat: number
           lng: number
           name: string
+          notes: string
           place_duration: number
           place_id: string
           trip_duration: number

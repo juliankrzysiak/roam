@@ -36,7 +36,7 @@ export async function getDay(
   const { data: placesData, error } = await supabase
     .from("places")
     .select(
-      "id, name, lat, lng, placeDuration:place_duration, tripDuration:trip_duration, placeId:place_id, address",
+      "id, name, lat, lng, placeDuration:place_duration, placeId:place_id, address, notes",
     )
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);

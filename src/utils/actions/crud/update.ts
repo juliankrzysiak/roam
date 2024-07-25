@@ -133,20 +133,20 @@ export async function updateStartTime(formData: FormData) {
   }
 }
 
-export async function updateDay(index: number, tripId: number) {
-  const supabase = createClient();
+// export async function updateDay(index: number, tripId: number) {
+//   const supabase = createClient();
 
-  try {
-    const { error } = await supabase
-      .from("trips")
-      .update({ index_current_day: index })
-      .eq("id", tripId);
-    if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/[trip]", "page");
-  } catch (error) {
-    console.log(error);
-  }
-}
+//   try {
+//     const { error } = await supabase
+//       .from("trips")
+//       .update({ index_current_day: index })
+//       .eq("id", tripId);
+//     if (error) throw new Error(`Supabase error: ${error.message}`);
+//     revalidatePath("/[trip]", "page");
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 export async function updatePlaceOrder(order_places: string[], dayId: string) {
   const supabase = createClient();
@@ -163,29 +163,44 @@ export async function updatePlaceOrder(order_places: string[], dayId: string) {
   }
 }
 
-export async function updateDayOrder(tripId: number, order_days: string[]) {
+// export async function updateDayOrder(tripId: number, order_days: string[]) {
+//   const supabase = createClient();
+
+//   try {
+//     const { error } = await supabase
+//       .from("trips")
+//       .update({ order_days })
+//       .eq("id", tripId);
+//     if (error) throw new Error(`Supabase error: ${error.message}`);
+//     revalidatePath("/[trip]", "page");
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+// export async function updateCurrentDate(tripId: string, date: Date) {
+//   const supabase = createClient();
+
+//   try {
+//     const { error } = await supabase
+//       .from("trips")
+//       .update({ current_date: date })
+//       .eq("id", tripId);
+//     if (error) throw new Error(`Supabase error: ${error.message}`);
+//     revalidatePath("/[trip]", "page");
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+export async function updateNotes(notes: string, id: string) {
   const supabase = createClient();
 
   try {
     const { error } = await supabase
-      .from("trips")
-      .update({ order_days })
-      .eq("id", tripId);
-    if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/[trip]", "page");
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function updateCurrentDate(tripId: string, date: Date) {
-  const supabase = createClient();
-
-  try {
-    const { error } = await supabase
-      .from("trips")
-      .update({ current_date: date })
-      .eq("id", tripId);
+      .from("places")
+      .update({ notes })
+      .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/[trip]", "page");
   } catch (error) {

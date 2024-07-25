@@ -296,8 +296,8 @@ function Markers({ places }: MarkersProps) {
           clickable={true}
           onClick={() => handleClick(place)}
         >
-          <Pin>
-            <span className="text-lg font-bold text-slate-100">{i + 1}</span>
+          <Pin background="#059669" borderColor="#064e3b">
+            <span className="text-base font-bold text-slate-100">{i + 1}</span>
           </Pin>
         </AdvancedMarker>
       ))}

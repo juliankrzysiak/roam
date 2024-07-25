@@ -46,7 +46,7 @@ export default function PlaceCard({
     if (currentPlace && currentPlace.placeId === placeId) {
       itemRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [currentPlace, placeId]);
+  }, [placeId]);
 
   function handleClick() {
     const currentPlace = { id, placeId, position };

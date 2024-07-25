@@ -18,6 +18,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { ChevronsUpDown, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSWR, { Fetcher } from "swr";
+import { Polyline } from "./Polyline";
 
 /* -------------------------------------------------------------------------- */
 /*                                     Map                                    */
@@ -67,6 +68,13 @@ export default function Map({ day, children }: MapProps) {
           <InfoWindow date={day.date} dayId={day.id} places={places} />
         )}
         {children}
+        {day.path && (
+          <Polyline
+            strokeWeight={5}
+            strokeColor={"#022c22"}
+            encodedPath={day.path}
+          />
+        )}
       </GoogleMap>
     </APIProvider>
   );

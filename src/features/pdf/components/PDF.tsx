@@ -75,32 +75,42 @@ export default function PDF({ days }: PDFProps) {
                 return (
                   <View
                     wrap={false}
-                    style={{ flexDirection: "column", gap: 4 }}
+                    style={{ flexDirection: "row", gap: 4 }}
                     key={place.id}
                   >
-                    <View>
-                      <Text
-                        style={[
-                          styles.fontBase,
-                          { textDecoration: "underline" },
-                        ]}
-                      >
-                        {place.name}
-                      </Text>
-                      <Text style={styles.fontXs}>{place.address}</Text>
-                    </View>
-                    <View style={styles.fontXs}>
+                    <View style={{ flexDirection: "column", gap: 4 }}>
                       <View>
-                        <Text>
-                          A: {format(place.schedule.arrival, timeFormat)}
+                        <Text
+                          style={[
+                            styles.fontBase,
+                            { textDecoration: "underline" },
+                          ]}
+                        >
+                          {place.name}
                         </Text>
-                        <Text>
-                          D: {format(place.schedule.departure, timeFormat)}
-                        </Text>
+                        <Text style={styles.fontXs}>{place.address}</Text>
                       </View>
-                      {place.travel && (
-                        <Text>T: {place.travel.duration} min</Text>
-                      )}
+                      <View style={styles.fontXs}>
+                        <View>
+                          <Text>
+                            Arrival:{" "}
+                            {format(place.schedule.arrival, timeFormat)}
+                          </Text>
+                          <Text>Duration: {place.placeDuration}</Text>
+                          <Text>
+                            Departure:{" "}
+                            {format(place.schedule.departure, timeFormat)}
+                          </Text>
+                        </View>
+                        {place.travel && (
+                          <Text style={{ marginTop: 8 }}>
+                            Travel: {place.travel.duration} min
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                    <View>
+                      <Text>{place.notes}</Text>
                     </View>
                   </View>
                 );

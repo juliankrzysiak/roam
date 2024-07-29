@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Place } from "@/types";
-import { convertTime } from "@/utils";
+import { convertTime, formatTravelTime } from "@/utils";
 import {
   updateNotes,
   updatePlaceDuration,
@@ -89,62 +89,6 @@ export default function PlaceCard({
         <TripDetails duration={travel.duration} distance={travel.distance} />
       )}
     </Reorder.Item>
-  );
-}
-
-/* ---------------------------------- Notes --------------------------------- */
-
-type NotesProps = {
-  placeId: string;
-  notes: Place["notes"];
-};
-
-export function Notes({ placeId, notes }: NotesProps) {
-  const formRef = useRef<HTMLFormElement | null>(null);
-
-  async function handleSubmit(formData: FormData) {
-    const newNotes = formData.get("notes") as string;
-    if (newNotes === notes) return;
-    await updateNotes(newNotes, placeId);
-  }
-
-  return (
-    <form
-      action={handleSubmit}
-      ref={formRef}
-      onBlur={() => formRef.current?.requestSubmit()}
-    >
-      <textarea
-        name="notes"
-        className="h-full max-h-96 min-h-full w-full bg-inherit px-1"
-        defaultValue={notes}
-        maxLength={1000}
-        placeholder="Add notes"
-      />
-    </form>
-  );
-}
-
-/* ------------------------------- TripDetails ------------------------------ */
-
-type TripDetailsProps = {
-  duration: number;
-  distance: number;
-};
-
-function TripDetails({ duration, distance }: TripDetailsProps) {
-  const { hours, minutes } = convertTime({ minutes: duration });
-  const formattedHours = hours ? hours + (hours > 1 ? " hrs" : " hr") : "";
-
-  return (
-    <div className="flex justify-between gap-2 px-5 py-1 text-sm">
-      <span>
-        {formattedHours} {minutes} mins
-      </span>
-      <span>
-        {distance} {distance > 1 ? "miles" : "mile"}
-      </span>
-    </div>
   );
 }
 
@@ -251,6 +195,57 @@ function PlaceDuration({
         <ArrowLeft size={svgSize} />{" "}
         {formatInTimeZone(departure, timezone, timeFormat)}
       </span>
+    </div>
+  );
+}
+
+/* ---------------------------------- Notes --------------------------------- */
+
+type NotesProps = {
+  placeId: string;
+  notes: Place["notes"];
+};
+
+export function Notes({ placeId, notes }: NotesProps) {
+  const formRef = useRef<HTMLFormElement | null>(null);
+
+  async function handleSubmit(formData: FormData) {
+    const newNotes = formData.get("notes") as string;
+    if (newNotes === notes) return;
+    await updateNotes(newNotes, placeId);
+  }
+
+  return (
+    <form
+      action={handleSubmit}
+      ref={formRef}
+      onBlur={() => formRef.current?.requestSubmit()}
+    >
+      <textarea
+        name="notes"
+        className="h-full max-h-96 min-h-full w-full bg-inherit px-1"
+        defaultValue={notes}
+        maxLength={1000}
+        placeholder="Add notes"
+      />
+    </form>
+  );
+}
+
+/* ------------------------------- TripDetails ------------------------------ */
+
+type TripDetailsProps = {
+  duration: number;
+  distance: number;
+};
+
+function TripDetails({ duration, distance }: TripDetailsProps) {
+  const travelTime = formatTravelTime(convertTime({ minutes: duration }));
+
+  return (
+    <div className="flex justify-between gap-2 px-5 py-1 text-sm">
+      <span>{travelTime}</span>
+      <span>{distance} mi</span>
     </div>
   );
 }

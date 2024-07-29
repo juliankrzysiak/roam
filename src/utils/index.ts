@@ -20,6 +20,11 @@ export function convertTime({ hours, minutes }: Args) {
   };
 }
 
+export function formatTravelTime({ hours, minutes }: Args) {
+  const formattedHours = hours ? hours + " hr" : "";
+  return formattedHours + " " + minutes + " min";
+}
+
 export function parseDate(date: string, format: string = "yyyy-MM-dd") {
   return parse(date, format, new Date());
 }

@@ -11,15 +11,6 @@ import {
   View,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
-import dynamic from "next/dynamic";
-
-const PDFViewer = dynamic(
-  () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
-  {
-    ssr: false,
-    loading: () => <p>Loading...</p>,
-  },
-);
 
 const styles = StyleSheet.create({
   fontBase: {
@@ -38,47 +29,45 @@ const timeFormat = "h:mm aaa";
 
 export default function PDF({ days }: PDFProps) {
   return (
-    <PDFViewer className="flex w-full items-stretch">
-      <Document>
-        {days.map((day) => (
-          <Page
-            key={day.id}
-            size="A4"
+    <Document>
+      {days.map((day) => (
+        <Page
+          key={day.id}
+          size="A4"
+          style={{
+            fontFamily: "Courier",
+            flexDirection: "column",
+            padding: 24,
+            gap: 16,
+          }}
+        >
+          <Text
+            fixed
             style={{
-              fontFamily: "Courier",
+              position: "absolute",
+              right: 12,
+              bottom: 12,
+              fontSize: 12,
+            }}
+          >
+            Roam
+          </Text>
+          <Text style={styles.fontBase}>
+            {format(day.date, "EEEE, MMMM d")}
+          </Text>
+          <View
+            style={{
               flexDirection: "column",
-              padding: 24,
               gap: 16,
             }}
           >
-            <Text
-              fixed
-              style={{
-                position: "absolute",
-                right: 12,
-                bottom: 12,
-                fontSize: 12,
-              }}
-            >
-              Roam
-            </Text>
-            <Text style={styles.fontBase}>
-              {format(day.date, "EEEE, MMMM d")}
-            </Text>
-            <View
-              style={{
-                flexDirection: "column",
-                gap: 16,
-              }}
-            >
-              {day.places.map((place) => (
-                <PDFPlace key={place.id} place={place} />
-              ))}
-            </View>
-          </Page>
-        ))}
-      </Document>
-    </PDFViewer>
+            {day.places.map((place) => (
+              <PDFPlace key={place.id} place={place} />
+            ))}
+          </View>
+        </Page>
+      ))}
+    </Document>
   );
 }
 

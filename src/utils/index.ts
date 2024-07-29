@@ -25,6 +25,11 @@ export function formatTravelTime({ hours, minutes }: Args) {
   return formattedHours + " " + minutes + " min";
 }
 
+export function formatPlaceDuration({ hours, minutes }: Args) {
+  const formattedMinutes = minutes.toString().padStart(2, "0");
+  return hours + ":" + formattedMinutes;
+}
+
 export function parseDate(date: string, format: string = "yyyy-MM-dd") {
   return parse(date, format, new Date());
 }

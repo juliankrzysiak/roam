@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Place } from "@/types";
-import { convertTime, formatTravelTime } from "@/utils";
+import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
 import {
   updateNotes,
   updatePlaceDuration,
@@ -116,6 +116,7 @@ function PlaceDuration({
   const { hours, minutes } = convertTime({ minutes: placeDuration });
   const [hourDuration, setHourDuration] = useState(hours);
   const [minuteDuration, setMinuteDuration] = useState(minutes);
+  const formattedPlaceDuration = formatPlaceDuration({ hours, minutes });
   const departure = add(arrival, {
     hours: hourDuration,
     minutes: minuteDuration,
@@ -182,9 +183,7 @@ function PlaceDuration({
             </>
           ) : (
             <div className="flex items-center gap-1">
-              <span>
-                {hourDuration}:{minuteDuration.toString().padStart(2, "0")}
-              </span>
+              <p>{formattedPlaceDuration}</p>
               <ChevronRight size={svgSize} />
             </div>
           )}

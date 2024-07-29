@@ -1,4 +1,5 @@
-import PDF from "@/features/pdf/components/PDF";
+import DownloadLink from "@/features/pdf/components/DownloadLink";
+import Viewer from "@/features/pdf/components/Viewer";
 import { getDay } from "@/utils/actions/crud/get";
 import { createClient } from "@/utils/supabase/server";
 
@@ -26,7 +27,8 @@ export default async function PDFPage({ params }: Props) {
 
   return (
     <main className="flex w-full flex-grow">
-      <PDF days={days} />
+      <DownloadLink days={days} />
+      <Viewer days={days} />
     </main>
   );
 }

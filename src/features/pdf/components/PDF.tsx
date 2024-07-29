@@ -1,6 +1,7 @@
 "use client";
 
 import { Day, Place } from "@/types";
+import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
 import {
   Document,
   Font,
@@ -20,7 +21,6 @@ const PDFViewer = dynamic(
   },
 );
 
-// Create styles
 const styles = StyleSheet.create({
   fontBase: {
     fontSize: 16,
@@ -87,6 +87,18 @@ type PlaceProps = {
 };
 
 function PDFPlace({ place }: PlaceProps) {
+  const placeDuration = formatPlaceDuration(
+    convertTime({ minutes: place.placeDuration }),
+  );
+  const arrival = format(place.schedule.arrival, timeFormat);
+  const departure = format(place.schedule.departure, timeFormat);
+  let travelTime;
+  if (place.travel) {
+    travelTime = formatTravelTime(
+      convertTime({ minutes: place.travel.duration }),
+    );
+  }
+
   return (
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
       <View wrap={false} style={{ flexDirection: "column", gap: 4 }}>
@@ -98,17 +110,11 @@ function PDFPlace({ place }: PlaceProps) {
         </View>
         <View style={styles.fontXs}>
           <View>
-            <Text>Arrival: {format(place.schedule.arrival, timeFormat)}</Text>
-            <Text>Duration: {place.placeDuration}</Text>
-            <Text>
-              Departure: {format(place.schedule.departure, timeFormat)}
-            </Text>
+            <Text>A: {arrival}</Text>
+            <Text>D: {placeDuration}</Text>
+            <Text>D: {departure}</Text>
           </View>
-          {place.travel && (
-            <Text style={{ marginTop: 8 }}>
-              Travel: {place.travel.duration} min
-            </Text>
-          )}
+          {travelTime && <Text style={{ marginTop: 8 }}>T: {travelTime}</Text>}
         </View>
       </View>
       <Text style={styles.fontXs}>{place.notes}</Text>

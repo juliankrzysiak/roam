@@ -1,7 +1,13 @@
-import DownloadLink from "@/features/pdf/components/DownloadLink";
-import Viewer from "@/features/pdf/components/Viewer";
 import { getDay } from "@/utils/actions/crud/get";
 import { createClient } from "@/utils/supabase/server";
+import dynamic from "next/dynamic";
+
+const PDFChoice = dynamic(
+  () => import("@/features/pdf/components/PDFDeviceCheck"),
+  {
+    ssr: false,
+  },
+);
 
 type Props = {
   params: { trip: string };
@@ -27,8 +33,7 @@ export default async function PDFPage({ params }: Props) {
 
   return (
     <main className="flex w-full flex-grow">
-      <DownloadLink days={days} />
-      <Viewer days={days} />
+      <PDFChoice days={days} />
     </main>
   );
 }

@@ -1,13 +1,13 @@
 import { getDay } from "@/utils/actions/crud/get";
 import { createClient } from "@/utils/supabase/server";
-import { Map } from "lucide-react";
+import { FileText, Map } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const PDFDeviceCheck = dynamic(
   () => import("@/features/pdf/components/PDFDeviceCheck"),
   {
     ssr: false,
-    loading: () => <Map className="animate-spin" size={72} />,
+    loading: () => <FileText className="animate-bounce" size={72} />,
   },
 );
 

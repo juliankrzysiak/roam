@@ -19,7 +19,7 @@ export default function PDFDeviceCheck({ days }: Props) {
       </PDFDownloadLink>
     );
   return (
-    <PDFViewer className="w-full">
+    <PDFViewer className="h-full w-full">
       <PDF days={days} />
     </PDFViewer>
   );

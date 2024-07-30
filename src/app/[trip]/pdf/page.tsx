@@ -1,11 +1,13 @@
 import { getDay } from "@/utils/actions/crud/get";
 import { createClient } from "@/utils/supabase/server";
+import { Map } from "lucide-react";
 import dynamic from "next/dynamic";
 
-const PDFChoice = dynamic(
+const PDFDeviceCheck = dynamic(
   () => import("@/features/pdf/components/PDFDeviceCheck"),
   {
     ssr: false,
+    loading: () => <Map className="animate-spin" size={72} />,
   },
 );
 
@@ -32,8 +34,8 @@ export default async function PDFPage({ params }: Props) {
   );
 
   return (
-    <main className="flex w-full flex-grow">
-      <PDFChoice days={days} />
+    <main className="grid flex-1 place-items-center">
+      <PDFDeviceCheck days={days} />
     </main>
   );
 }

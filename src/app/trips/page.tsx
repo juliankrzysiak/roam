@@ -30,7 +30,6 @@ export default async function Trips() {
 
   return (
     <main className="flex flex-col items-center gap-4 p-6">
-      <h2 className="text-3xl">Trips</h2>
       <NewTripForm />
       <section className="grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-md bg-slate-500 p-4">
         {trips.map((trip) => {

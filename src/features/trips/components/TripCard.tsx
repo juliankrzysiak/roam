@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { DateRange } from "@/types";
 import { format } from "date-fns";
@@ -12,9 +14,13 @@ type Props = {
 
 const dateFormat = "MMM dd";
 
-export default async function TripCard({ id, name, dateRange }: Props) {
+export default function TripCard({ id, name, dateRange }: Props) {
   let range = `${format(dateRange.from, dateFormat)}`;
   if (dateRange.to) range += ` - ${format(dateRange.to, dateFormat)}`;
+
+  function saveTripId() {
+    localStorage.setItem("tripId", id);
+  }
 
   return (
     <article className="relative flex flex-col items-center justify-between gap-2 rounded-lg bg-slate-100 p-4 ">
@@ -22,7 +28,9 @@ export default async function TripCard({ id, name, dateRange }: Props) {
       <h3 className="text-2xl font-semibold">{name}</h3>
       <p>{range}</p>
       <Button variant="default" size="sm" asChild className="mt-4 w-full">
-        <Link href={`/${id}`}>Schedule</Link>
+        <Link href={`/${id}`} onClick={saveTripId}>
+          Schedule
+        </Link>
       </Button>
     </article>
   );

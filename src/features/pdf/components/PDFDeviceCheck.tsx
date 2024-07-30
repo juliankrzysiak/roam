@@ -13,8 +13,8 @@ type Props = {
 export default function PDFDeviceCheck({ days }: Props) {
   if (isMobile)
     return (
-      <Button asChild>
-        <PDFDownloadLink document={<PDF days={days} />} fileName="somename.pdf">
+      <Button size="lg" className="text-xl" asChild>
+        <PDFDownloadLink document={<PDF days={days} />}>
           Download PDF
         </PDFDownloadLink>
       </Button>

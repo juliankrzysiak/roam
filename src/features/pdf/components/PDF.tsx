@@ -52,6 +52,21 @@ export default function PDF({ days }: PDFProps) {
           >
             Roam
           </Text>
+          <Text
+            fixed
+            style={[
+              styles.fontXs,
+              {
+                position: "absolute",
+                right: 12,
+                top: 20,
+              },
+            ]}
+            render={({ pageNumber, totalPages }) =>
+              `Page ${pageNumber}/${totalPages}`
+            }
+          />
+
           <Text style={styles.fontBase}>
             {format(day.date, "EEEE, MMMM d")}
           </Text>

@@ -19,12 +19,12 @@ export default async function Header() {
   const user = data.session?.user;
 
   return (
-    <header className="flex justify-between bg-emerald-800 p-4">
+    <header className="flex justify-between bg-emerald-900 p-4">
       <Nav user={user} />
       {user ? (
         <User name={user?.user_metadata.name} />
       ) : (
-        <div className="flex gap-2 ">
+        <div className="flex gap-4 ">
           <Login />
           <SignUp />
         </div>

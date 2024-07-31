@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={workSans.className}>
-      <body className="relative flex min-h-screen flex-col">
+      <body className="relative flex min-h-screen flex-col bg-slate-100">
         <Header />
         {children}
         <Toaster />

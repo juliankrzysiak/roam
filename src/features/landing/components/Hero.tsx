@@ -1,20 +1,29 @@
+import { volkhorn } from "@/app/fonts";
+import { Button } from "@/components/ui/button";
+import { Flag, MapPin } from "lucide-react";
 import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center gap-12">
-      <div className="flex flex-col gap-4">
-        <h1 className=" text-center text-7xl">Explore the World</h1>
-        <h2 className=" text-center text-4xl">
-          Simplicity and ease in planning your adventures.
-        </h2>
+    <section className="mt-12 flex flex-col items-center justify-center gap-16">
+      <div className="flex flex-col gap-4 text-center">
+        <h1 className={`${volkhorn.className} text-8xl text-emerald-950`}>
+          Explore the World
+        </h1>
+        <div className="flex w-full gap-1">
+          <MapPin size={36} />
+          <div className="flex-1 border-b border-dashed border-slate-900"></div>
+          <Flag size={36} />
+        </div>
+        <h2 className="text-4xl">Map out your next roadtrip with ease</h2>
       </div>
-      <Link
-        href={"/map"}
-        className="w-fit rounded-lg bg-emerald-900 p-4 text-2xl font-bold text-gray-100"
-      >
-        Start planning
-      </Link>
+      <div className="flex flex-col items-center gap-2">
+        <Button className="py-6 text-lg">Start planning</Button>
+        or
+        <Button variant="outline" className="text-sm">
+          Try it out
+        </Button>
+      </div>
     </section>
   );
 }

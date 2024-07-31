@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="flex min-h-[calc(100vh-68px-5rem)] flex-col items-center justify-center gap-12">
+    <section className="flex min-h-screen flex-col items-center justify-center gap-12">
       <div className="flex flex-col gap-4">
         <h1 className=" text-center text-7xl">Explore the World</h1>
         <h2 className=" text-center text-4xl">

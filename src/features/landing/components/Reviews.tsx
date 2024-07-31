@@ -1,9 +1,36 @@
+const reviews = [
+  {
+    name: "Julian Krzysiak",
+    review:
+      "Really great service they have, and for free? How fo they do it? Must have taken them a while to make something like this.",
+  },
+  {
+    name: "Mike Wazowski",
+    review: "Whenver I need to plan a road trip, I stick with ROAM.",
+  },
+  {
+    name: "Kulian Jrzysiak",
+    review:
+      "Amazing! Try it out, you don't wanna miss it. Please try it out. Please...",
+  },
+];
+
+export default function Testimonials() {
+  return (
+    <section className="grid gap-10  text-xl">
+      {reviews.map((review) => (
+        <Review key={review.name} name={review.name} review={review.review} />
+      ))}
+    </section>
+  );
+}
+
 interface Props {
   name: string;
   review: string;
 }
 
-export default function Review({ name, review }: Props) {
+function Review({ name, review }: Props) {
   return (
     <article className="flex max-w-lg flex-col items-center gap-4 rounded-lg p-8 text-emerald-900">
       <div className="flex flex-col gap-2">

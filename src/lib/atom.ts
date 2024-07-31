@@ -9,3 +9,5 @@ type CurrentPlace = {
 export const currentPlaceAtom = atom<CurrentPlace>(null);
 
 export const isPlannerVisibleAtom = atom(true);
+
+export const isSignUpFormVisibleAtom = atom(false);

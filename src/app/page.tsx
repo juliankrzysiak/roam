@@ -9,7 +9,7 @@ import Reviews from "@/features/landing/components/Reviews";
 export default function Home() {
   return (
     <>
-      <main className="flex flex-col items-center gap-12">
+      <main className="topography flex w-full flex-col items-center gap-12 overflow-clip">
         <Hero />
         <Features />
         <Reviews />

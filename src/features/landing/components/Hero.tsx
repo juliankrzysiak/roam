@@ -1,7 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import DemoButton from "@/features/auth/components/DemoButton";
+import Demo from "@/features/auth/components/Demo";
+import SignUp from "@/features/auth/components/StartPlanning";
 import { isSignUpFormVisibleAtom } from "@/lib/atom";
 import { useSetAtom } from "jotai";
 import { Flag, MapPin } from "lucide-react";
@@ -23,14 +24,15 @@ export default function Hero() {
         <h2 className="text-4xl">Map out your next roadtrip with ease</h2>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <Button
+        <SignUp />
+        {/* <Button
           className="bg-emerald-800 py-6 text-lg xl:text-xl"
           onClick={() => setOpen(true)}
         >
           Start planning
-        </Button>
+        </Button> */}
         or
-        <DemoButton />
+        <Demo />
       </div>
     </section>
   );

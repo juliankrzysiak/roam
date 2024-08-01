@@ -2,8 +2,8 @@
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
-import SendEmailForm from "./SendEmailForm";
-import ResetPasswordForm from "./ResetPasswordForm";
+import SendEmailForm from "./Forms/SendEmailForm";
+import ResetPasswordForm from "./Forms/ResetPasswordForm";
 
 export default function ResetPassword() {
   const [showPasswordResetForm, setShowResetPassword] = useState(false);

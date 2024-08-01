@@ -6,12 +6,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Login from "@/features/auth/components/Login";
-import SignUp from "@/features/auth/components/SignUp";
 import { signOut } from "@/utils/actions/auth";
 import { createClient } from "@/utils/supabase/server";
 import { LogOut, UserIcon } from "lucide-react";
 import Link from "next/link";
 import Nav from "./Nav";
+import Signup from "@/features/auth/components/SignUp";
 
 export default async function Header() {
   const supabase = createClient();
@@ -24,9 +24,9 @@ export default async function Header() {
       {user ? (
         <User name={user.user_metadata.name} />
       ) : (
-        <div className="flex gap-4 ">
+        <div className="flex gap-4 text-slate-100">
           <Login />
-          <SignUp />
+          <Signup />
         </div>
       )}
     </header>

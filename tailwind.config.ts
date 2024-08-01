@@ -63,6 +63,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        display: ["Vollkorn"],
       },
       keyframes: {
         "accordion-down": {

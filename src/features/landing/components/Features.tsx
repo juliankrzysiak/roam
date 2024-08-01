@@ -11,7 +11,7 @@ export default function Features() {
   return (
     <section className="flex w-full flex-col items-center gap-8 bg-emerald-900 p-8 ">
       <h3 className="text-center text-4xl text-slate-100">
-        with <span className={volkhorn.className}>roam</span> you can
+        with <span className="font-display">roam</span> you can
       </h3>
       <ul className="grid  gap-12 text-lg">
         {features.map((feature) => {

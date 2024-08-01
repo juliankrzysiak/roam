@@ -10,9 +10,7 @@ export default function Hero() {
   return (
     <section className="mt-12 flex flex-col items-center justify-center gap-16 px-8">
       <div className="flex flex-col gap-4 text-center">
-        <h1
-          className={`${volkhorn.className} min-[425px]:text-8xlz text-center text-7xl text-emerald-950`}
-        >
+        <h1 className="min-[425px]:text-8xlz text-center font-display text-7xl text-emerald-950">
           Explore the World
         </h1>
         <div className="mb-4 flex w-full gap-1">

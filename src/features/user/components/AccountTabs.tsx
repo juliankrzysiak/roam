@@ -14,9 +14,10 @@ import PasswordForm from "./PasswordForm";
 type Props = {
   name: string;
   email: string;
+  isAnonymous: boolean;
 };
 
-export default function AccountTabs({ name, email }: Props) {
+export default function AccountTabs({ name, email, isAnonymous }: Props) {
   return (
     <Tabs defaultValue="account" className="w-full max-w-xl">
       <TabsList className="grid w-full grid-cols-2">
@@ -33,7 +34,7 @@ export default function AccountTabs({ name, email }: Props) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <AccountForm name={name} email={email} />
+            <AccountForm name={name} email={email} isAnonymous={isAnonymous} />
           </CardContent>
         </Card>
       </TabsContent>
@@ -46,7 +47,7 @@ export default function AccountTabs({ name, email }: Props) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <PasswordForm />
+            <PasswordForm isAnonymous={isAnonymous} />
           </CardContent>
         </Card>
       </TabsContent>

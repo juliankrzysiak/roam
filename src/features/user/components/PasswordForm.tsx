@@ -20,7 +20,11 @@ const formSchema = z.object({
   password: z.string().min(6).max(50),
 });
 
-export default function PasswordForm() {
+type Props = {
+  isAnonymous: boolean
+}
+
+export default function PasswordForm({isAnonymous}: Props) {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -69,7 +73,7 @@ export default function PasswordForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Save Password</Button>
+        <Button type="submit" disabled={isAnonymous}>Save Password</Button>
         {form.formState.errors.root && (
           <p className="text-sm font-medium text-destructive">
             {form.formState.errors.root.message}

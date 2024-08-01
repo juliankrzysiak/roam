@@ -9,13 +9,14 @@ export default async function User() {
     error,
   } = await supabase.auth.getUser();
   if (!user || error) throw new Error(error?.message);
-  const name = user.user_metadata.name;
-  const email = user.email ?? "";
+  const name: string = user.user_metadata.name ?? ""
+  const email = user.email ?? ""
+  const isAnonymous = Boolean(user.is_anonymous)
 
   return (
     <main className="flex flex-col items-center px-8 py-4">
       <h1 className="mb-4 text-2xl">Account Settings</h1>
-      <AccountTabs name={name} email={email} />
+      <AccountTabs name={name} email={email} isAnonymous={isAnonymous} />
     </main>
   );
 }

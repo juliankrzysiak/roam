@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 
 type Props = {
   children: React.ReactNode;
-  handleSubmit: () => void;
+  handleSubmit: (formData: FormData) => void;
 };
 
 export default function ConfirmDialog({ children, handleSubmit }: Props) {

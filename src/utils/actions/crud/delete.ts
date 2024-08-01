@@ -55,3 +55,23 @@ export async function deleteDay(dayId: string) {
     console.log(error);
   }
 }
+
+export async function deleteData() {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const userId = user?.id;
+
+  try {
+    if (!userId) throw new Error("No user detected.");
+    const { error } = await supabase
+      .from("trips")
+      .delete()
+      .eq("user_id", userId);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/trips");
+  } catch (error) {
+    console.log(error);
+  }
+}

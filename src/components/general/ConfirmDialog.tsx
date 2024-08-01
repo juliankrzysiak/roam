@@ -25,9 +25,11 @@ export default function ConfirmDialog({ children, handleSubmit }: Props) {
           <DialogDescription>This action cannot be undone.</DialogDescription>
         </DialogHeader>
         <form className="flex justify-between" action={handleSubmit}>
-          <Button variant="destructive" type="submit">
-            Delete
-          </Button>
+          <DialogClose asChild>
+            <Button variant="destructive" type="submit">
+              Delete
+            </Button>
+          </DialogClose>
           <DialogClose asChild>
             <Button variant="secondary" type="button">
               Go Back

@@ -1,20 +1,24 @@
+import { Button } from "@/components/ui/button";
+import { isSignUpFormVisibleAtom } from "@/lib/atom";
+import { useSetAtom } from "jotai";
 import Link from "next/link";
 
 export default function Action() {
+  const setOpen = useSetAtom(isSignUpFormVisibleAtom);
+
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center gap-10 text-center">
+    <section className="mb-12 flex flex-col items-center justify-center gap-8 px-8 text-center">
       <div className="flex flex-col items-center gap-4">
-        <h2 className="font-display text-7xl text-emerald-950">
-          All Roads Lead to <span className="text-8xl">roam</span>
+        <h2 className="font-display text-6xl text-emerald-950">
+          All Roads Lead to <span className="text-8xl font-medium">roam</span>
         </h2>
-        <h3 className="text-5xl">Try it out today</h3>
       </div>
-      <Link
-        href={"/map"}
-        className="w-fit rounded-lg bg-emerald-900 p-4 text-2xl font-bold text-gray-100"
+      <Button
+        className="h-full w-full max-w-lg py-2  text-2xl text-slate-100"
+        onClick={() => setOpen(true)}
       >
-        Plan your trip
-      </Link>
+        Start planning today
+      </Button>
     </section>
   );
 }

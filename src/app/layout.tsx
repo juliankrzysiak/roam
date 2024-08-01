@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${vollkorn.variable} ${workSans.variable}`}>
-      <body className="relative flex min-h-screen flex-col bg-slate-100">
+      <body className="relative flex min-h-screen flex-col bg-slate-100 text-slate-900">
         <Header />
         {children}
         <Toaster />

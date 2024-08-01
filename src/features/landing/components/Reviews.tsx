@@ -39,7 +39,7 @@ export default function Reviews() {
         <h2 className="text-center font-display text-4xl">
           What do people love about us?
         </h2>
-        <MessageCircleHeart className="absolute -right-3 -top-3" size={24} />
+        <MessageCircleHeart className="absolute -right-4 -top-3" size={24} />
       </div>
       <ul className="grid gap-8">
         {reviews.map((review) => (
@@ -65,7 +65,7 @@ function Review({ name, content }: Props) {
       <div className="grid w-full place-content-center rounded-lg bg-emerald-900 p-4">
         <q className="text-center text-2xl">{content}</q>
       </div>
-      <p className="text-slate-700">{name}</p>
+      <p className="text-slate-700">- {name}</p>
     </li>
   );
 }

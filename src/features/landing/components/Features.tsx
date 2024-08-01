@@ -1,4 +1,3 @@
-import { volkhorn } from "@/app/fonts";
 
 const features = [
   "Quickly create a scheduled itinerary for a fun day trip or an exciting journey across the states.",

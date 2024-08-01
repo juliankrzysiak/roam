@@ -1,6 +1,5 @@
 "use client";
 
-import { volkhorn } from "@/app/fonts";
 import { User } from "@supabase/supabase-js";
 import clsx from "clsx";
 import Link from "next/link";
@@ -25,7 +24,7 @@ export default function Nav({ user }: Props) {
     <nav className="flex items-baseline gap-6">
       <Link
         href="/"
-        className={`text-3xl text-slate-100 ${volkhorn.className}`}
+        className="text-3xl text-slate-100 font-display"
       >
         roam
       </Link>

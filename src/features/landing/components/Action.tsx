@@ -4,8 +4,10 @@ export default function Action() {
   return (
     <section className="flex min-h-screen flex-col items-center justify-center gap-10 text-center">
       <div className="flex flex-col items-center gap-4">
-        <h1 className="text-7xl">All roads lead to ROAM</h1>
-        <h2 className="text-5xl">Try it out today</h2>
+        <h2 className="font-display text-7xl text-emerald-950">
+          All Roads Lead to <span className="text-8xl">roam</span>
+        </h2>
+        <h3 className="text-5xl">Try it out today</h3>
       </div>
       <Link
         href={"/map"}

@@ -1,4 +1,3 @@
-import { volkhorn } from "@/app/fonts";
 import { ChevronDown, MessageCircleHeart } from "lucide-react";
 
 const reviews = [

@@ -1,4 +1,3 @@
-import { volkhorn } from "@/app/fonts";
 import { Button } from "@/components/ui/button";
 import { isSignUpFormVisibleAtom } from "@/lib/atom";
 import { useSetAtom } from "jotai";

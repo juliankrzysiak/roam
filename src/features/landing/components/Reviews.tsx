@@ -36,19 +36,21 @@ export default function Reviews() {
           <ChevronDown size={24} className="-mt-2 " />
         </div>
       </div>
-      <div className="relative">
+      <div className="relative mb-8">
         <h2 className="text-center font-display text-4xl">
           What do people love about us?
         </h2>
         <MessageCircleHeart className="absolute -right-3 -top-3" size={24} />
       </div>
-      {reviews.map((review) => (
-        <Review
-          key={review.content}
-          name={review.name}
-          content={review.content}
-        />
-      ))}
+      <ul className="grid gap-8">
+        {reviews.map((review) => (
+          <Review
+            key={review.content}
+            name={review.name}
+            content={review.content}
+          />
+        ))}
+      </ul>
     </section>
   );
 }
@@ -60,10 +62,11 @@ interface Props {
 
 function Review({ name, content }: Props) {
   return (
-    <article className="flex max-w-lg flex-col items-center gap-4 rounded-lg p-8 text-emerald-900">
-      <div className="flex ">
-        <p className="text-center">&quot;{content}&quot;</p>
+    <li className="flex max-w-lg flex-col items-end gap-1 rounded-lg text-slate-100">
+      <div className="grid w-full place-content-center rounded-lg bg-emerald-900 p-4">
+        <q className="text-center text-2xl">{content}</q>
       </div>
-    </article>
+      <p className="text-slate-700">{name}</p>
+    </li>
   );
 }

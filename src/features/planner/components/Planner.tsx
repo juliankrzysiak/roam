@@ -58,6 +58,13 @@ export default function Planner({
         layoutScroll
         className="flex h-full flex-1 flex-col gap-4 overflow-auto px-4 py-2"
       >
+        {places.length < 1 && (
+          <p className="text-center text-sm text-slate-600">
+            Add your starting location!
+            <br />
+            Click a place on the map or search for it!
+          </p>
+        )}
         {places.map((place) => {
           return (
             <PlaceCard

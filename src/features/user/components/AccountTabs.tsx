@@ -34,7 +34,7 @@ export default function AccountTabs({ name, email, isAnonymous }: Props) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <AccountForm name={name} email={email} isAnonymous={isAnonymous} />
+            <AccountForm name={name} email={email} />
           </CardContent>
         </Card>
       </TabsContent>

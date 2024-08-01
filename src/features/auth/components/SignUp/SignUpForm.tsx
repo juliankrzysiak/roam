@@ -44,7 +44,7 @@ export default function SignUpForm({ setOpen }: Props) {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/map`,
+        emailRedirectTo: `${window.location.origin}/trips`,
         data: {
           name,
         },

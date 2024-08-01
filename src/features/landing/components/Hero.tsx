@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import DemoButton from "@/features/auth/components/DemoButton";
 import { isSignUpFormVisibleAtom } from "@/lib/atom";

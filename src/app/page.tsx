@@ -1,5 +1,3 @@
-"use client";
-
 import Footer from "@/components/general/Footer";
 import Action from "@/features/landing/components/Action";
 import Features from "@/features/landing/components/Features";

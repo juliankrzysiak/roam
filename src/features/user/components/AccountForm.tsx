@@ -23,9 +23,10 @@ const formSchema = z.object({
 type Props = {
   name: string;
   email: string;
+  isAnonymous: boolean;
 };
 
-export default function AccountForm({ name, email }: Props) {
+export default function AccountForm({ name, email, isAnonymous }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -77,7 +78,9 @@ export default function AccountForm({ name, email }: Props) {
             </FormItem>
           )}
         />
-        <Button type="submit">Save Changes</Button>
+        <Button type="submit" disabled={isAnonymous}>
+          Save Changes
+        </Button>
         {form.formState.errors.root && (
           <p className="text-sm font-medium text-destructive">
             {form.formState.errors.root.message}

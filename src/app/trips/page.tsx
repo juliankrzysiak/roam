@@ -31,7 +31,8 @@ export default async function Trips() {
   return (
     <main className="flex flex-col items-center gap-4 p-6">
       <NewTripForm />
-      <section className="grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-md bg-slate-500 p-4">
+      <section className="grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-md bg-slate-200 p-4 text-center">
+        {trips.length < 1 && <p>"It's a bit empty here..."</p>}
         {trips.map((trip) => {
           return <TripCard key={trip.id} {...trip} />;
         })}

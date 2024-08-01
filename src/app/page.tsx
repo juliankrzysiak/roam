@@ -9,7 +9,7 @@ import Reviews from "@/features/landing/components/Reviews";
 export default function Home() {
   return (
     <>
-      <main className="flex flex-col items-center gap-20 px-8 lg:px-20 ">
+      <main className="flex flex-col items-center gap-12">
         <Hero />
         <Features />
         <Reviews />

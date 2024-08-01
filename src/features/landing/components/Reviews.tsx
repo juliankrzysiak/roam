@@ -1,25 +1,53 @@
+import { volkhorn } from "@/app/fonts";
+import { ChevronDown, MessageCircleHeart } from "lucide-react";
+
 const reviews = [
   {
-    name: "Julian Krzysiak",
-    review:
-      "Really great service they have, and for free? How fo they do it? Must have taken them a while to make something like this.",
+    name: "Julian K.",
+    content: "So easy to use!",
   },
   {
-    name: "Mike Wazowski",
-    review: "Whenver I need to plan a road trip, I stick with ROAM.",
+    name: "Julian K.",
+    content:
+      "Used this to plan out my vacation. I planned out every single detail, got to see so many things!",
   },
   {
-    name: "Kulian Jrzysiak",
-    review:
-      "Amazing! Try it out, you don't wanna miss it. Please try it out. Please...",
+    name: "Julian K.",
+    content:
+      "What a service, you gotta try it out! Whoever made this did a good job!",
   },
 ];
 
-export default function Testimonials() {
+export default function Reviews() {
   return (
-    <section className="grid gap-10  text-xl">
+    <section className="px-8">
+      <div className="mb-4 flex justify-evenly">
+        <div
+          className={
+            "flex flex-col gap-4 font-display text-5xl text-emerald-950"
+          }
+        >
+          <p>Simple.</p>
+          <p>Fast.</p>
+          <p>Fun!</p>
+        </div>
+        <div className="-mt-12 flex flex-col items-center text-emerald-900">
+          <hr className="h-72 border-l-2 border-dashed border-emerald-900"></hr>
+          <ChevronDown size={24} className="-mt-2 " />
+        </div>
+      </div>
+      <div className="relative">
+        <h2 className="text-center font-display text-4xl">
+          What do people love about us?
+        </h2>
+        <MessageCircleHeart className="absolute -right-3 -top-3" size={24} />
+      </div>
       {reviews.map((review) => (
-        <Review key={review.name} name={review.name} review={review.review} />
+        <Review
+          key={review.content}
+          name={review.name}
+          content={review.content}
+        />
       ))}
     </section>
   );
@@ -27,30 +55,15 @@ export default function Testimonials() {
 
 interface Props {
   name: string;
-  review: string;
+  content: string;
 }
 
-function Review({ name, review }: Props) {
+function Review({ name, content }: Props) {
   return (
     <article className="flex max-w-lg flex-col items-center gap-4 rounded-lg p-8 text-emerald-900">
-      <div className="flex flex-col gap-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="h-20"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-          />
-        </svg>
-        <h3>{name}</h3>
+      <div className="flex ">
+        <p className="text-center">&quot;{content}&quot;</p>
       </div>
-      <p className="text-center">&quot;{review}&quot;</p>
     </article>
   );
 }

@@ -10,6 +10,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AccountForm from "./AccountForm";
 import PasswordForm from "./PasswordForm";
+import DeleteForm from "./DeleteForm";
 
 type Props = {
   name: string;
@@ -20,9 +21,10 @@ type Props = {
 export default function AccountTabs({ name, email, isAnonymous }: Props) {
   return (
     <Tabs defaultValue="account" className="w-full max-w-xl">
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="account">Account</TabsTrigger>
         <TabsTrigger value="password">Password</TabsTrigger>
+        <TabsTrigger value="delete">Delete</TabsTrigger>
       </TabsList>
       <TabsContent value="account">
         <Card>
@@ -48,6 +50,19 @@ export default function AccountTabs({ name, email, isAnonymous }: Props) {
           </CardHeader>
           <CardContent>
             <PasswordForm isAnonymous={isAnonymous} />
+          </CardContent>
+        </Card>
+      </TabsContent>
+      <TabsContent value="delete">
+        <Card className="border-2 border-dashed border-red-600 ">
+          <CardHeader>
+            <CardTitle>Delete</CardTitle>
+            <CardDescription>
+              Irreversibly delete your data and/or account.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center">
+            <DeleteForm />
           </CardContent>
         </Card>
       </TabsContent>

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import DemoButton from "@/features/auth/components/DemoButton";
 import { isSignUpFormVisibleAtom } from "@/lib/atom";
 import { useSetAtom } from "jotai";
 import { Flag, MapPin } from "lucide-react";
@@ -27,9 +28,7 @@ export default function Hero() {
           Start planning
         </Button>
         or
-        <Button variant="outline" className="text-sm">
-          Try it out
-        </Button>
+        <DemoButton />
       </div>
     </section>
   );

@@ -22,7 +22,7 @@ export default async function Header() {
     <header className="flex justify-between bg-emerald-900 p-4">
       <Nav user={user} />
       {user ? (
-        <User name={user?.user_metadata.name} />
+        <User name={user.user_metadata.name} />
       ) : (
         <div className="flex gap-4 ">
           <Login />
@@ -34,12 +34,10 @@ export default async function Header() {
 }
 
 type UserProps = {
-  name: string;
+  name?: string;
 };
 
 function User({ name }: UserProps) {
-  const letter = name.substring(0, 1).toUpperCase();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -47,7 +45,7 @@ function User({ name }: UserProps) {
         aria-label="Open dropdown menu for account"
       >
         <div className="border-slate-00 grid aspect-square h-8 place-content-center  rounded-full border-2 ">
-          {letter ?? <UserIcon size={18} />}
+          {name ? name.substring(0, 1).toUpperCase() : <UserIcon size={18} />}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

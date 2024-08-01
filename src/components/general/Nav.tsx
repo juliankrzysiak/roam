@@ -5,15 +5,21 @@ import { User } from "@supabase/supabase-js";
 import clsx from "clsx";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type Props = {
   user?: User;
 };
 
 export default function Nav({ user }: Props) {
+  const [tripId, setTripId] = useState<string | null>(null);
   const pathName = usePathname();
-  const tripId = localStorage.getItem("tripId");
   const { trip } = useParams<{ trip: string }>();
+
+  useEffect(() => {
+    const tripId = localStorage.getItem("tripId");
+    if (tripId) setTripId(tripId);
+  }, []);
 
   return (
     <nav className="flex items-baseline gap-6">

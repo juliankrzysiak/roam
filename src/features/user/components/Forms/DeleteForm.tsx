@@ -12,7 +12,8 @@ export default function DeleteForm() {
         description: "Your data has been deleted.",
       });
     } catch (error) {
-      toast({ description: "Uh oh, something went wrong!" });
+      if (typeof error !== "string") return;
+      toast({ title: "Uh oh, something went wrong!", description: error });
     }
   }
 

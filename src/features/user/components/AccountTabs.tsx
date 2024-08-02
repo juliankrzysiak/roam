@@ -8,9 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AccountForm from "./AccountForm";
-import PasswordForm from "./PasswordForm";
-import DeleteForm from "./DeleteForm";
+import AccountForm from "./Forms/AccountForm";
+import PasswordForm from "./Forms/PasswordForm";
+import DeleteForm from "./Forms/DeleteForm";
 
 type Props = {
   name: string;

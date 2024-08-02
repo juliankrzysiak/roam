@@ -18,7 +18,7 @@ type Props = {
 export default function ConfirmDialog({ children, handleSubmit }: Props) {
   return (
     <Dialog>
-      <DialogTrigger>{children}</DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="flex flex-col gap-8">
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>

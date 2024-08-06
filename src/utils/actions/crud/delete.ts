@@ -63,15 +63,16 @@ export async function deleteData() {
   } = await supabase.auth.getUser();
   const userId = user?.id;
 
-  try {
-    if (!userId) throw new Error("No user detected.");
-    const { error } = await supabase
-      .from("trips")
-      .delete()
-      .eq("user_id", userId);
-    if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/trips");
-  } catch (error) {
-    console.log(error);
-  }
+  if (!userId)
+    return {
+      title: "Oops, something went wrong",
+      description: "There was a problem with your request.",
+    };
+  const { error } = await supabase.from("trips").delete().eq("user_id", userId);
+  if (error)
+    return {
+      title: "Oops, something went wrong",
+      description: "There was a problem with your request.",
+    };
+  return { description: "Your data has been deleted." };
 }

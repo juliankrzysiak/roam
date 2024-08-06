@@ -5,16 +5,10 @@ import { deleteData } from "@/utils/actions/crud/delete";
 
 export default function DeleteForm() {
   const { toast } = useToast();
+
   async function handleDeleteData() {
-    try {
-      await deleteData();
-      toast({
-        description: "Your data has been deleted.",
-      });
-    } catch (error) {
-      if (typeof error !== "string") return;
-      toast({ title: "Uh oh, something went wrong!", description: error });
-    }
+    const message = await deleteData();
+    toast(message);
   }
 
   return (
@@ -27,4 +21,7 @@ export default function DeleteForm() {
       </ConfirmDialog>
     </div>
   );
+}
+function useActionState(createUser: any, initialState: any): [any, any] {
+  throw new Error("Function not implemented.");
 }

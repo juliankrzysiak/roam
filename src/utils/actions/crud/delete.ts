@@ -3,6 +3,7 @@
 import { Place } from "@/types";
 import { mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createClientJS } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 
 export async function deletePlace(
@@ -71,7 +72,8 @@ export async function deleteData() {
       .eq("user_id", userId);
     if (error) throw new Error();
     return { description: "Your data has been deleted." };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
       title: "Oops, something went wrong.",
       description: "There was a problem with your request.",
@@ -79,22 +81,30 @@ export async function deleteData() {
   }
 }
 
+// I made two separate clients because I can only delete a user using the JS client
+// Also using two means I can log out and stil delete the user
 export async function deleteAccount() {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   const userId = user?.id;
-  if (!userId)
+  try {
+    if (!userId) throw new Error("Could not find user id.");
+    const supabaseJS = createClientJS(
+      process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+      process.env.SUPABASE_SERVICE_KEY as string,
+    );
+    await deleteData();
+    await supabase.auth.signOut();
+    const { error } = await supabaseJS.auth.admin.deleteUser(userId);
+    if (error) throw new Error(error.message);
+    return { description: "Your account and data have been deleted." };
+  } catch (error) {
+    console.log(error);
     return {
       title: "Oops, something went wrong",
       description: "There was a problem with your request.",
     };
-  const { error } = await supabase.from("trips").delete().eq("user_id", userId);
-  if (error)
-    return {
-      title: "Oops, something went wrong",
-      description: "There was a problem with your request.",
-    };
-  return { description: "Your data has been deleted." };
+  }
 }

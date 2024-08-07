@@ -1,11 +1,10 @@
 "use client";
 
-import * as React from "react";
-import { Interval, addDays, eachDayOfInterval, format } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
+import * as React from "react";
 import { DateRange } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -13,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 type Props = {
   dateRange: DateRange | undefined;
@@ -59,7 +59,7 @@ export function DatePickerWithRange({
             defaultMonth={dateRange?.from}
             selected={dateRange}
             onSelect={setDateRange}
-            numberOfMonths={2}
+            numberOfMonths={1}
           />
         </PopoverContent>
       </Popover>

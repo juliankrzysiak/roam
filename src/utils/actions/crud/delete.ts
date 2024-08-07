@@ -4,6 +4,7 @@ import { Place } from "@/types";
 import { mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { deleteCookie } from "../cookies";
 
 export async function deletePlace(
   places: Place[],
@@ -32,12 +33,13 @@ export async function deletePlace(
 export async function deleteTrip(formData: FormData) {
   const supabase = createClient();
 
-  const id = formData.get("tripId");
-  if (!id) return;
+  const tripId = formData.get("tripId");
+  if (typeof tripId !== "string") return;
 
   try {
-    const { error } = await supabase.from("trips").delete().eq("id", id);
+    const { error } = await supabase.from("trips").delete().eq("id", tripId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
+    deleteCookie("tripId");
     revalidatePath("/trips");
   } catch (error) {
     console.log(error);

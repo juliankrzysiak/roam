@@ -6,21 +6,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Login from "@/features/auth/components/Login";
+import Signup from "@/features/auth/components/SignUp";
 import { signOut } from "@/utils/actions/auth";
 import { createClient } from "@/utils/supabase/server";
 import { LogOut, UserIcon } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import Nav from "./Nav";
-import Signup from "@/features/auth/components/SignUp";
 
 export default async function Header() {
   const supabase = createClient();
-  const { data } = await supabase.auth.getSession();
-  const user = data.session?.user;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const tripId = cookies().get("tripId")?.value;
 
   return (
     <header className="flex justify-between bg-emerald-900 p-4">
-      <Nav user={user} />
+      <Nav user={user} tripId={tripId} />
       {user ? (
         <User name={user.user_metadata.name} />
       ) : (

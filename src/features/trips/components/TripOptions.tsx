@@ -34,18 +34,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
-import { DateRange } from "react-day-picker";
+import { DateRange } from "@/types";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schema";
 
 type Props = {
-  id: string;
+  tripId: string;
   name: string;
   dateRange: DateRange;
 };
 
-export default function TripOptions({ id, name, dateRange }: Props) {
+export default function TripOptions({ tripId, name, dateRange }: Props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -67,7 +67,7 @@ export default function TripOptions({ id, name, dateRange }: Props) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer" asChild>
-            <Link href={`/${id}/pdf`}>Print</Link>
+            <Link href={`/${tripId}/pdf`}>Print</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -81,11 +81,11 @@ export default function TripOptions({ id, name, dateRange }: Props) {
       <EditTrip
         open={openEdit}
         setOpen={setOpenEdit}
-        id={id}
-        name={name}
-        dateRange={dateRange}
+        tripId={tripId}
+        initialName={name}
+        initialDateRange={dateRange}
       />
-      <DeleteTrip open={openDelete} setOpen={setOpenDelete} id={id} />
+      <DeleteTrip open={openDelete} setOpen={setOpenDelete} tripId={tripId} />
     </>
   );
 }
@@ -93,17 +93,17 @@ export default function TripOptions({ id, name, dateRange }: Props) {
 /* -------------------------------- EditTrip -------------------------------- */
 
 type EditTripProps = {
-  id: string;
-  name: string;
-  dateRange: DateRange;
+  tripId: string;
+  initialName: string;
+  initialDateRange: DateRange;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 function EditTrip({
-  id,
-  name: initialName,
-  dateRange: initialDateRange,
+  tripId,
+  initialName,
+  initialDateRange,
   open,
   setOpen,
 }: EditTripProps) {
@@ -120,9 +120,9 @@ function EditTrip({
       dateRange.from === initialDateRange.from &&
       dateRange.to === initialDateRange.to;
 
-    if (name !== initialName) await updateTrip(id, name);
+    if (name !== initialName) await updateTrip(tripId, name);
     if (dateRange && !isSameDate)
-      await updateTripDates(id, [initialDateRange, dateRange]);
+      await updateTripDates(tripId, [initialDateRange, dateRange]);
     setOpen(false);
   }
 
@@ -178,10 +178,10 @@ function EditTrip({
 /* ------------------------------- DeleteTrip ------------------------------- */
 
 function DeleteTrip({
-  id,
+  tripId,
   open,
   setOpen,
-}: Omit<EditTripProps, "name" | "dateRange">) {
+}: Omit<EditTripProps, "initialName" | "initialDateRange">) {
   async function handleSubmit(formData: FormData) {
     await deleteTrip(formData);
     setOpen(false);
@@ -191,24 +191,24 @@ function DeleteTrip({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you sure you?</DialogTitle>
-          <DialogDescription>This cannot be undone.</DialogDescription>
+          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogDescription>This action cannot be undone.</DialogDescription>
         </DialogHeader>
         <form
           action={handleSubmit}
           id="createTrip"
-          className="flex justify-center gap-4"
+          className="flex justify-between"
         >
-          <input type="hidden" name="tripId" value={id} />
+          <input type="hidden" name="tripId" value={tripId} />
           <Button type="submit" variant="destructive">
-            Yes, Delete
+            Delete
           </Button>
           <Button
             type="button"
             variant="secondary"
             onClick={() => setOpen(false)}
           >
-            No, Cancel
+            Go Back
           </Button>
         </form>
       </DialogContent>

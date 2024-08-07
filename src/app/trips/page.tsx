@@ -3,6 +3,7 @@ import TripCard from "@/features/trips/components/TripCard";
 import { DateRange } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { parseISO } from "date-fns";
+import { redirect } from "next/navigation";
 
 type Trip = {
   id: string;
@@ -12,6 +13,10 @@ type Trip = {
 
 export default async function Trips() {
   const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/");
 
   const { data, error } = await supabase
     .from("trips")
@@ -32,7 +37,7 @@ export default async function Trips() {
     <main className="flex flex-col items-center gap-4 p-6">
       <NewTripForm />
       <section className="grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-md bg-slate-200 p-4 text-center">
-        {trips.length < 1 && <p>"It's a bit empty here..."</p>}
+        {trips.length < 1 && <p>It`&apos;s a bit empty here...</p>}
         {trips.map((trip) => {
           return <TripCard key={trip.id} {...trip} />;
         })}

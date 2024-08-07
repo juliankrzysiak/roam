@@ -1,6 +1,7 @@
 import AccountTabs from "@/features/user/components/AccountTabs";
 import SignUpButton from "@/features/user/components/SignUpButton";
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function User() {
   const supabase = createClient();
@@ -9,7 +10,8 @@ export default async function User() {
     data: { user },
     error,
   } = await supabase.auth.getUser();
-  if (!user || error) throw new Error(error?.message);
+  if (!user) redirect("/");
+  if (error) throw new Error(error?.message);
   const name: string = user.user_metadata.name ?? "";
   const email = user.email ?? "";
   const isAnonymous = Boolean(user.is_anonymous);

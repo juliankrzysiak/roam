@@ -22,7 +22,7 @@ export function convertTime({ hours, minutes }: Args) {
 
 export function formatTravelTime({ hours, minutes }: Args) {
   const formattedHours = hours ? hours + " hr" : "";
-  return formattedHours + " " + minutes + " min";
+  return `${formattedHours} ${minutes} min`;
 }
 
 export function formatPlaceDuration({ hours, minutes }: Args) {

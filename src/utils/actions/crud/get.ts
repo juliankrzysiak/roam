@@ -57,8 +57,8 @@ export async function getDay(
   const day = {
     ...dayData,
     date,
-    travel: travelInfo?.travel,
-    path: travelInfo?.path
+    travel: travelInfo.travel,
+    path: travelInfo?.path,
   };
 
   return {
@@ -97,8 +97,14 @@ async function mapTravelInfo(
 
 async function getTravelInfo(
   places: PlaceNoSchedule[],
-): Promise<{ trips: Travel[]; travel: Travel, path: string } | undefined> {
-  if (places.length < 2) return;
+): Promise<{ trips?: Travel[]; travel: Travel; path?: string }> {
+  if (places.length < 2)
+    return {
+      travel: {
+        distance: 0,
+        duration: 0,
+      },
+    };
   const coordinates = places
     .map((place) => `${place.position.lng},${place.position.lat}`)
     .join(";");
@@ -125,6 +131,6 @@ async function getTravelInfo(
   return {
     trips,
     travel,
-    path
+    path,
   };
 }

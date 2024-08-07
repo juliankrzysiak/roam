@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
 import { Day } from "@/types";
-import { checkSameArr, mapId } from "@/utils";
+import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
 import clsx from "clsx";
 import { addMinutes, parse } from "date-fns";
@@ -76,11 +76,14 @@ export default function Planner({
           );
         })}
       </Reorder.Group>
-      <div className="sticky bottom-0 left-0 right-0 flex justify-between gap-2 bg-slate-100 px-2 py-1 text-sm">
-        <h4>On the road</h4>
+      <div className="sticky bottom-0 left-0 right-0 flex justify-between gap-2 px-4 py-1 text-sm">
+        <h4>Total</h4>
         <div className="flex gap-2">
-          <span>{day.travel?.duration} min</span>
-          <span>{day.travel?.distance} miles</span>
+          <span>
+            {formatTravelTime(convertTime({ minutes: day.travel.duration }))}
+          </span>
+          <span className="text-slate-500">|</span>
+          <span>{day.travel.distance} mi</span>
         </div>
       </div>
     </section>

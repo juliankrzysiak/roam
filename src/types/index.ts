@@ -23,8 +23,8 @@ export type Day = {
   date: Date;
   timezone: string;
   places: Place[];
+  travel: Travel;
   path?: string;
-  travel?: Travel;
 };
 
 export type Travel = {

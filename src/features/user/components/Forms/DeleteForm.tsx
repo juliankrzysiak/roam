@@ -1,7 +1,7 @@
 import ConfirmDialog from "@/components/general/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { deleteAccount, deleteData } from "@/utils/actions/crud/delete";
+import { deleteAccount, deleteData } from "@/utils/actions/auth";
 
 export default function DeleteForm() {
   const { toast } = useToast();
@@ -11,10 +11,10 @@ export default function DeleteForm() {
     toast(message);
   }
 
-   async function handleDeleteAccount() {
-     const message = await deleteAccount();
-     toast(message);
-   }
+  async function handleDeleteAccount() {
+    const message = await deleteAccount();
+    toast(message);
+  }
 
   return (
     <div className="flex w-fit flex-col items-center gap-4">
@@ -27,4 +27,3 @@ export default function DeleteForm() {
     </div>
   );
 }
-

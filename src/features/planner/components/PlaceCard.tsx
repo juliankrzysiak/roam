@@ -249,47 +249,47 @@ function TripDetails({ duration, distance }: TripDetailsProps) {
   );
 }
 
-/* -------------------------------- TravelDuration -------------------------------- */
+// /* -------------------------------- TravelDuration -------------------------------- */
 
-type TravelDurationProps = {
-  placeId: string;
-  tripDuration: number;
-};
+// type TravelDurationProps = {
+//   placeId: string;
+//   tripDuration: number;
+// };
 
-function TravelDuration({ placeId, tripDuration }: TravelDurationProps) {
-  const { hours, minutes } = convertTime({ minutes: tripDuration });
-  const [hourDuration, setHourDuration] = useState(hours);
-  const [minuteDuration, setMinuteDuration] = useState(minutes);
+// function TravelDuration({ placeId, tripDuration }: TravelDurationProps) {
+//   const { hours, minutes } = convertTime({ minutes: tripDuration });
+//   const [hourDuration, setHourDuration] = useState(hours);
+//   const [minuteDuration, setMinuteDuration] = useState(minutes);
 
-  return (
-    <form
-      className="flex items-end gap-2 py-2 pl-4"
-      action={updateTripDuration}
-    >
-      <label className="flex items-center gap-1">
-        <Car size={svgSize} />
-        <input
-          className="rounded-md pl-1"
-          name="hours"
-          type="number"
-          min="0"
-          max="12"
-          value={hourDuration}
-          onChange={(e) => setHourDuration(Number(e.target.value))}
-        />
-        :
-        <input
-          className="rounded-md pl-1"
-          name="minutes"
-          type="number"
-          min="0"
-          max="59"
-          value={minuteDuration}
-          onChange={(e) => setMinuteDuration(Number(e.target.value))}
-        />
-      </label>
-      <input type="hidden" name="id" defaultValue={placeId} />
-      <button>Save</button>
-    </form>
-  );
-}
+//   return (
+//     <form
+//       className="flex items-end gap-2 py-2 pl-4"
+//       action={updateTripDuration}
+//     >
+//       <label className="flex items-center gap-1">
+//         <Car size={svgSize} />
+//         <input
+//           className="rounded-md pl-1"
+//           name="hours"
+//           type="number"
+//           min="0"
+//           max="12"
+//           value={hourDuration}
+//           onChange={(e) => setHourDuration(Number(e.target.value))}
+//         />
+//         :
+//         <input
+//           className="rounded-md pl-1"
+//           name="minutes"
+//           type="number"
+//           min="0"
+//           max="59"
+//           value={minuteDuration}
+//           onChange={(e) => setMinuteDuration(Number(e.target.value))}
+//         />
+//       </label>
+//       <input type="hidden" name="id" defaultValue={placeId} />
+//       <button>Save</button>
+//     </form>
+//   );
+// }

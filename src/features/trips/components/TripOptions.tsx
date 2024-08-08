@@ -31,7 +31,11 @@ import { Input } from "@/components/ui/input";
 import { DateRange } from "@/types";
 import { calcDateDeltas } from "@/utils";
 import { deleteTrip } from "@/utils/actions/crud/delete";
-import { updateTrip, updateTripDates } from "@/utils/actions/crud/update";
+import {
+  updateCurrentDate,
+  updateTrip,
+  updateTripDates,
+} from "@/utils/actions/crud/update";
 import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
@@ -165,8 +169,10 @@ function EditTrip({
 
     async function submitFormData() {
       if (name !== initialName) await updateTrip(tripId, name);
-      if (dateRange && !isSameDate)
+      if (dateRange && !isSameDate) {
         await updateTripDates(tripId, [initialDateRange, dateRange]);
+        await updateCurrentDate(tripId, dateRange.from);
+      }
       setOpenConfirm(false);
       setOpen(false);
     }

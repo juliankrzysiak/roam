@@ -126,6 +126,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_user: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      get_days_with_places:
+        | {
+            Args: Record<PropertyKey, never>
+            Returns: string[]
+          }
+        | {
+            Args: {
+              tripid: string
+            }
+            Returns: string[]
+          }
       get_places: {
         Args: {
           day: string

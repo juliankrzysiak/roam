@@ -28,13 +28,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { DateRange } from "@/types";
+import { calcDateDeltas } from "@/utils";
 import { deleteTrip } from "@/utils/actions/crud/delete";
 import { updateTrip, updateTripDates } from "@/utils/actions/crud/update";
+import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DialogDescription } from "@radix-ui/react-dialog";
+import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
+import { eachDayOfInterval, format } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
-import { DateRange } from "@/types";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schema";
@@ -107,6 +110,7 @@ function EditTrip({
   open,
   setOpen,
 }: EditTripProps) {
+  const [openConfirm, setOpenConfirm] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -149,51 +153,72 @@ function EditTrip({
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Trip</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            id="updateTrip"
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Trip Name *</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="dateRange"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Dates *</FormLabel>
-                  <DatePickerWithRange
-                    dateRange={field.value}
-                    setDateRange={field.onChange}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
-        <DialogFooter>
-          <Button form="updateTrip">Submit</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Trip</DialogTitle>
+          </DialogHeader>
+          <Form {...form}>
+            <form
+              id="updateTrip"
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-8"
+            >
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Trip Name *</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dateRange"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dates *</FormLabel>
+                    <DatePickerWithRange
+                      dateRange={field.value}
+                      setDateRange={field.onChange}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+          <DialogFooter>
+            <Button form="updateTrip">Submit</Button>
+          </DialogFooter>
+        </DialogContent>
+        <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                Are you sure you want to delete your saved places?
+              </DialogTitle>
+              <DialogDescription>
+                Dates are being removed that still have saved places. Move these
+                places to a new date, or continue with deletion.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex gap-2">
+              <Button form="updateTrip">Submit</Button>
+              <DialogClose asChild>
+                <Button variant="secondary">Go Back</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </Dialog>
+    </>
   );
 }
 

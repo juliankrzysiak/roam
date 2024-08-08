@@ -1,15 +1,5 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
 import { DatePickerWithRange } from "@/components/general/DatePickerWithRange";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Form,
   FormControl,
@@ -31,30 +28,35 @@ import { Input } from "@/components/ui/input";
 import { DateRange } from "@/types";
 import { calcDateDeltas } from "@/utils";
 import { deleteTrip } from "@/utils/actions/crud/delete";
+import { getAlertDates } from "@/utils/actions/crud/get";
 import {
   updateCurrentDate,
   updateTrip,
   updateTripDates,
 } from "@/utils/actions/crud/update";
-import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
-import { eachDayOfInterval, format, isEqual } from "date-fns";
+import { eachDayOfInterval, isEqual, isWithinInterval } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schema";
-import { formatInTimeZone } from "date-fns-tz";
-import { getAlertDates } from "@/utils/actions/crud/get";
 
-type Props = {
+type TripOptionsProps = {
   tripId: string;
   name: string;
   dateRange: DateRange;
+  currentDate: string;
 };
 
-export default function TripOptions({ tripId, name, dateRange }: Props) {
+export default function TripOptions({
+  tripId,
+  name,
+  dateRange,
+  currentDate,
+}: TripOptionsProps) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -93,6 +95,7 @@ export default function TripOptions({ tripId, name, dateRange }: Props) {
         tripId={tripId}
         initialName={name}
         initialDateRange={dateRange}
+        currentDate={currentDate}
       />
       <DeleteTrip open={openDelete} setOpen={setOpenDelete} tripId={tripId} />
     </>
@@ -105,6 +108,7 @@ type EditTripProps = {
   tripId: string;
   initialName: string;
   initialDateRange: DateRange;
+  currentDate: string;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
@@ -113,6 +117,7 @@ function EditTrip({
   tripId,
   initialName,
   initialDateRange,
+  currentDate,
   open,
   setOpen,
 }: EditTripProps) {
@@ -127,13 +132,13 @@ function EditTrip({
   });
 
   async function onSubmit({ name, dateRange }: z.infer<typeof formSchema>) {
-    // TODO: Clean up boolean
     const isSameDate =
       isEqual(dateRange.from, initialDateRange.from) &&
       isEqual(
         dateRange.to ?? dateRange.from,
         initialDateRange.to ?? initialDateRange.from,
       );
+
     const [initialDates, newDates] = [initialDateRange, dateRange].map(
       (range) =>
         eachDayOfInterval({ start: range.from, end: range.to ?? range.from }),
@@ -142,7 +147,7 @@ function EditTrip({
 
     if (datesToRemove.length && !openConfirm) {
       const alertDates = await getAlertDates(tripId, datesToRemove);
-      if (alertDates) {
+      if (alertDates?.length) {
         setAlertDates(alertDates);
         setOpenConfirm(true);
       } else {
@@ -155,8 +160,15 @@ function EditTrip({
     async function submitFormData() {
       if (name !== initialName) await updateTrip(tripId, name);
       if (dateRange && !isSameDate) {
-        await updateTripDates(tripId, [initialDateRange, dateRange]);
-        await updateCurrentDate(tripId, dateRange.from);
+        await updateTripDates(tripId, [datesToAdd, datesToRemove]);
+        if (
+          !isWithinInterval(currentDate, {
+            // TODO: Should just make end the same as from the beginning instead of these ad-hoc code smells
+            start: dateRange.from,
+            end: dateRange.to ?? dateRange.from,
+          })
+        )
+          await updateCurrentDate(tripId, dateRange.from);
       }
       setOpenConfirm(false);
       setOpen(false);
@@ -244,7 +256,7 @@ function DeleteTrip({
   tripId,
   open,
   setOpen,
-}: Omit<EditTripProps, "initialName" | "initialDateRange">) {
+}: Pick<EditTripProps, "tripId" | "open" | "setOpen">) {
   async function handleSubmit(formData: FormData) {
     await deleteTrip(formData);
     setOpen(false);

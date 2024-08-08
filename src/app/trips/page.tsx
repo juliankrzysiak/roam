@@ -12,10 +12,11 @@ export default async function Trips() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/");
 
+  // TODO: Add timezone
   const { data, error } = await supabase
     .from("trips")
-    .select("tripId:id, name, days (date)");
-  if (error) throw new Error(`${error.message}`);
+    .select("tripId:id, name, days (date), currentDate:current_date");
+  if (error) throw new Error(error.message);
 
   // sort by startDates
   const trips = mapDateRange(data).sort((a, b) => {
@@ -44,6 +45,7 @@ type Trip = {
   tripId: string;
   name: string;
   days: { date: string }[];
+  currentDate: string;
 };
 
 // Calculate the min and max days and replace days with new property

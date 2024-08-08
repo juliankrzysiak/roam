@@ -24,17 +24,12 @@ export async function updateTrip(id: string, name: string) {
 
 export async function updateTripDates(
   tripId: string,
-  ranges: [DateRange, DateRange],
+  ranges: [Date[], Date[]],
 ) {
   const supabase = createClient();
+  const [daysToAdd, daysToRemove] = ranges;
 
-  const [initialDates, newDates] = ranges.map((range) =>
-    eachDayOfInterval({ start: range.from, end: range.to ?? range.from }),
-  );
-
-  const [daysToAdd, daysToRemove] = calcDateDeltas(initialDates, newDates);
-
-  if (daysToAdd) {
+  if (daysToAdd.length) {
     const bulkDates = formatBulkDates(tripId, daysToAdd);
     try {
       const { error } = await supabase.from("days").insert(bulkDates);
@@ -45,7 +40,7 @@ export async function updateTripDates(
     }
   }
 
-  if (daysToRemove) {
+  if (daysToRemove.length) {
     const formattedDates = daysToRemove.map((date) =>
       format(date, "yyy-MM-dd"),
     );

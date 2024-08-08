@@ -11,11 +11,12 @@ type Props = {
   tripId: string;
   name: string;
   dateRange: DateRange;
+  currentDate: string
 };
 
 const dateFormat = "MMM dd";
 
-export default function TripCard({ tripId, name, dateRange }: Props) {
+export default function TripCard({ tripId, name, dateRange, currentDate}: Props) {
   let range = `${format(dateRange.from, dateFormat)}`;
   if (dateRange.to) range += ` - ${format(dateRange.to, dateFormat)}`;
 
@@ -25,7 +26,7 @@ export default function TripCard({ tripId, name, dateRange }: Props) {
 
   return (
     <article className="relative flex flex-col items-center justify-between gap-2 rounded-lg bg-slate-100 p-4 ">
-      <TripOptions tripId={tripId} name={name} dateRange={dateRange} />
+      <TripOptions tripId={tripId} name={name} dateRange={dateRange} currentDate={currentDate} />
       <h3 className="text-2xl font-semibold">{name}</h3>
       <p>{range}</p>
       <Button variant="default" size="sm" asChild className="mt-4 w-full">

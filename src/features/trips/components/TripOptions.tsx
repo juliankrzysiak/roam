@@ -111,6 +111,7 @@ function EditTrip({
   setOpen,
 }: EditTripProps) {
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [alertDates, setAlertDates] = useState<string[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -120,7 +121,6 @@ function EditTrip({
   });
 
   async function onSubmit({ name, dateRange }: z.infer<typeof formSchema>) {
-    //  TODO: Refactor submitting the form
     // TODO: Clean up boolean
     const isSameDate =
       isEqual(dateRange.from, initialDateRange.from) &&
@@ -135,30 +135,41 @@ function EditTrip({
       (range) =>
         eachDayOfInterval({ start: range.from, end: range.to ?? range.from }),
     );
-    const [daysToAdd, daysToRemove] = calcDateDeltas(initialDates, newDates);
+    const [datesToAdd, datesToRemove] = calcDateDeltas(initialDates, newDates);
 
-    const { data, error } = await supabase
-      .from("days")
-      .select("date")
-      .eq("trip_id", tripId)
-      .in(
-        "date",
-        daysToRemove.map((day) => format(day, "yyyy-MM-dd")),
-      );
+    if (datesToRemove.length && !openConfirm) {
+      // TODO: Put this into an rpc
+      const { data, error } = await supabase
+        .from("days")
+        .select("date, orderPlaces:order_places")
+        .eq("trip_id", tripId)
+        .in(
+          "date",
+          datesToRemove.map((day) => format(day, "yyyy-MM-dd")),
+        );
+      if (error) return;
 
-    const daysForAlert = data?.map((day) => day.date).join(", ");
-
-    if (data?.length > 0) setOpenConfirm(true);
-    return;
-
-    const isSameDate =
-      dateRange.from === initialDateRange.from &&
-      dateRange.to === initialDateRange.to;
-
-    if (name !== initialName) await updateTrip(tripId, name);
-    if (dateRange && !isSameDate)
-      await updateTripDates(tripId, [initialDateRange, dateRange]);
-    setOpen(false);
+      // TODO: use format with timezone
+      const alertDates = data
+        .filter(({ orderPlaces }) => orderPlaces.length)
+        .map((day) => day.date);
+      if (alertDates.length) {
+        setAlertDates(alertDates);
+        setOpenConfirm(true);
+      } else {
+        //  TODO: Refactor submitting the form
+        if (name !== initialName) await updateTrip(tripId, name);
+        if (dateRange && !isSameDate)
+          await updateTripDates(tripId, [initialDateRange, dateRange]);
+        setOpen(false);
+      }
+    } else {
+      if (name !== initialName) await updateTrip(tripId, name);
+      if (dateRange && !isSameDate)
+        await updateTripDates(tripId, [initialDateRange, dateRange]);
+      setOpenConfirm(false);
+      setOpen(false);
+    }
   }
 
   return (
@@ -213,9 +224,14 @@ function EditTrip({
               <DialogTitle>
                 Are you sure you want to delete your saved places?
               </DialogTitle>
+              <ol className="py-4">
+                {alertDates.map((date) => {
+                  return <li key={date}>{date}</li>;
+                })}
+              </ol>
               <DialogDescription>
-                Dates are being removed that still have saved places. Move these
-                places to a new date, or continue with deletion.
+                These dates are being removed that still have saved places. Move
+                these places to a new date, or continue with deletion.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="flex gap-2">

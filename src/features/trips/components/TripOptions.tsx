@@ -150,7 +150,6 @@ function EditTrip({
         );
       if (error) return;
 
-      // TODO: use format with timezone
       const alertDates = data
         .filter(({ orderPlaces }) => orderPlaces.length)
         .map((day) => formatInTimeZone(day.date, day.timezone, "MMM dd"));
@@ -158,13 +157,13 @@ function EditTrip({
         setAlertDates(alertDates);
         setOpenConfirm(true);
       } else {
-        //  TODO: Refactor submitting the form
-        if (name !== initialName) await updateTrip(tripId, name);
-        if (dateRange && !isSameDate)
-          await updateTripDates(tripId, [initialDateRange, dateRange]);
-        setOpen(false);
+        submitFormData();
       }
     } else {
+      submitFormData();
+    }
+
+    async function submitFormData() {
       if (name !== initialName) await updateTrip(tripId, name);
       if (dateRange && !isSameDate)
         await updateTripDates(tripId, [initialDateRange, dateRange]);

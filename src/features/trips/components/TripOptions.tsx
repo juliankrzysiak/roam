@@ -35,7 +35,7 @@ import { updateTrip, updateTripDates } from "@/utils/actions/crud/update";
 import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
-import { eachDayOfInterval, format } from "date-fns";
+import { eachDayOfInterval, format, isEqual } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -120,6 +120,15 @@ function EditTrip({
   });
 
   async function onSubmit({ name, dateRange }: z.infer<typeof formSchema>) {
+    //  TODO: Refactor submitting the form
+    // TODO: Clean up boolean
+    const isSameDate =
+      isEqual(dateRange.from, initialDateRange.from) &&
+      isEqual(
+        dateRange.to ?? dateRange.from,
+        initialDateRange.to ?? initialDateRange.from,
+      );
+
     const supabase = createClient();
 
     const [initialDates, newDates] = [initialDateRange, dateRange].map(

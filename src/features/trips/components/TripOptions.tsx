@@ -116,6 +116,28 @@ function EditTrip({
   });
 
   async function onSubmit({ name, dateRange }: z.infer<typeof formSchema>) {
+    const supabase = createClient();
+
+    const [initialDates, newDates] = [initialDateRange, dateRange].map(
+      (range) =>
+        eachDayOfInterval({ start: range.from, end: range.to ?? range.from }),
+    );
+    const [daysToAdd, daysToRemove] = calcDateDeltas(initialDates, newDates);
+
+    const { data, error } = await supabase
+      .from("days")
+      .select("date")
+      .eq("trip_id", tripId)
+      .in(
+        "date",
+        daysToRemove.map((day) => format(day, "yyyy-MM-dd")),
+      );
+
+    const daysForAlert = data?.map((day) => day.date).join(", ");
+
+    if (data?.length > 0) setOpenConfirm(true);
+    return;
+
     const isSameDate =
       dateRange.from === initialDateRange.from &&
       dateRange.to === initialDateRange.to;

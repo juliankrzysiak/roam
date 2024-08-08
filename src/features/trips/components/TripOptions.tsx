@@ -41,6 +41,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schema";
+import { formatInTimeZone } from "date-fns-tz";
 
 type Props = {
   tripId: string;
@@ -141,7 +142,7 @@ function EditTrip({
       // TODO: Put this into an rpc
       const { data, error } = await supabase
         .from("days")
-        .select("date, orderPlaces:order_places")
+        .select("date, orderPlaces:order_places, timezone")
         .eq("trip_id", tripId)
         .in(
           "date",
@@ -152,7 +153,7 @@ function EditTrip({
       // TODO: use format with timezone
       const alertDates = data
         .filter(({ orderPlaces }) => orderPlaces.length)
-        .map((day) => day.date);
+        .map((day) => formatInTimeZone(day.date, day.timezone, "MMM dd"));
       if (alertDates.length) {
         setAlertDates(alertDates);
         setOpenConfirm(true);

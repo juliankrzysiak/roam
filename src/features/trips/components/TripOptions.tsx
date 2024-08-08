@@ -46,6 +46,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schema";
 import { formatInTimeZone } from "date-fns-tz";
+import { getAlertDates } from "@/utils/actions/crud/get";
 
 type Props = {
   tripId: string;
@@ -133,9 +134,6 @@ function EditTrip({
         dateRange.to ?? dateRange.from,
         initialDateRange.to ?? initialDateRange.from,
       );
-
-    const supabase = createClient();
-
     const [initialDates, newDates] = [initialDateRange, dateRange].map(
       (range) =>
         eachDayOfInterval({ start: range.from, end: range.to ?? range.from }),
@@ -143,21 +141,8 @@ function EditTrip({
     const [datesToAdd, datesToRemove] = calcDateDeltas(initialDates, newDates);
 
     if (datesToRemove.length && !openConfirm) {
-      // TODO: Put this into an rpc
-      const { data, error } = await supabase
-        .from("days")
-        .select("date, orderPlaces:order_places, timezone")
-        .eq("trip_id", tripId)
-        .in(
-          "date",
-          datesToRemove.map((day) => format(day, "yyyy-MM-dd")),
-        );
-      if (error) return;
-
-      const alertDates = data
-        .filter(({ orderPlaces }) => orderPlaces.length)
-        .map((day) => formatInTimeZone(day.date, day.timezone, "MMM dd"));
-      if (alertDates.length) {
+      const alertDates = await getAlertDates(tripId, datesToRemove);
+      if (alertDates) {
         setAlertDates(alertDates);
         setOpenConfirm(true);
       } else {

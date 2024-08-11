@@ -54,8 +54,11 @@ function mapDateRange(trips: Trip[]) {
     const sortedDays = trip.days.map(({ date }) => date).sort();
     const { 0: start, length, [length - 1]: end } = sortedDays;
 
+    const from = parseISO(start);
+    const to = start !== end ? parseISO(end) : from;
     const dateRange: DateRange = {
-      from: parseISO(start),
+      from,
+      to,
     };
     if (start !== end) {
       dateRange.to = parseISO(end);

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
-import { Day } from "@/types";
+import { DateRange, Day } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
 import clsx from "clsx";
@@ -11,20 +11,23 @@ import { addMinutes, parse } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { Reorder } from "framer-motion";
 import { useAtomValue } from "jotai";
-import { Moon, Sun } from "lucide-react";
+import { EllipsisVertical, Moon, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
+import PlannerOptions from "./PlannerOptions";
 
 type PlannerProps = {
   day: Day;
   tripName: string;
   totalDuration: number;
+  dateRange: DateRange;
 };
 
 export default function Planner({
   day,
   tripName,
   totalDuration,
+  dateRange,
 }: PlannerProps) {
   const isVisible = useAtomValue(isPlannerVisibleAtom);
   const [places, setPlaces] = useState(day.places);
@@ -47,7 +50,15 @@ export default function Planner({
       )}
     >
       <div className="sticky top-0 m-2 flex flex-col items-center rounded-md border-2 border-slate-400 shadow-md">
-        <h2 className="py-1 text-center text-xl tracking-wide">{tripName}</h2>
+        <div className="item flex w-full items-center justify-between">
+          <EllipsisVertical size={18} className="invisible" />
+          <h2 className="py-1 text-center text-xl tracking-wide">{tripName}</h2>
+          <PlannerOptions
+            date={day.date}
+            timezone={day.timezone}
+            dateRange={dateRange}
+          />
+        </div>
         <hr className="w-full border-slate-400 " />
         <TimePicker day={day} totalDuration={totalDuration} />
       </div>

@@ -13,21 +13,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DateRange } from "@/types";
+import { formatInTimeZone } from "date-fns-tz";
 import { SetStateAction } from "jotai";
 import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
-  tripId: string;
-  initialDate: Date;
+  date: Date;
+  timezone: string;
   dateRange: DateRange;
 };
 
-export default function PlannerOptions({
-  tripId,
-  initialDate,
-  dateRange,
-}: Props) {
+export default function PlannerOptions({ date, timezone, dateRange }: Props) {
   const [openPlaces, setOpenPlaces] = useState(false);
   return (
     <>
@@ -45,8 +42,8 @@ export default function PlannerOptions({
         </DropdownMenuContent>
       </DropdownMenu>
       <MovePlacesForm
-        tripId={tripId}
-        initialDate={initialDate}
+        date={date}
+        timezone={timezone}
         dateRange={dateRange}
         open={openPlaces}
         setOpen={setOpenPlaces}
@@ -56,20 +53,21 @@ export default function PlannerOptions({
 }
 
 type MovePlacesFormProps = {
-  tripId: string;
-  initialDate: Date;
+  date: Date;
+  timezone: string;
   dateRange: DateRange;
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
 };
 
 function MovePlacesForm({
-  tripId,
-  initialDate,
+  date,
+  timezone,
   dateRange,
   open,
   setOpen,
 }: MovePlacesFormProps) {
+  const dateString = formatInTimeZone(date, timezone, "yyyy-MM-dd");
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -77,7 +75,7 @@ function MovePlacesForm({
           <DialogTitle>Edit Trip</DialogTitle>
         </DialogHeader>
         <form>
-          <input type="date" />
+          <input type="date" defaultValue={dateString} />
           <DialogFooter>
             <Button>Submit</Button>
           </DialogFooter>

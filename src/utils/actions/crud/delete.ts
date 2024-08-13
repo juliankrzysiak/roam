@@ -24,7 +24,7 @@ export async function deletePlace(
       .eq("id", dayId);
     if (orderError) throw new Error(`Supabase error: ${orderError.message}`);
 
-    revalidatePath("/[trip]", "page");
+    revalidatePath("/[tripId]", "page");
   } catch (error) {
     console.log(error);
   }

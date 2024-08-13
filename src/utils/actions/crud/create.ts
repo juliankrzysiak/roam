@@ -65,7 +65,7 @@ export async function createPlace(newPlace: NewPlace, places: Place[]) {
       .eq("id", newPlace.day_id);
     if (orderError) throw new Error(`Supabase error: ${orderError.message}`);
 
-    revalidatePath("/[trip]", "page");
+    revalidatePath("/[tripId]", "page");
   } catch (error) {
     console.log(error);
   }

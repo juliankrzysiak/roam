@@ -15,7 +15,7 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import { useAtom, useSetAtom } from "jotai";
-import { ChevronsUpDown, Star, X } from "lucide-react";
+import { ChevronsUpDown, Locate, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import { Polyline } from "./Polyline";
@@ -64,6 +64,7 @@ export default function Map({ day, children }: MapProps) {
         disableDefaultUI
       >
         <Markers places={places} />
+        <CurrentLocationButton />
         {currentPlace && (
           <InfoWindow date={day.date} dayId={day.id} places={places} />
         )}
@@ -302,5 +303,26 @@ function Markers({ places }: MarkersProps) {
         </AdvancedMarker>
       ))}
     </>
+  );
+}
+
+/* -------------------------- CurrentLocationButton ------------------------- */
+
+export function CurrentLocationButton() {
+  const map = useMap();
+  function handleClick() {
+    if (!map) return;
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude: lat, longitude: lng } = position.coords;
+      map.panTo({ lat, lng });
+    });
+  }
+  return (
+    <button
+      className="absolute bottom-8 right-4 rounded-full border-2 border-emerald-900 bg-slate-100 p-1"
+      onClick={handleClick}
+    >
+      <Locate />
+    </button>
   );
 }

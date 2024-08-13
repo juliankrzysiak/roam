@@ -15,7 +15,7 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import { useAtom, useSetAtom } from "jotai";
-import { ChevronsUpDown, Locate, Star, X } from "lucide-react";
+import { ChevronsUpDown, LocateFixed, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import { Polyline } from "./Polyline";
@@ -322,7 +322,7 @@ export function CurrentLocationButton() {
       className="absolute bottom-8 right-4 rounded-full border-2 border-emerald-900 bg-slate-100 p-1"
       onClick={handleClick}
     >
-      <Locate />
+      <LocateFixed size={16} />
     </button>
   );
 }

@@ -11,9 +11,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { updateCurrentDate } from "@/utils/actions/crud/update";
-import { useOptimistic, useState } from "react";
 import { DateRange } from "@/types";
+import { updateCurrentDate } from "@/utils/actions/crud/update";
+import { useOptimistic, useState, useTransition } from "react";
 
 type Props = {
   tripId: string;
@@ -22,6 +22,7 @@ type Props = {
 };
 
 export function DatePicker({ tripId, initialDate, dateRange }: Props) {
+  const [isPending, startTransition] = useTransition();
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [optimisticDate, setOptimisticDate] = useOptimistic<Date | undefined>(
     initialDate,
@@ -33,6 +34,15 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
     before: dateRange.from,
     after: dateRange.to || dateRange,
   };
+
+  async function handleSelect(date: Date | undefined) {
+    if (!date) return;
+    startTransition(() => {
+      setOptimisticDate(date);
+    });
+    await updateCurrentDate(tripId, date);
+    setCalendarOpen(false);
+  }
 
   return (
     <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
@@ -59,12 +69,7 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
           defaultMonth={optimisticDate}
           disabled={dateMatcher}
           selected={optimisticDate}
-          onSelect={async (date) => {
-            if (!date) return;
-            setOptimisticDate(date);
-            await updateCurrentDate(tripId, date);
-            setCalendarOpen(false);
-          }}
+          onSelect={handleSelect}
           initialFocus
         />
       </PopoverContent>

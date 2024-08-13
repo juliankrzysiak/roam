@@ -75,22 +75,24 @@ function MovePlacesForm({
   setOpen,
 }: MovePlacesFormProps) {
   const { tripId } = useParams<{ tripId: string }>();
-  const [dateString, setDateString] = useState(
-    formatInTimeZone(date, timezone, dateFormat),
-  );
+  const initialDateString = formatInTimeZone(date, timezone, dateFormat);
+  const [dateString, setDateString] = useState(initialDateString);
   const minDateString = formatInTimeZone(dateRange.from, timezone, dateFormat);
   const maxDateString = formatInTimeZone(dateRange.to, timezone, dateFormat);
 
   async function handleSubmit() {
-    await movePlaces(tripId, dayId, dateString);
-    setOpen(false);
+    if (dateString === initialDateString) setOpen(false);
+    else {
+      await movePlaces(tripId, dayId, dateString);
+      setOpen(false);
+    }
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Trip</DialogTitle>
+          <DialogTitle>Move Places To New Date</DialogTitle>
         </DialogHeader>
         <form action={handleSubmit}>
           <input

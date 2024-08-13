@@ -53,11 +53,7 @@ export default function Planner({
         <div className="item flex w-full items-center justify-between">
           <EllipsisVertical size={18} className="invisible" />
           <h2 className="py-1 text-center text-xl tracking-wide">{tripName}</h2>
-          <PlannerOptions
-            date={day.date}
-            timezone={day.timezone}
-            dateRange={dateRange}
-          />
+          <PlannerOptions day={day} dateRange={dateRange} />
         </div>
         <hr className="w-full border-slate-400 " />
         <TimePicker day={day} totalDuration={totalDuration} />

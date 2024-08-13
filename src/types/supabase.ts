@@ -159,6 +159,13 @@ export type Database = {
           trip_duration: number
         }[]
       }
+      move_places: {
+        Args: {
+          day1: string
+          day2: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

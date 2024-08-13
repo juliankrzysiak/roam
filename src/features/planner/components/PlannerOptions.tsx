@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DateRange, Day } from "@/types";
-import { moveAllPlacesToNewDate } from "@/utils/actions/crud/update";
+import { movePlaces } from "@/utils/actions/crud/update";
 import { formatInTimeZone } from "date-fns-tz";
 import { SetStateAction } from "jotai";
 import { EllipsisVertical } from "lucide-react";
@@ -82,7 +82,7 @@ function MovePlacesForm({
   const maxDateString = formatInTimeZone(dateRange.to, timezone, dateFormat);
 
   async function handleSubmit() {
-    await moveAllPlacesToNewDate(tripId, dayId, dateString);
+    await movePlaces(tripId, dayId, dateString);
     setOpen(false);
   }
 
@@ -105,7 +105,7 @@ function MovePlacesForm({
           <input name="dayId" type="hidden" defaultValue={dayId} />
           <DialogFooter>
             <DialogClose asChild>
-              <Button>Submit</Button>
+              <Button type="submit">Submit</Button>
             </DialogClose>
           </DialogFooter>
         </form>

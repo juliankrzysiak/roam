@@ -162,7 +162,32 @@ export async function updateNotes(notes: string, id: string) {
       .update({ notes })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    revalidatePath("/[trip]", "page");
+    revalidatePath("/[tripId]", "page");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function movePlaces(
+  tripId: string,
+  initialDateId: string,
+  newDate: string,
+) {
+  const supabase = createClient();
+  console.log(123)
+  try {
+    const { data, error } = await supabase
+      .from("days")
+      .select("id")
+      .match({ trip_id: tripId, date: newDate })
+      .limit(1)
+      .single();
+    if (error) throw new Error(error.message);
+
+    const { id: newDateId } = data;
+    const { error: updateError } = await supabase.rpc('move_places', {day1: initialDateId, day2: newDateId});
+    if (error) throw new Error(updateError?.message);
+    revalidatePath("/[tripId]", "page");
   } catch (error) {
     console.log(error);
   }

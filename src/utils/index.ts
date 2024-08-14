@@ -64,27 +64,10 @@ export function formatBulkDates(trip_id: string, dates: Date[]) {
 }
 
 /* -------------------------------- dateRange ------------------------------- */
-
-type Trip = {
-  id: string;
-  name: string;
-  days: { date: string }[];
-};
-
-// Calculate the min and max days and replace days with new property
-export function mapDateRange(trips: Trip[]) {
-  return trips.map((trip) => {
-    const dateRange = calcDateRange(trip.days);
-    // Remove a property and add a property
-    const { days, ...newTrip } = { ...trip, dateRange };
-
-    return newTrip;
-  });
-}
-
 type calcDateRangesParam = { date: string; orderPlaces: string[] }[];
 
 export function calcDateRange(dates: calcDateRangesParam) {
+  // todo: Check if parseISO is accurate enough to not need timezone
   const from = parseISO(dates[0].date);
   const to = parseISO(dates[dates.length - 1].date);
   const datesWithPlaces = dates.flatMap((date) =>

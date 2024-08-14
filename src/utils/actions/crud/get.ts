@@ -2,7 +2,7 @@
 
 import { Day, Place, PlaceNoSchedule, Travel } from "@/types";
 import { Database } from "@/types/supabase";
-import { convertKmToMi, convertSecToMi } from "@/utils";
+import { calcDateRange, convertKmToMi, convertSecToMi } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { addMinutes, format, parseISO } from "date-fns";
@@ -162,4 +162,31 @@ export async function getAlertDates(tripId: string, datesToBeDeleted: Date[]) {
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function getTripName(
+  supabase: SupabaseClient<Database>,
+  tripId: string,
+) {
+  const { data, error } = await supabase
+    .from("trips")
+    .select("name")
+    .eq("id", tripId)
+    .limit(1)
+    .single();
+  if (error) throw new Error(`${error.message}`);
+  return data.name;
+}
+
+export async function getDateRange(
+  supabase: SupabaseClient<Database>,
+  tripId: string,
+) {
+  const { data, error } = await supabase
+    .from("days")
+    .select("date")
+    .eq("trip_id", tripId);
+  if (error) throw new Error(`${error.message}`);
+  const dateRange = calcDateRange(data);
+  return dateRange;
 }

@@ -3,11 +3,8 @@ import Map from "@/features/map/components/Map";
 import MapControls from "@/features/map/components/MapControls";
 import MapSearch from "@/features/map/components/MapSearch";
 import Planner from "@/features/planner/components/Planner";
-import { Database } from "@/types/supabase";
-import { calcDateRange } from "@/utils";
-import { getDay } from "@/utils/actions/crud/get";
+import { getDateRange, getDay, getTripName } from "@/utils/actions/crud/get";
 import { createClient } from "@/utils/supabase/server";
-import { SupabaseClient } from "@supabase/supabase-js";
 
 type Props = {
   params: { tripId: string };
@@ -42,28 +39,4 @@ export default async function MapPage({ params }: Props) {
       <TogglePlannerButton />
     </main>
   );
-}
-
-async function getTripName(supabase: SupabaseClient<Database>, tripId: string) {
-  const { data, error } = await supabase
-    .from("trips")
-    .select("name")
-    .eq("id", tripId)
-    .limit(1)
-    .single();
-  if (error) throw new Error(`${error.message}`);
-  return data.name;
-}
-
-async function getDateRange(
-  supabase: SupabaseClient<Database>,
-  tripId: string,
-) {
-  const { data, error } = await supabase
-    .from("days")
-    .select("date")
-    .eq("trip_id", tripId);
-  if (error) throw new Error(`${error.message}`);
-  const dateRange = calcDateRange(data);
-  return dateRange;
 }

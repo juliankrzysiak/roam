@@ -1,8 +1,7 @@
 import NewTripForm from "@/features/trips/components/NewTripForm";
 import TripCard from "@/features/trips/components/TripCard";
-import { DateRange } from "@/types";
+import { mapDateRange } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
-import { parseISO } from "date-fns";
 import { redirect } from "next/navigation";
 
 export default async function Trips() {
@@ -12,13 +11,14 @@ export default async function Trips() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/");
 
-  // TODO: Add timezone
   const { data, error } = await supabase
     .from("trips")
-    .select("tripId:id, name, days (date), currentDate:current_date");
+    .select(
+      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone",
+    );
   if (error) throw new Error(error.message);
 
-  // sort by startDates
+  // replace with rpc
   const trips = mapDateRange(data).sort((a, b) => {
     const startDateA = a.dateRange.from;
     const startDateB = b.dateRange.from;
@@ -39,34 +39,4 @@ export default async function Trips() {
       </section>
     </main>
   );
-}
-
-type Trip = {
-  tripId: string;
-  name: string;
-  days: { date: string }[];
-  currentDate: string;
-};
-
-// Calculate the min and max days and replace days with new property
-function mapDateRange(trips: Trip[]) {
-  return trips.map((trip) => {
-    const sortedDays = trip.days.map(({ date }) => date).sort();
-    const { 0: start, length, [length - 1]: end } = sortedDays;
-
-    const from = parseISO(start);
-    const to = start !== end ? parseISO(end) : from;
-    const dateRange: DateRange = {
-      from,
-      to,
-    };
-    if (start !== end) {
-      dateRange.to = parseISO(end);
-    }
-
-    // Remove a property and add a property
-    const { days, ...newTrip } = { ...trip, dateRange };
-
-    return newTrip;
-  });
 }

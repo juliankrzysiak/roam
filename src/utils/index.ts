@@ -64,6 +64,23 @@ export function formatBulkDates(trip_id: string, dates: Date[]) {
 }
 
 /* -------------------------------- dateRange ------------------------------- */
+type Trip = {
+  tripId: string;
+  name: string;
+  days: { date: string; orderPlaces: string[] }[];
+  currentDate: string;
+};
+
+export function mapDateRange(trips: Trip[]) {
+  return trips.map((trip) => {
+    const dateRange = calcDateRange(trip.days);
+    // Remove a property and add a property
+    const { days, ...newTrip } = { ...trip, dateRange };
+
+    return newTrip;
+  });
+}
+
 type calcDateRangesParam = { date: string; orderPlaces: string[] }[];
 
 export function calcDateRange(dates: calcDateRangesParam) {

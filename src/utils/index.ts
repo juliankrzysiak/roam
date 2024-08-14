@@ -82,15 +82,20 @@ export function mapDateRange(trips: Trip[]) {
   });
 }
 
-export function calcDateRange(days: { date: string }[]) {
-  const sortedDays = days.map(({ date }) => date).sort();
-  const from = parseISO(sortedDays[0]);
-  const to = parseISO(sortedDays[days.length - 1]);
+type calcDateRangesParam = { date: string; orderPlaces: string[] }[];
+
+export function calcDateRange(dates: calcDateRangesParam) {
+  const from = parseISO(dates[0].date);
+  const to = parseISO(dates[dates.length - 1].date);
+  const datesWithPlaces = dates.flatMap((date) =>
+    date.orderPlaces.length ? parseISO(date.date) : [],
+  );
 
   const dateRange: DateRange = {
     from,
+    to,
+    datesWithPlaces,
   };
-  if (to && from !== to) dateRange.to = to;
 
   return dateRange;
 }

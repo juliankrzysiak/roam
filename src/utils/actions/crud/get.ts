@@ -9,10 +9,10 @@ import { addMinutes, format, parseISO } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 
 export async function getDay(
-  supabase: SupabaseClient<Database>,
   tripId: string,
   currentDate?: string,
 ): Promise<Day> {
+  const supabase = createClient();
   let tripDate;
 
   if (!currentDate) {
@@ -164,29 +164,35 @@ export async function getAlertDates(tripId: string, datesToBeDeleted: Date[]) {
   }
 }
 
-export async function getTripName(
-  supabase: SupabaseClient<Database>,
-  tripId: string,
-) {
-  const { data, error } = await supabase
-    .from("trips")
-    .select("name")
-    .eq("id", tripId)
-    .limit(1)
-    .single();
-  if (error) throw new Error(`${error.message}`);
-  return data.name;
+export async function getTripName(tripId: string) {
+  const supabase = createClient();
+
+  try {
+    const { data, error } = await supabase
+      .from("trips")
+      .select("name")
+      .eq("id", tripId)
+      .limit(1)
+      .single();
+    if (error) throw new Error(`${error.message}`);
+    return data.name;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-export async function getDateRange(
-  supabase: SupabaseClient<Database>,
-  tripId: string,
-) {
-  const { data, error } = await supabase
-    .from("days")
-    .select("date")
-    .eq("trip_id", tripId);
-  if (error) throw new Error(`${error.message}`);
-  const dateRange = calcDateRange(data);
-  return dateRange;
+export async function getDateRange(tripId: string) {
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase
+      .from("days")
+      .select("date, orderPlaces:order_places")
+      .eq("trip_id", tripId)
+      .order("date");
+    if (error) throw new Error(`${error.message}`);
+    const dateRange = calcDateRange(data);
+    return dateRange;
+  } catch (error) {
+    console.log(error);
+  }
 }

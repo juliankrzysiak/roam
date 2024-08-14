@@ -4,7 +4,6 @@ import MapControls from "@/features/map/components/MapControls";
 import MapSearch from "@/features/map/components/MapSearch";
 import Planner from "@/features/planner/components/Planner";
 import { getDateRange, getDay, getTripName } from "@/utils/actions/crud/get";
-import { createClient } from "@/utils/supabase/server";
 
 type Props = {
   params: { tripId: string };
@@ -12,11 +11,10 @@ type Props = {
 
 export default async function MapPage({ params }: Props) {
   const { tripId } = params;
-  const supabase = createClient();
 
-  const day = await getDay(supabase, tripId);
-  const dateRange = await getDateRange(supabase, tripId);
-  const tripName = await getTripName(supabase, tripId);
+  const day = await getDay(tripId);
+  const dateRange = await getDateRange(tripId);
+  const tripName = await getTripName(tripId);
 
   const totalDuration = day.places.reduce(
     (total, current) =>

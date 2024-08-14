@@ -29,10 +29,11 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
     // @ts-expect-error
     (_state, newDate) => newDate,
   );
+  const { datesWithPlaces } = dateRange;
 
   const dateMatcher = {
     before: dateRange.from,
-    after: dateRange.to || dateRange,
+    after: dateRange.to,
   };
 
   async function handleSelect(date: Date | undefined) {
@@ -50,7 +51,7 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
         <Button
           variant={"outline"}
           className={cn(
-            "min-w-max max-w-xs justify-start bg-slate-100 text-left font-normal",
+            "min-w-max max-w-xs justify-start bg-slate-50 text-left font-normal",
             !optimisticDate && "text-muted-foreground",
           )}
         >
@@ -67,6 +68,10 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
           mode="single"
           required
           defaultMonth={optimisticDate}
+          modifiers={{ datesWithPlaces }}
+          modifiersClassNames={{
+            datesWithPlaces: "dates-with-places",
+          }}
           disabled={dateMatcher}
           selected={optimisticDate}
           onSelect={handleSelect}

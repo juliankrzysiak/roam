@@ -35,4 +35,5 @@ export type Travel = {
 export type DateRange = {
   from: Date;
   to: Date;
+  datesWithPlaces: Date[];
 };

@@ -183,7 +183,7 @@ export async function getTripInfo(tripId: string) {
       .eq("trip_id", tripId)
       .order("date");
     if (daysError) throw new Error(`${daysError.message}`);
-    const dateRange = calcDateRange(daysData);
+    const dateRange = calcDateRange(daysData, timezone);
 
     return {
       tripName,

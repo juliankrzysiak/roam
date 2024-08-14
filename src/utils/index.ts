@@ -1,6 +1,7 @@
 import { Place } from "@/types";
 import { format, formatISO, parse, parseISO } from "date-fns";
 import { DateRange } from "@/types";
+import { fromZonedTime } from "date-fns-tz";
 
 export function mapId(places: Place[]) {
   return places.map((place) => place.id);
@@ -69,26 +70,25 @@ type Trip = {
   name: string;
   days: { date: string; orderPlaces: string[] }[];
   currentDate: string;
+  timezone: string;
 };
 
 export function mapDateRange(trips: Trip[]) {
   return trips.map((trip) => {
-    const dateRange = calcDateRange(trip.days);
+    const dateRange = calcDateRange(trip.days, trip.timezone);
     // Remove a property and add a property
     const { days, ...newTrip } = { ...trip, dateRange };
-
     return newTrip;
   });
 }
 
 type calcDateRangesParam = { date: string; orderPlaces: string[] }[];
 
-export function calcDateRange(dates: calcDateRangesParam) {
-  // todo: Check if parseISO is accurate enough to not need timezone
-  const from = parseISO(dates[0].date);
-  const to = parseISO(dates[dates.length - 1].date);
+export function calcDateRange(dates: calcDateRangesParam, timezone: string) {
+  const from = fromZonedTime(dates[0].date, timezone);
+  const to = fromZonedTime(dates[dates.length - 1].date, timezone);
   const datesWithPlaces = dates.flatMap((date) =>
-    date.orderPlaces.length ? parseISO(date.date) : [],
+    date.orderPlaces.length ? fromZonedTime(date.date, timezone) : [],
   );
 
   const dateRange: DateRange = {

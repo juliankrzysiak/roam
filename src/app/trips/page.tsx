@@ -15,10 +15,11 @@ export default async function Trips() {
     .from("trips")
     .select(
       "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone",
-    );
+    )
+    .order("date", { referencedTable: "days" });
   if (error) throw new Error(error.message);
 
-  // replace with rpc
+  // todo: replace with rpc
   const trips = mapDateRange(data).sort((a, b) => {
     const startDateA = a.dateRange.from;
     const startDateB = b.dateRange.from;

@@ -103,6 +103,7 @@ export type Database = {
           current_date: string
           id: string
           name: string
+          timezone: string
           user_id: string | null
         }
         Insert: {
@@ -110,6 +111,7 @@ export type Database = {
           current_date: string
           id?: string
           name: string
+          timezone: string
           user_id?: string | null
         }
         Update: {
@@ -117,6 +119,7 @@ export type Database = {
           current_date?: string
           id?: string
           name?: string
+          timezone?: string
           user_id?: string | null
         }
         Relationships: []
@@ -129,6 +132,12 @@ export type Database = {
       delete_user: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      get_dates_with_places: {
+        Args: {
+          tripid: string
+        }
+        Returns: string[]
       }
       get_days_with_places:
         | {

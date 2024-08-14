@@ -170,12 +170,12 @@ export async function getTripInfo(tripId: string) {
   try {
     const { data: tripNameData, error: tripNameError } = await supabase
       .from("trips")
-      .select("name")
+      .select("name, timezone")
       .eq("id", tripId)
       .limit(1)
       .single();
     if (tripNameError) throw new Error(`${tripNameError.message}`);
-    const tripName = tripNameData.name;
+    const { name: tripName, timezone } = tripNameData;
 
     const { data: daysData, error: daysError } = await supabase
       .from("days")
@@ -187,13 +187,10 @@ export async function getTripInfo(tripId: string) {
 
     return {
       tripName,
+      timezone,
       dateRange,
     };
   } catch (error) {
     console.log(error);
-    return {
-      tripName: undefined,
-      dateRange: undefined,
-    };
   }
 }

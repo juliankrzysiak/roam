@@ -13,14 +13,14 @@ export default async function MapPage({ params }: Props) {
   const { tripId } = params;
 
   const day = await getDay(tripId);
-  const { tripName, dateRange } = await getTripInfo(tripId);
+  const tripInfo = await getTripInfo(tripId);
+  if (!tripInfo) throw new Error("Couldn't connect to server.");
+  const { tripName, timezone, dateRange } = tripInfo;
   const totalDuration = day.places.reduce(
     (total, current) =>
       total + (current.travel?.duration || 0) + current.placeDuration,
     0,
   );
-
-  if (!dateRange || !tripName) throw new Error("Couldn't connect to server.");
 
   return (
     <main className="relative h-40 flex-grow sm:flex">

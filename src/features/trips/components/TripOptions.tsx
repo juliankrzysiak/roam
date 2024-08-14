@@ -134,10 +134,7 @@ function EditTrip({
   async function onSubmit({ name, dateRange }: z.infer<typeof formSchema>) {
     const isSameDate =
       isEqual(dateRange.from, initialDateRange.from) &&
-      isEqual(
-        dateRange.to ?? dateRange.from,
-        initialDateRange.to ?? initialDateRange.from,
-      );
+      isEqual(dateRange.to, initialDateRange.to);
 
     const [initialDates, newDates] = [initialDateRange, dateRange].map(
       (range) =>
@@ -163,9 +160,8 @@ function EditTrip({
         await updateTripDates(tripId, [datesToAdd, datesToRemove]);
         if (
           !isWithinInterval(currentDate, {
-            // TODO: Should just make end the same as from the beginning instead of these ad-hoc code smells
             start: dateRange.from,
-            end: dateRange.to ?? dateRange.from,
+            end: dateRange.to,
           })
         )
           await updateCurrentDate(tripId, dateRange.from);
@@ -207,10 +203,12 @@ function EditTrip({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Dates *</FormLabel>
-                    <DatePickerWithRange
-                      dateRange={field.value}
-                      setDateRange={field.onChange}
-                    />
+                    <FormControl>
+                      <DatePickerWithRange
+                        dateRange={field.value}
+                        setDateRange={field.onChange}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

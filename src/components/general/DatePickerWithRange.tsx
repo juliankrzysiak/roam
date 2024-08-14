@@ -3,8 +3,7 @@
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import * as React from "react";
-import { DateRange } from "react-day-picker";
-
+import { DateRange } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -15,8 +14,8 @@ import {
 import { cn } from "@/lib/utils";
 
 type Props = {
-  dateRange: DateRange | undefined;
-  setDateRange: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
+  dateRange: DateRange;
+  setDateRange: React.Dispatch<React.SetStateAction<DateRange>>;
   className?: React.HTMLAttributes<HTMLDivElement>;
 };
 
@@ -25,6 +24,12 @@ export function DatePickerWithRange({
   setDateRange,
   className,
 }: Props) {
+  const { datesWithPlaces } = dateRange;
+
+  function handleSelect(e: DateRange) {
+    const dateRange = { ...e, datesWithPlaces };
+    setDateRange(dateRange);
+  }
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover modal>
@@ -56,9 +61,14 @@ export function DatePickerWithRange({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={dateRange?.from}
+            defaultMonth={dateRange.from}
+            modifiers={{ datesWithPlaces }}
+            modifiersClassNames={{
+              datesWithPlaces: "dates-with-places",
+            }}
             selected={dateRange}
-            onSelect={setDateRange}
+            // @ts-expect-error This is going to be deprecated anyways
+            onSelect={handleSelect}
             numberOfMonths={1}
           />
         </PopoverContent>

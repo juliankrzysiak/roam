@@ -6,6 +6,7 @@ export const formSchema = z.object({
     {
       from: z.date(),
       to: z.date(),
+      datesWithPlaces: z.date().array(),
     },
     { required_error: "Must have a start date." },
   ),

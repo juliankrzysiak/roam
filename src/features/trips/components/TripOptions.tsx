@@ -60,6 +60,7 @@ export default function TripOptions({
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
+  // TODO: Fix dropdown not opening after using datepicker and clicking outside the modal
   return (
     <>
       <DropdownMenu modal={false}>

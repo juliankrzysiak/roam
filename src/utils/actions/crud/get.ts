@@ -164,35 +164,36 @@ export async function getAlertDates(tripId: string, datesToBeDeleted: Date[]) {
   }
 }
 
-export async function getTripName(tripId: string) {
+export async function getTripInfo(tripId: string) {
   const supabase = createClient();
 
   try {
-    const { data, error } = await supabase
+    const { data: tripNameData, error: tripNameError } = await supabase
       .from("trips")
       .select("name")
       .eq("id", tripId)
       .limit(1)
       .single();
-    if (error) throw new Error(`${error.message}`);
-    return data.name;
-  } catch (error) {
-    console.log(error);
-  }
-}
+    if (tripNameError) throw new Error(`${tripNameError.message}`);
+    const tripName = tripNameData.name;
 
-export async function getDateRange(tripId: string) {
-  const supabase = createClient();
-  try {
-    const { data, error } = await supabase
+    const { data: daysData, error: daysError } = await supabase
       .from("days")
       .select("date, orderPlaces:order_places")
       .eq("trip_id", tripId)
       .order("date");
-    if (error) throw new Error(`${error.message}`);
-    const dateRange = calcDateRange(data);
-    return dateRange;
+    if (daysError) throw new Error(`${daysError.message}`);
+    const dateRange = calcDateRange(daysData);
+
+    return {
+      tripName,
+      dateRange,
+    };
   } catch (error) {
     console.log(error);
+    return {
+      tripName: undefined,
+      dateRange: undefined,
+    };
   }
 }

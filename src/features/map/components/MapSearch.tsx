@@ -1,10 +1,10 @@
 "use client";
 
 import { currentPlaceAtom } from "@/lib/atom";
-import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import clsx from "clsx";
 import { useSetAtom } from "jotai";
-import { Search, X } from "lucide-react";
+import { LocateFixed, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 // Main template stolen from https://github.com/visgl/react-google-maps/tree/main/examples/autocomplete
@@ -52,7 +52,7 @@ export default function MapSearch() {
   }
 
   return (
-    <div className="absolute top-4 flex w-full justify-between gap-2 px-2">
+    <div className="absolute top-4 flex w-full  justify-between gap-2 px-4">
       <div></div>
       {open && (
         <input
@@ -61,18 +61,40 @@ export default function MapSearch() {
           type="search"
           placeholder="Search location"
           className={clsx(
-            "w-full max-w-xl rounded-lg border-2 border-emerald-900 px-2 py-1 transition-opacity",
+            "h-fit w-full max-w-xl rounded-lg border-2 border-emerald-900 px-2 py-1 transition-opacity",
             !open && "opacity-0",
           )}
         />
       )}
-
-      <button
-        className="rounded-full border-2 border-emerald-900 bg-slate-50 p-2"
-        onClick={handleClick}
-      >
-        {open ? <X size={18} /> : <Search size={18} />}
-      </button>
+      <div className="flex flex-col items-center gap-4">
+        <button
+          className="rounded-full border-2 border-emerald-900 bg-slate-50 p-2"
+          onClick={handleClick}
+        >
+          {open ? <X size={18} /> : <Search size={18} />}
+        </button>
+        <CurrentLocationButton />
+      </div>
     </div>
+  );
+}
+
+
+function CurrentLocationButton() {
+  const map = useMap();
+  function handleClick() {
+    if (!map) return;
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude: lat, longitude: lng } = position.coords;
+      map.panTo({ lat, lng });
+    });
+  }
+  return (
+    <button
+      className="w-fit rounded-full border-2 border-emerald-900 bg-slate-50 p-1"
+      onClick={handleClick}
+    >
+      <LocateFixed size={18} />
+    </button>
   );
 }

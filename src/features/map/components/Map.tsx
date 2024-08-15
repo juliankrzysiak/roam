@@ -64,7 +64,6 @@ export default function Map({ day, children }: MapProps) {
         disableDefaultUI
       >
         <Markers places={places} />
-        <CurrentLocationButton />
         {currentPlace && (
           <InfoWindow date={day.date} dayId={day.id} places={places} />
         )}
@@ -100,6 +99,7 @@ type PlaceDetails = {
   googleMapsUri: string;
 };
 
+// TODO: Put this inside a server action
 const placeDetailsFetcher: Fetcher<PlaceDetails, string> = (id) =>
   fetch(
     `https://places.googleapis.com/v1/places/${id}?fields=id,displayName,primaryTypeDisplayName,shortFormattedAddress,regularOpeningHours,rating,userRatingCount,websiteUri,googleMapsUri&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
@@ -303,26 +303,5 @@ function Markers({ places }: MarkersProps) {
         </AdvancedMarker>
       ))}
     </>
-  );
-}
-
-/* -------------------------- CurrentLocationButton ------------------------- */
-
-export function CurrentLocationButton() {
-  const map = useMap();
-  function handleClick() {
-    if (!map) return;
-    navigator.geolocation.getCurrentPosition((position) => {
-      const { latitude: lat, longitude: lng } = position.coords;
-      map.panTo({ lat, lng });
-    });
-  }
-  return (
-    <button
-      className="absolute bottom-8 right-4 rounded-full border-2 border-emerald-900 bg-slate-100 p-1"
-      onClick={handleClick}
-    >
-      <LocateFixed size={16} />
-    </button>
   );
 }

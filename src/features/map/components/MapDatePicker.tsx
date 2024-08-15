@@ -9,7 +9,7 @@ type MapControlsProps = {
   dateRange: DateRange;
 };
 
-export default function MapControls({
+export default function MapDatePicker({
   tripId,
   day,
   dateRange,

@@ -1,6 +1,6 @@
 import TogglePlannerButton from "@/components/general/TogglePlannerButton";
 import Map from "@/features/map/components/Map";
-import MapControls from "@/features/map/components/MapControls";
+import MapDatePicker from "@/features/map/components/MapDatePicker";
 import MapSearch from "@/features/map/components/MapSearch";
 import Planner from "@/features/planner/components/Planner";
 import { getDay, getTripInfo } from "@/utils/actions/crud/get";
@@ -32,7 +32,7 @@ export default async function MapPage({ params }: Props) {
       />
       <Map day={day}>
         <MapSearch />
-        <MapControls tripId={tripId} day={day} dateRange={dateRange} />
+        <MapDatePicker tripId={tripId} day={day} dateRange={dateRange} />
       </Map>
       <TogglePlannerButton />
     </main>

@@ -71,7 +71,7 @@ export default function Map({ day, children }: MapProps) {
         {day.path && (
           <Polyline
             strokeWeight={5}
-            strokeColor={"#022c22"}
+            strokeColor={"#fb923c"}
             encodedPath={day.path}
           />
         )}

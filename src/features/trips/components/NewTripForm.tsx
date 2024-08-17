@@ -24,21 +24,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { formSchema } from "../schema";
+import { newTripFormSchema } from "../schema";
 import { getEachDateInRange } from "../utils";
 
 export default function NewTripForm() {
   const [open, setOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof newTripFormSchema>>({
+    resolver: zodResolver(newTripFormSchema),
     defaultValues: {
       name: "",
-      dateRange: undefined,
+      dateRange: { from: undefined, to: undefined, datesWithPlaces: [] },
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof newTripFormSchema>) {
     const { name, dateRange } = values;
     const dates = getEachDateInRange(dateRange.from, dateRange?.to);
     await createTrip(name, dates);

@@ -30,6 +30,7 @@ export function DatePickerWithRange({
     const dateRange = { ...e, datesWithPlaces };
     setDateRange(dateRange);
   }
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover modal>

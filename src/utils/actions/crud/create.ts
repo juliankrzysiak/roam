@@ -19,6 +19,7 @@ export async function createTrip(name: string, dates: Date[]) {
       id: tripId,
       name,
       current_date: firstDate,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
 
     const { error } = await supabase

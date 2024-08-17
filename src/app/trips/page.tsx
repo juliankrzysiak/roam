@@ -42,19 +42,19 @@ export default async function Trips() {
 
   return (
     <main className="flex flex-col items-center gap-12 p-6">
-      <div className="flex w-full flex-col items-center gap-2">
+      <div className="flex w-full max-w-xl flex-col items-center gap-2">
         <NewTripForm />
         <h2 className="mt-4 text-2xl">Upcoming Trips</h2>
-        <section className="grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-md bg-slate-200 p-4 text-center">
+        <section className="grid  place-content-center gap-4 rounded-md bg-slate-200 p-4 ">
           {upcomingTrips.length < 1 && <p>It`s a bit empty here...</p>}
           {upcomingTrips.map((trip) => {
             return <TripCard key={trip.tripId} {...trip} />;
           })}
         </section>
       </div>
-      <div className="flex w-full flex-col items-center gap-2 ">
+      <div className="flex w-full max-w-xl flex-col items-center gap-2 ">
         <h2 className="text-2xl">Past Trips</h2>
-        <section className="grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-md bg-slate-200 p-4 text-center">
+        <section className="grid w-full  grid-cols-magic place-content-center gap-4 rounded-md bg-slate-200 p-4 text-center">
           {pastTrips.length < 1 && <p>Nothing yet!</p>}
           {pastTrips.map((trip) => {
             return <TripCard key={trip.tripId} {...trip} />;

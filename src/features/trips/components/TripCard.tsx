@@ -31,7 +31,7 @@ export default function TripCard({
   }
 
   return (
-    <article className="relative flex flex-col items-center justify-between gap-2 rounded-lg bg-slate-100 p-4 ">
+    <article className="relative flex w-full max-w-lg flex-col items-center justify-between gap-2 rounded-lg bg-slate-100 p-6 ">
       <TripOptions
         tripId={tripId}
         name={name}

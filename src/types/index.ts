@@ -32,6 +32,14 @@ export type Travel = {
   duration: number;
 };
 
+export type Trip = {
+  tripId: string;
+  name: string;
+  dateRange: DateRange;
+  currentDate: string;
+  timezone: string;
+};
+
 export type DateRange = {
   from: Date;
   to: Date;

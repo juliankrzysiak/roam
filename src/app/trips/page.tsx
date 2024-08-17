@@ -1,7 +1,9 @@
 import NewTripForm from "@/features/trips/components/NewTripForm";
 import TripCard from "@/features/trips/components/TripCard";
+import { Trip } from "@/types";
 import { mapDateRange } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
+import { isPast } from "date-fns";
 import { redirect } from "next/navigation";
 
 export default async function Trips() {
@@ -29,23 +31,32 @@ export default async function Trips() {
     else return 0;
   });
 
+  type InitialObject = { upcomingTrips: Trip[]; pastTrips: Trip[] };
+  const initialObject: InitialObject = { upcomingTrips: [], pastTrips: [] };
+
+  const { upcomingTrips, pastTrips } = trips.reduce((previous, current) => {
+    if (isPast(current.dateRange.to)) previous.pastTrips.push(current);
+    else previous.upcomingTrips.push(current);
+    return previous;
+  }, initialObject);
+
   return (
     <main className="flex flex-col items-center gap-12 p-6">
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex w-full flex-col items-center gap-2">
         <NewTripForm />
         <h2 className="mt-4 text-2xl">Upcoming Trips</h2>
         <section className="grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-md bg-slate-200 p-4 text-center">
-          {trips.length < 1 && <p>It`s a bit empty here...</p>}
-          {trips.map((trip) => {
+          {upcomingTrips.length < 1 && <p>It`s a bit empty here...</p>}
+          {upcomingTrips.map((trip) => {
             return <TripCard key={trip.tripId} {...trip} />;
           })}
         </section>
       </div>
-      <div className="flex flex-col items-center gap-2 ">
+      <div className="flex w-full flex-col items-center gap-2 ">
         <h2 className="text-2xl">Past Trips</h2>
         <section className="grid w-full max-w-xl grid-cols-magic place-content-center gap-4 rounded-md bg-slate-200 p-4 text-center">
-          {trips.length < 1 && <p>It`s a bit empty here...</p>}
-          {trips.map((trip) => {
+          {pastTrips.length < 1 && <p>Nothing yet!</p>}
+          {pastTrips.map((trip) => {
             return <TripCard key={trip.tripId} {...trip} />;
           })}
         </section>

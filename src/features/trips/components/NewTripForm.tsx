@@ -48,7 +48,7 @@ export default function NewTripForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">Create New Trip</Button>
+        <Button variant="outline">Create New Trip</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

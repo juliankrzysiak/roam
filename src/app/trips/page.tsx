@@ -42,14 +42,16 @@ export default async function Trips() {
   }, initialObject);
 
   return (
-    <main className="flex flex-col items-center gap-12 p-6">
+    <main className="flex flex-col items-center gap-8 p-6">
       <NewTripForm />
-      <TripSection title="Upcoming Trips" trips={upcomingTrips} />
-      <TripSection
-        title="Past Trips"
-        trips={pastTrips}
-        defaultMessage="Nothing here yet..."
-      />
+      <div className="flex w-full flex-col items-center gap-16">
+        <TripSection title="Upcoming Trips" trips={upcomingTrips} />
+        <TripSection
+          title="Past Trips"
+          trips={pastTrips}
+          defaultMessage="Nothing here yet..."
+        />
+      </div>
     </main>
   );
 }

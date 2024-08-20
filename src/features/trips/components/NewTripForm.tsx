@@ -34,13 +34,12 @@ export default function NewTripForm() {
     resolver: zodResolver(newTripFormSchema),
     defaultValues: {
       name: "",
-      dateRange: { from: undefined, to: undefined, datesWithPlaces: [] },
     },
   });
 
   async function onSubmit(values: z.infer<typeof newTripFormSchema>) {
     const { name, dateRange } = values;
-    const dates = getEachDateInRange(dateRange.from, dateRange?.to);
+    const dates = getEachDateInRange(dateRange.from, dateRange.to);
     await createTrip(name, dates);
     setOpen(false);
   }

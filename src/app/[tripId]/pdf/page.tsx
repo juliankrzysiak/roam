@@ -28,7 +28,7 @@ export default async function PDFPage({ params }: Props) {
 
   const days = await Promise.all(
     sortedDays.map(async (date) => {
-      const day = await getDay(supabase, tripId, date);
+      const day = await getDay(tripId, date);
       return day;
     }),
   );

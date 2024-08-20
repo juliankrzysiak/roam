@@ -13,9 +13,15 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
+type PartialDateRange = {
+  from: Date;
+  to?: Date;
+  datesWithPlaces?: Date[];
+};
+
 type Props = {
-  dateRange: DateRange;
-  setDateRange: React.Dispatch<React.SetStateAction<DateRange>>;
+  dateRange: PartialDateRange;
+  setDateRange: React.Dispatch<React.SetStateAction<PartialDateRange>>;
   className?: React.HTMLAttributes<HTMLDivElement>;
 };
 
@@ -24,9 +30,9 @@ export function DatePickerWithRange({
   setDateRange,
   className,
 }: Props) {
-  const { datesWithPlaces } = dateRange;
+  const datesWithPlaces = dateRange.datesWithPlaces ?? [];
 
-  function handleSelect(e: DateRange) {
+  function handleSelect(e: PartialDateRange) {
     const dateRange = { ...e, datesWithPlaces };
     setDateRange(dateRange);
   }
@@ -44,7 +50,7 @@ export function DatePickerWithRange({
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {dateRange?.from ? (
+            {dateRange.from ? (
               dateRange.to ? (
                 <>
                   {format(dateRange.from, "LLL dd")} -{" "}

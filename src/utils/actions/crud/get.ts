@@ -1,10 +1,8 @@
 "use server";
 
 import { Day, Place, PlaceNoSchedule, Travel } from "@/types";
-import { Database } from "@/types/supabase";
 import { calcDateRange, convertKmToMi, convertSecToMi } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
-import { SupabaseClient } from "@supabase/supabase-js";
 import { addMinutes, format, parseISO } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 

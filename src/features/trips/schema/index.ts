@@ -17,7 +17,7 @@ export const newTripFormSchema = z.object({
   dateRange: z.object(
     {
       from: z.date(),
-      to: z.date(),
+      to: z.date().optional(),
       datesWithPlaces: z.date().array().optional(),
     },
     { required_error: "Must have a start date." },

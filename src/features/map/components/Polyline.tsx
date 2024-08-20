@@ -9,6 +9,8 @@ import {
   useRef,
 } from "react";
 
+// ?: Stolen from https://codesandbox.io/p/devbox/strange-aryabhata-cf7wps?file=%2Fsrc%2Fcomponents%2Fpolyline.tsx%3A10%2C1
+
 type PolylineEventProps = {
   onClick?: (e: google.maps.MapMouseEvent) => void;
   onDrag?: (e: google.maps.MapMouseEvent) => void;
@@ -116,9 +118,6 @@ function usePolyline(props: PolylineProps) {
   return polyline;
 }
 
-/**
- * Component to render a polyline on a map
- */
 export const Polyline = forwardRef((props: PolylineProps, ref: PolylineRef) => {
   const polyline = usePolyline(props);
 
@@ -126,3 +125,5 @@ export const Polyline = forwardRef((props: PolylineProps, ref: PolylineRef) => {
 
   return null;
 });
+
+Polyline.displayName = "Polyline";

@@ -15,7 +15,12 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import { useAtom, useSetAtom } from "jotai";
-import { ChevronsUpDown, Star, X } from "lucide-react";
+import {
+  ChevronsUpDown,
+  LoaderCircle,
+  Star,
+  X
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { PlaceDetails } from "../types";
@@ -108,8 +113,7 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
     error,
     isLoading,
   } = useSWR(currentPlace?.placeId, placeDetailsFetcher);
-  if (error || !placeDetails) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
+  if (error) return <div>failed to load</div>;
 
   async function handleCreatePlace() {
     if (!currentPlace || !placeDetails) return;
@@ -133,63 +137,73 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
 
   return (
     <AdvancedMarker
-      className=" mb-8 flex flex-col gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
+      className=" z-50 mb-8 flex flex-col gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
       position={currentPlace?.position}
       onClick={(e) => e.stop()}
       ref={advancedMarkerRef}
     >
-      <div>
-        <div className="flex justify-between gap-2">
-          <h2 className="text-xl font-bold text-slate-900">
-            {placeDetails.displayName?.text}
-          </h2>
-          <button
-            className="-translate-y-3 translate-x-2"
-            onClick={() => setCurrentPlace(null)}
-            aria-label="Close info window"
-          >
-            <X size={18} />
-          </button>
+      {isLoading || !placeDetails ? (
+        <div className="animate-spin">
+          <LoaderCircle />
         </div>
-        <h3 className=" text-sm text-slate-600">
-          {placeDetails.shortFormattedAddress}
-        </h3>
-      </div>
-      <div className="flex flex-col gap-2 text-sm">
-        <div className="flex flex-col">
-          <span>{placeDetails?.primaryTypeDisplayName?.text || "place"}</span>
-          {placeDetails.rating && (
-            <span className="flex items-center gap-2 text-sm">
-              <span className="flex items-center gap-1">
-                {placeDetails.rating}
-                <Star size={14} />
-              </span>
-              ({placeDetails.userRatingCount})
-            </span>
-          )}
-          <OpeningHours
-            regularOpeningHours={placeDetails.regularOpeningHours}
-            date={date}
-          />
-        </div>
-        <div className="mb-2 flex gap-1 text-slate-500">
-          {placeDetails.websiteUri && (
-            <>
-              <a href={placeDetails.websiteUri} className="underline">
-                Website
-              </a>
-              •
-            </>
-          )}
-          <a href={placeDetails.googleMapsUri} className="underline">
-            Google Maps
-          </a>
-        </div>
-      </div>
-      {currentPlace?.id ? (
-        <Button onClick={handleDeletePlace}>Delete place</Button>
       ) : (
-        <Button onClick={handleCreatePlace}>Add place</Button>
+        <>
+          <div>
+            <div className="flex justify-between gap-2">
+              <h2 className="text-xl font-bold text-slate-900">
+                {placeDetails.displayName?.text}
+              </h2>
+              <button
+                className="-translate-y-3 translate-x-2"
+                onClick={() => setCurrentPlace(null)}
+                aria-label="Close info window"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <h3 className=" text-sm text-slate-600">
+              {placeDetails.shortFormattedAddress}
+            </h3>
+          </div>
+          <div className="flex flex-col gap-2 text-sm">
+            <div className="flex flex-col">
+              <span>
+                {placeDetails?.primaryTypeDisplayName?.text || "place"}
+              </span>
+              {placeDetails.rating && (
+                <span className="flex items-center gap-2 text-sm">
+                  <span className="flex items-center gap-1">
+                    {placeDetails.rating}
+                    <Star size={14} />
+                  </span>
+                  ({placeDetails.userRatingCount})
+                </span>
+              )}
+              <OpeningHours
+                regularOpeningHours={placeDetails.regularOpeningHours}
+                date={date}
+              />
+            </div>
+            <div className="mb-2 flex gap-1 text-slate-500">
+              {placeDetails.websiteUri && (
+                <>
+                  <a href={placeDetails.websiteUri} className="underline">
+                    Website
+                  </a>
+                  •
+                </>
+              )}
+              <a href={placeDetails.googleMapsUri} className="underline">
+                Google Maps
+              </a>
+            </div>
+          </div>
+          {currentPlace?.id ? (
+            <Button onClick={handleDeletePlace}>Delete place</Button>
+          ) : (
+            <Button onClick={handleCreatePlace}>Add place</Button>
+          )}
+        </>
       )}
     </AdvancedMarker>
   );

@@ -15,9 +15,11 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import { useAtom, useSetAtom } from "jotai";
-import { ChevronsUpDown, LocateFixed, Star, X } from "lucide-react";
+import { ChevronsUpDown, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import useSWR, { Fetcher } from "swr";
+import useSWR from "swr";
+import { PlaceDetails } from "../types";
+import { placeDetailsFetcher } from "../utils";
 import { Polyline } from "./Polyline";
 
 /* -------------------------------------------------------------------------- */
@@ -84,27 +86,6 @@ export default function Map({ day, children }: MapProps) {
 /*                                 Info Window                                */
 /* -------------------------------------------------------------------------- */
 
-type PlaceDetails = {
-  id: string;
-  displayName: { languageCode: string; text: string };
-  primaryTypeDisplayName?: { languageCode: string; text: string };
-  shortFormattedAddress: string;
-  regularOpeningHours?: {
-    openNow: boolean;
-    weekdayDescriptions: string[];
-  };
-  rating?: number;
-  userRatingCount?: number;
-  websiteUri?: string;
-  googleMapsUri: string;
-};
-
-// TODO: Put this inside a server action
-const placeDetailsFetcher: Fetcher<PlaceDetails, string> = (id) =>
-  fetch(
-    `https://places.googleapis.com/v1/places/${id}?fields=id,displayName,primaryTypeDisplayName,shortFormattedAddress,regularOpeningHours,rating,userRatingCount,websiteUri,googleMapsUri&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
-  ).then((res) => res.json());
-
 type InfoWindowProps = {
   date: Day["date"];
   dayId: Day["id"];
@@ -160,7 +141,7 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
       <div>
         <div className="flex justify-between gap-2">
           <h2 className="text-xl font-bold text-slate-900">
-            {placeDetails.displayName.text}
+            {placeDetails.displayName?.text}
           </h2>
           <button
             className="-translate-y-3 translate-x-2"

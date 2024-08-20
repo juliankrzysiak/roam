@@ -45,8 +45,13 @@ export default function NewTripForm() {
     setOpen(false);
   }
 
+  function handleOnOpenChange(open: boolean) {
+    setOpen(open);
+    form.reset();
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOnOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">Create New Trip</Button>
       </DialogTrigger>

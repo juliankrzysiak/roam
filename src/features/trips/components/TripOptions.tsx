@@ -132,6 +132,7 @@ function EditTrip({
     },
   });
 
+  // * Logic regarding when to open extra dialog confirming deleting dates with places
   async function onSubmit({ name, dateRange }: z.infer<typeof formSchema>) {
     const isSameDate =
       isEqual(dateRange.from, initialDateRange.from) &&
@@ -172,9 +173,14 @@ function EditTrip({
     }
   }
 
+  function handleOnOpenChange(open: boolean) {
+    setOpen(open);
+    form.reset();
+  }
+
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={handleOnOpenChange}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Trip</DialogTitle>

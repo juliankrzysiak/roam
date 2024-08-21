@@ -28,7 +28,6 @@ import { Input } from "@/components/ui/input";
 import { DateRange } from "@/types";
 import { calcDateDeltas } from "@/utils";
 import { deleteTrip } from "@/utils/actions/crud/delete";
-import { getAlertDates } from "@/utils/actions/crud/get";
 import {
   updateCurrentDate,
   updateTrip,
@@ -36,13 +35,14 @@ import {
 } from "@/utils/actions/crud/update";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
-import { eachDayOfInterval, isEqual, isWithinInterval } from "date-fns";
+import { eachDayOfInterval, isWithinInterval } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schema";
+import { getAlertStrings, getIsSameDateRange } from "../utils";
 
 type TripOptionsProps = {
   tripId: string;
@@ -132,41 +132,41 @@ function EditTrip({
     },
   });
 
-  // * Logic regarding when to open extra dialog confirming deleting dates with places
-  async function onSubmit({ name, dateRange }: z.infer<typeof formSchema>) {
-    const isSameDate =
-      isEqual(dateRange.from, initialDateRange.from) &&
-      isEqual(dateRange.to, initialDateRange.to);
+  // TODO: Renew data with useEffect when new data is here
 
-    const [initialDates, newDates] = [initialDateRange, dateRange].map(
-      (range) =>
-        eachDayOfInterval({ start: range.from, end: range.to ?? range.from }),
+  async function onSubmit({
+    name,
+    dateRange: newDateRange,
+  }: z.infer<typeof formSchema>) {
+    const isSameDate = getIsSameDateRange(initialDateRange, newDateRange);
+
+    const [initialDates, newDates] = [initialDateRange, newDateRange].map(
+      (range) => eachDayOfInterval({ start: range.from, end: range.to }),
     );
     const [datesToAdd, datesToRemove] = calcDateDeltas(initialDates, newDates);
 
-    if (datesToRemove.length && !openConfirm) {
-      const alertDates = await getAlertDates(tripId, datesToRemove);
-      if (alertDates?.length) {
-        setAlertDates(alertDates);
-        setOpenConfirm(true);
-      } else {
-        submitFormData();
-      }
-    } else {
-      submitFormData();
-    }
+    const alertDates = getAlertStrings(
+      newDateRange.datesWithPlaces,
+      datesToRemove,
+    );
+
+    // * Logic regarding when to open extra dialog confirming deleting dates with places
+    if (alertDates.length && !openConfirm) {
+      setAlertDates(alertDates);
+      setOpenConfirm(true);
+    } else submitFormData();
 
     async function submitFormData() {
       if (name !== initialName) await updateTrip(tripId, name);
-      if (dateRange && !isSameDate) {
+      if (newDateRange && !isSameDate) {
         await updateTripDates(tripId, [datesToAdd, datesToRemove]);
         if (
           !isWithinInterval(currentDate, {
-            start: dateRange.from,
-            end: dateRange.to,
+            start: newDateRange.from,
+            end: newDateRange.to,
           })
         )
-          await updateCurrentDate(tripId, dateRange.from);
+          await updateCurrentDate(tripId, newDateRange.from);
       }
       setOpenConfirm(false);
       setOpen(false);

@@ -174,7 +174,6 @@ export async function movePlaces(
   newDate: string,
 ) {
   const supabase = createClient();
-  console.log(123)
   try {
     const { data, error } = await supabase
       .from("days")

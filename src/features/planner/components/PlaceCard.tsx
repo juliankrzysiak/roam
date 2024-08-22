@@ -248,15 +248,9 @@ type NotesProps = {
 export function Notes({ placeId, notes }: NotesProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  async function handleSubmit(formData: FormData) {
-    const newNotes = formData.get("notes") as string;
-    if (newNotes === notes) return;
-    await updateNotes(newNotes, placeId);
-  }
-
   return (
     <form
-      action={handleSubmit}
+      action={updateNotes}
       ref={formRef}
       onBlur={() => formRef.current?.requestSubmit()}
     >
@@ -267,6 +261,8 @@ export function Notes({ placeId, notes }: NotesProps) {
         maxLength={1000}
         placeholder="Add notes"
       />
+      <input name="placeId" type="hidden" defaultValue={placeId} />
+      <input name="initialNotes" type="hidden" defaultValue={notes} />
     </form>
   );
 }

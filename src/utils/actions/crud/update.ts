@@ -153,14 +153,19 @@ export async function updateCurrentDate(tripId: string, date: Date) {
   }
 }
 
-export async function updateNotes(notes: string, id: string) {
+export async function updateNotes(formData: FormData) {
   const supabase = createClient();
+
+  const notes = formData.get("notes") as string;
+  const initialNotes = formData.get("initialNotes") as string;
+  const placeId = formData.get("placeId") as string;
+  if (initialNotes === notes) return;
 
   try {
     const { error } = await supabase
       .from("places")
       .update({ notes })
-      .eq("id", id);
+      .eq("id", placeId);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/[tripId]", "page");
   } catch (error) {
@@ -184,7 +189,10 @@ export async function movePlaces(
     if (error) throw new Error(error.message);
 
     const { id: newDateId } = data;
-    const { error: updateError } = await supabase.rpc('move_places', {day1: initialDateId, day2: newDateId});
+    const { error: updateError } = await supabase.rpc("move_places", {
+      day1: initialDateId,
+      day2: newDateId,
+    });
     if (error) throw new Error(updateError?.message);
     revalidatePath("/[tripId]", "page");
   } catch (error) {

@@ -1,12 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
-import {
-  updateNotes,
-  updatePlaceDuration,
-  updateTripDuration,
-} from "@/utils/actions/crud/update";
+import { updateNotes, updatePlaceDuration } from "@/utils/actions/crud/update";
 import { add } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { Reorder, useDragControls } from "framer-motion";
@@ -14,14 +11,13 @@ import { useAtom } from "jotai";
 import {
   ArrowLeft,
   ArrowRight,
-  Car,
   ChevronRight,
   Clock,
   GripVertical,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
-import { Separator } from "@/components/ui/separator";
+import PlaceOptions from "./PlaceOptions";
 
 const svgSize = 16;
 
@@ -63,27 +59,32 @@ export default function PlaceCard({
       onDragEnd={handleDragEnd}
       ref={itemRef}
     >
-      <article className="relative flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 px-4 py-2 shadow-sm">
-        <button onClick={handleClick} className="w-fit">
-          <h2 className="text-lg font-bold underline underline-offset-2">
-            {name}
-          </h2>
-        </button>
-        <div className="flex h-full gap-4">
-          <PlaceDuration
-            arrival={schedule.arrival}
-            placeDuration={placeDuration}
-            placeId={id}
-            timezone={timezone}
-          />
-          <Separator orientation="vertical" />
-          <Notes placeId={place.id} notes={place.notes} />
+      <article className="relative flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 py-2 pl-4 pr-1 shadow-sm">
+        <div className="flex justify-between gap-2">
+          <button onClick={handleClick} className="w-fit">
+            <h2 className="text-lg font-bold underline underline-offset-2">
+              {name}
+            </h2>
+          </button>
+          <PlaceOptions />
         </div>
-        <GripVertical
-          size={24}
-          className="absolute right-1 top-2 cursor-pointer text-slate-400"
-          onPointerDown={(e) => controls.start(e)}
-        />
+        <div className="flex items-end gap-1">
+          <div className="flex h-full gap-4">
+            <PlaceDuration
+              arrival={schedule.arrival}
+              placeDuration={placeDuration}
+              placeId={id}
+              timezone={timezone}
+            />
+            <Separator orientation="vertical" />
+            <Notes placeId={place.id} notes={place.notes} />
+          </div>
+          <GripVertical
+            size={24}
+            className=" cursor-pointer text-slate-500"
+            onPointerDown={(e) => controls.start(e)}
+          />
+        </div>
       </article>
       {travel && (
         <TripDetails duration={travel.duration} distance={travel.distance} />
@@ -124,7 +125,7 @@ function PlaceDuration({
 
   function handleClickOutside() {
     setIsFormVisible(false);
-    // Resets current input
+    // * Resets current input
     setHourDuration(hours);
     setMinuteDuration(minutes);
   }

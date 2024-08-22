@@ -50,7 +50,7 @@ export default function Planner({
       )}
     >
       <div className="sticky top-0 m-2 flex flex-col items-center rounded-md border-2 border-slate-400 shadow-md">
-        <div className="item flex w-full items-center justify-between">
+        <div className="item flex w-full items-center justify-between px-1">
           <EllipsisVertical size={18} className="invisible" />
           <h2 className="py-1 text-center text-xl tracking-wide">{tripName}</h2>
           <PlannerOptions day={day} dateRange={dateRange} />

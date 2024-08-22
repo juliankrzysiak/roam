@@ -3,7 +3,11 @@ import { Separator } from "@/components/ui/separator";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
-import { updateNotes, updatePlaceDuration } from "@/utils/actions/crud/update";
+import {
+  updateName,
+  updateNotes,
+  updatePlaceDuration,
+} from "@/utils/actions/crud/update";
 import { add } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { Reorder, useDragControls } from "framer-motion";
@@ -32,8 +36,16 @@ export default function PlaceCard({
   handleDragEnd,
   timezone,
 }: PlaceCardProps) {
-  const { id, placeId, position, name, schedule, placeDuration, travel } =
-    place;
+  const {
+    id,
+    placeId,
+    position,
+    name,
+    schedule,
+    placeDuration,
+    travel,
+    notes,
+  } = place;
   const itemRef = useRef<HTMLDivElement | null>(null);
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const [isNameFormOpen, setIsNameFormOpen] = useState(false);
@@ -64,6 +76,7 @@ export default function PlaceCard({
         <div className="flex justify-between gap-2">
           <Name
             name={name}
+            id={id}
             isOpen={isNameFormOpen}
             setIsOpen={setIsNameFormOpen}
             handleClick={handleClick}
@@ -75,11 +88,11 @@ export default function PlaceCard({
             <PlaceDuration
               arrival={schedule.arrival}
               placeDuration={placeDuration}
-              placeId={id}
+              id={id}
               timezone={timezone}
             />
             <Separator orientation="vertical" />
-            <Notes placeId={place.id} notes={place.notes} />
+            <Notes id={id} notes={notes} />
           </div>
           <GripVertical
             size={24}
@@ -98,12 +111,13 @@ export default function PlaceCard({
 /* ---------------------------------- Name ---------------------------------- */
 type NameProps = {
   name: string;
+  id: string;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   handleClick: () => void;
 };
-function Name({ name, isOpen, setIsOpen, handleClick }: NameProps) {
-  const formRef = useRef<HTMLFormElement>(null);
+function Name({ name, id, isOpen, setIsOpen, handleClick }: NameProps) {
+  const formRef = useRef<HTMLFormElement | null>(null);
   useExit(formRef, handleClickOutside);
 
   function handleClickOutside() {
@@ -113,13 +127,19 @@ function Name({ name, isOpen, setIsOpen, handleClick }: NameProps) {
   return (
     <>
       {isOpen ? (
-        <form action="" ref={formRef}>
+        <form
+          action={updateName}
+          ref={formRef}
+          onBlur={() => formRef.current?.requestSubmit()}
+        >
           <input
             className="rounded-md border border-slate-500 px-1"
-            autoFocus
+            name="name"
             type="text"
             defaultValue={name}
+            autoFocus
           />
+          <input name="id" type="hidden" defaultValue={id}></input>
         </form>
       ) : (
         <button onClick={handleClick} className="w-fit">
@@ -139,14 +159,14 @@ const timeFormat = "h:mm aaa";
 type PlaceDurationProps = {
   arrival: Date;
   placeDuration: number;
-  placeId: string;
+  id: string;
   timezone: string;
 };
 
 function PlaceDuration({
   arrival,
   placeDuration,
-  placeId,
+  id,
   timezone,
 }: PlaceDurationProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -227,7 +247,7 @@ function PlaceDuration({
               <ChevronRight size={svgSize} />
             </div>
           )}
-          <input type="hidden" name="id" defaultValue={placeId} />
+          <input type="hidden" name="id" defaultValue={id} />
         </label>
       </form>
       <span className="flex items-center gap-2">
@@ -241,11 +261,11 @@ function PlaceDuration({
 /* ---------------------------------- Notes --------------------------------- */
 
 type NotesProps = {
-  placeId: string;
+  id: string;
   notes: Place["notes"];
 };
 
-export function Notes({ placeId, notes }: NotesProps) {
+export function Notes({ id, notes }: NotesProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   return (
@@ -261,7 +281,7 @@ export function Notes({ placeId, notes }: NotesProps) {
         maxLength={1000}
         placeholder="Add notes"
       />
-      <input name="placeId" type="hidden" defaultValue={placeId} />
+      <input name="id" type="hidden" defaultValue={id} />
       <input name="initialNotes" type="hidden" defaultValue={notes} />
     </form>
   );

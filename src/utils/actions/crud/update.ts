@@ -158,14 +158,32 @@ export async function updateNotes(formData: FormData) {
 
   const notes = formData.get("notes") as string;
   const initialNotes = formData.get("initialNotes") as string;
-  const placeId = formData.get("placeId") as string;
+  const id = formData.get("id") as string;
   if (initialNotes === notes) return;
 
   try {
     const { error } = await supabase
       .from("places")
       .update({ notes })
-      .eq("id", placeId);
+      .eq("id", id);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/[tripId]", "page");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateName(formData: FormData) {
+  const supabase = createClient();
+
+  const name = formData.get("name") as string;
+  const id = formData.get("id") as string;
+
+  try {
+    const { error } = await supabase
+      .from("places")
+      .update({ name })
+      .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/[tripId]", "page");
   } catch (error) {

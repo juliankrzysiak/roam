@@ -15,12 +15,7 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import { useAtom, useSetAtom } from "jotai";
-import {
-  ChevronsUpDown,
-  LoaderCircle,
-  Star,
-  X
-} from "lucide-react";
+import { ChevronsUpDown, LoaderCircle, Star, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { PlaceDetails } from "../types";
@@ -135,6 +130,8 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
     setCurrentPlace(null);
   }
 
+  const savedName = places.find((place) => place.id === currentPlace?.id)?.name;
+
   return (
     <AdvancedMarker
       className=" z-50 mb-8 flex flex-col gap-2 rounded-lg bg-slate-50 p-4 shadow-lg"
@@ -151,7 +148,7 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
           <div>
             <div className="flex justify-between gap-2">
               <h2 className="text-xl font-bold text-slate-900">
-                {placeDetails.displayName?.text}
+                {savedName ?? placeDetails.displayName.text}
               </h2>
               <button
                 className="-translate-y-3 translate-x-2"

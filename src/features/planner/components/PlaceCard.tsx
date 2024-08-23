@@ -124,11 +124,16 @@ function Name({ name, id, isOpen, setIsOpen, handleClick }: NameProps) {
     setIsOpen(false);
   }
 
+  async function handleSubmit(formData: FormData) {
+    await updateName(formData);
+    setIsOpen(false);
+  }
+
   return (
     <>
       {isOpen ? (
         <form
-          action={updateName}
+          action={handleSubmit}
           ref={formRef}
           onBlur={() => formRef.current?.requestSubmit()}
         >

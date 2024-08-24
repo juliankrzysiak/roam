@@ -20,11 +20,11 @@ export default async function Header() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const tripId = cookies().get("tripId")?.value;
+  const cookieTripId = cookies().get("tripId")?.value;
 
   return (
     <header className="flex justify-between bg-emerald-900 p-4">
-      <Nav user={user} tripId={tripId} />
+      <Nav user={user} cookieTripId={cookieTripId}  />
       {user ? (
         <User name={user.user_metadata.name} />
       ) : (

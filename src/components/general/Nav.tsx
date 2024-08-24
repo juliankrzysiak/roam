@@ -7,12 +7,12 @@ import { useParams, usePathname } from "next/navigation";
 
 type Props = {
   user: User | null;
-  tripId?: string;
+  cookieTripId?: string;
 };
 
-export default function Nav({ user, tripId }: Props) {
+export default function Nav({ user, cookieTripId }: Props) {
   const pathName = usePathname();
-  const { trip } = useParams<{ trip: string }>();
+  const { tripId } = useParams<{ tripId: string }>();
 
   return (
     <nav className="flex items-baseline gap-6">
@@ -27,11 +27,11 @@ export default function Nav({ user, tripId }: Props) {
           >
             Trips
           </Link>
-          {tripId && (
+          {cookieTripId && (
             <Link
-              href={`/${tripId}`}
+              href={`/${cookieTripId}`}
               className={clsx(
-                trip && !pathName.includes("pdf") && "font-semibold",
+                tripId && !pathName.includes("pdf") && "font-semibold",
               )}
             >
               Planner

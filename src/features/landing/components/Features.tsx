@@ -2,7 +2,7 @@ const features = [
   "Quickly create a scheduled itinerary for a fun day trip or an exciting journey across the states.",
   "Get a bird's eye view of your trip. See all your stops on a map, know when your day will end, and see how many miles you'll go.",
   "Print our trip details when you're done for those remote destinations.",
-  "Enjoy planning your trips for free!",
+  "Enjoy planning your trips for free... for now!",
 ];
 
 export default function Features() {
@@ -11,7 +11,7 @@ export default function Features() {
       <h3 className="text-center font-display text-4xl text-slate-100 md:text-5xl">
         with <span className="font-bold">roam</span> you can
       </h3>
-      <ul className="grid w-full grid-cols-magic gap-12 text-xl xl:py-8">
+      <ul className="grid w-full max-w-2xl grid-cols-magic gap-12 text-center text-2xl xl:py-8">
         {features.map((feature) => {
           return (
             <li

@@ -7,7 +7,7 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="flex w-full flex-col items-center gap-8 bg-emerald-900 px-8 py-12 shadow-lg">
+    <section className="noise flex w-full flex-col items-center gap-8 bg-emerald-900 px-8 py-12 shadow-lg">
       <h3 className="text-center font-display text-4xl text-slate-100 md:text-5xl">
         with <span className="font-bold">roam</span> you can
       </h3>

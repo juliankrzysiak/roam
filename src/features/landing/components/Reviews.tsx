@@ -59,7 +59,7 @@ interface Props {
 function Review({ name, content }: Props) {
   return (
     <li className="flex max-w-lg flex-col items-end gap-1 rounded-lg text-slate-100">
-      <div className="grid w-full place-content-center rounded-lg bg-emerald-900 px-6 py-6 shadow-sm md:p-8">
+      <div className="noise grid w-full place-content-center rounded-lg bg-emerald-900 px-6 py-6 shadow-sm md:p-8">
         <q className="text-center text-2xl">{content}</q>
       </div>
       <p className="text-slate-700">- {name}</p>

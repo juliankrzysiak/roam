@@ -121,7 +121,7 @@ async function getTravelInfo(
 
   const profile = "mapbox/driving";
   const res = await fetch(
-    `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?overview=full&geometries=polyline&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`,
+    `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?overview=full&geometries=polyline&access_token=${process.env.MAPBOX_API_KEY}`,
   );
   const tripInformation = await res.json();
   const travel = {

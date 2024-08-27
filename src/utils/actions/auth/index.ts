@@ -84,7 +84,7 @@ export async function deleteAccount() {
   try {
     if (!userId) throw new Error("Could not find user id.");
     const supabaseJS = createClientJS(
-      process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+      process.env.SUPABASE_URL as string,
       process.env.SUPABASE_SERVICE_KEY as string,
     );
     await deleteData();

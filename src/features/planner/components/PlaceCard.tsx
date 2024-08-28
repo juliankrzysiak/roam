@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { currentPlaceAtom } from "@/lib/atom";
-import { Place } from "@/types";
+import { DateRange, Place } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
 import {
   updateName,
@@ -27,14 +27,18 @@ const svgSize = 16;
 
 type PlaceCardProps = {
   place: Place;
-  handleDragEnd: () => void;
+  date: Date;
   timezone: string;
+  dateRange: DateRange;
+  handleDragEnd: () => void;
 };
 
 export default function PlaceCard({
   place,
-  handleDragEnd,
+  date,
   timezone,
+  dateRange,
+  handleDragEnd,
 }: PlaceCardProps) {
   const {
     id,
@@ -81,7 +85,7 @@ export default function PlaceCard({
             setIsOpen={setIsNameFormOpen}
             handleClick={handleClick}
           />
-          <PlaceOptions setOpen={setIsNameFormOpen} />
+          <PlaceOptions id={id} date={date} timezone={timezone} dateRange={dateRange} setOpen={setIsNameFormOpen} />
         </div>
         <div className="flex items-end gap-1">
           <div className="flex h-full gap-4">

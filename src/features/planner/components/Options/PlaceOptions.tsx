@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DateRange } from "@/types";
-import { movePlaces } from "@/utils/actions/crud/update";
+import { movePlace } from "@/utils/actions/crud/update";
 import { formatInTimeZone } from "date-fns-tz";
 import { SetStateAction } from "jotai";
 import { EllipsisVertical } from "lucide-react";
@@ -41,8 +41,8 @@ export default function PlaceOptions({
   return (
     <>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger aria-label="Open options">
-          <EllipsisVertical size={18} className="text-slate-500" />
+        <DropdownMenuTrigger aria-label="Open options" className="h-fit">
+          <EllipsisVertical size={18} className="h-fit text-slate-500" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem
@@ -88,7 +88,7 @@ function MovePlaceForm({
   async function handleSubmit() {
     if (dateString === initialDateString) setOpen(false);
     else {
-      await movePlaces(tripId, id, dateString);
+      await movePlace(tripId, id, dateString);
       setOpen(false);
     }
   }

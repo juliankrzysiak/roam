@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DateRange, Day } from "@/types";
-import { movePlaces } from "@/utils/actions/crud/update";
+import { movePlace } from "@/utils/actions/crud/update";
 import { formatInTimeZone } from "date-fns-tz";
 import { SetStateAction } from "jotai";
 import { EllipsisVertical } from "lucide-react";
@@ -83,7 +83,7 @@ function MovePlacesForm({
   async function handleSubmit() {
     if (dateString === initialDateString) setOpen(false);
     else {
-      await movePlaces(tripId, dayId, dateString);
+      await movePlace(tripId, dayId, dateString);
       setOpen(false);
     }
   }

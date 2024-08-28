@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
-import PlaceOptions from "./PlaceOptions";
+import PlaceOptions from "./Options/PlaceOptions";
 
 const svgSize = 16;
 

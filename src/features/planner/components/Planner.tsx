@@ -14,7 +14,7 @@ import { useAtomValue } from "jotai";
 import { EllipsisVertical, Moon, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
-import PlannerOptions from "./PlannerOptions";
+import PlannerOptions from "./Options/PlannerOptions";
 
 type PlannerProps = {
   day: Day;

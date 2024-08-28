@@ -24,7 +24,7 @@ export default function MapSearch() {
     };
 
     setPlaceAutocomplete(new places.Autocomplete(inputRef.current, options));
-  }, [places]);
+  }, [places, open]);
 
   useEffect(() => {
     if (!placeAutocomplete) return;
@@ -32,7 +32,6 @@ export default function MapSearch() {
     placeAutocomplete.addListener("place_changed", () => {
       const place = placeAutocomplete.getPlace();
       const placeId = place.place_id;
-      // Why do I need to call a function to get a number lol
       const lat = place.geometry?.location?.lat();
       const lng = place.geometry?.location?.lng();
       if (!lat || !lng || !placeId) return;
@@ -61,8 +60,7 @@ export default function MapSearch() {
           type="search"
           placeholder="Search location"
           className={clsx(
-            "h-fit w-full max-w-xl rounded-lg border-2 border-emerald-900 px-2 py-1 transition-opacity",
-            !open && "opacity-0",
+            "h-fit w-full max-w-xl rounded-lg border-2 border-emerald-900 px-2 py-1",
           )}
         />
       )}
@@ -78,7 +76,6 @@ export default function MapSearch() {
     </div>
   );
 }
-
 
 function CurrentLocationButton() {
   const map = useMap();

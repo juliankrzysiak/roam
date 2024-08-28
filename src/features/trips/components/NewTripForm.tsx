@@ -34,6 +34,9 @@ export default function NewTripForm() {
     resolver: zodResolver(newTripFormSchema),
     defaultValues: {
       name: "",
+      dateRange: {
+        datesWithPlaces: [],
+      },
     },
   });
 

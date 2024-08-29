@@ -13,7 +13,7 @@
     A web app for planning out your roadtrips.
     <br />
     <br />
-    <a href="https://github.com/juliankrzysiak/">View Demo</a>
+    <a href="https://roam-gamma.vercel.app/">View Demo</a>
     ·
     <a href="https://github.com/juliankrzysiak/roam/issues/new?labels=bug">Report Bug</a>
     ·

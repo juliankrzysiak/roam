@@ -49,9 +49,9 @@ export default function PlaceOptions({
           <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
             Edit Name
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsPlaceFormOpen(true)}>
+          {/* <DropdownMenuItem onClick={() => setIsPlaceFormOpen(true)}>
             Move Place
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
       <EditNameForm
@@ -96,6 +96,8 @@ function EditNameForm({ id, name, open, setOpen }: EditNameFormProps) {
             className="w-full rounded-md border border-slate-500 px-1"
             name="name"
             type="text"
+            min={1}
+            max={75}
             defaultValue={name}
             autoFocus
           />

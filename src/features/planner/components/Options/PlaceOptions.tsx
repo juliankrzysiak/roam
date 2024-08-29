@@ -14,29 +14,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DateRange } from "@/types";
-import { movePlace } from "@/utils/actions/crud/update";
+import { movePlace, updateName } from "@/utils/actions/crud/update";
 import { formatInTimeZone } from "date-fns-tz";
 import { SetStateAction } from "jotai";
 import { EllipsisVertical } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 
 type Props = {
   id: string;
+  name: string;
   date: Date;
   timezone: string;
   dateRange: DateRange;
-  setOpen: React.Dispatch<SetStateAction<boolean>>;
 };
 
 export default function PlaceOptions({
   id,
+  name,
   date,
   timezone,
   dateRange,
-  setOpen,
 }: Props) {
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isNameFormOpen, setIsNameFormOpen] = useState(false);
+  const [isPlaceFormOpen, setIsPlaceFormOpen] = useState(false);
 
   return (
     <>
@@ -44,32 +45,77 @@ export default function PlaceOptions({
         <DropdownMenuTrigger aria-label="Open options" className="h-fit">
           <EllipsisVertical size={18} className="h-fit text-slate-500" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => setOpen(true)}
-          >
-            <span>Edit Name</span>
+        <DropdownMenuContent className="cursor-pointer">
+          <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
+            Edit Name
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsFormOpen(true)}>
-            <span>Move Place</span>
+          <DropdownMenuItem onClick={() => setIsPlaceFormOpen(true)}>
+            Move Place
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <EditNameForm
+        id={id}
+        name={name}
+        open={isNameFormOpen}
+        setOpen={setIsNameFormOpen}
+      />
       <MovePlaceForm
         id={id}
         date={date}
         timezone={timezone}
         dateRange={dateRange}
-        open={isFormOpen}
-        setOpen={setIsFormOpen}
+        open={isPlaceFormOpen}
+        setOpen={setIsPlaceFormOpen}
       />
     </>
   );
 }
+
+type State = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+type EditNameFormProps = Pick<Props, "id" | "name"> & State;
+
+function EditNameForm({ id, name, open, setOpen }: EditNameFormProps) {
+  async function handleSubmit(formData: FormData) {
+    await updateName(formData);
+    setOpen(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Name</DialogTitle>
+        </DialogHeader>
+        <form id="editNameForm" action={handleSubmit}>
+          <input
+            className="w-full rounded-md border border-slate-500 px-1"
+            name="name"
+            type="text"
+            defaultValue={name}
+            autoFocus
+          />
+          <input name="id" type="hidden" defaultValue={id}></input>
+        </form>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="submit" form="editNameForm">
+              Submit
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 const dateFormat = "yyyy-MM-dd";
 
-type MovePlaceFormProps = Props & { open: boolean };
+type MovePlaceFormProps = Omit<Props, "name"> & State;
 
 function MovePlaceForm({
   id,

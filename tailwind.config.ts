@@ -19,7 +19,7 @@ module.exports = {
     },
     extend: {
       gridTemplateColumns: {
-        magic: "repeat( auto-fit, minmax(200px, 1fr)) ",
+        magic: "repeat( auto-fit, minmax(250px, 1fr)) ",
       },
       colors: {
         border: "hsl(var(--border))",

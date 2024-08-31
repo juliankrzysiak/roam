@@ -7,7 +7,7 @@ import { Day, Place, PlaceNoSchedule, Travel } from "@/types";
 import { calcDateRange, convertKmToMi, convertSecToMi } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { addMinutes, parseISO } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
+import { fromZonedTime } from "date-fns-tz";
 
 type Props = {
   params: { tripId: string };
@@ -91,7 +91,7 @@ export async function getDay(
   const travelInfo = await getTravelInfo(sortedPlaces);
   const travelPlaces = await mapTravelInfo(sortedPlaces, travelInfo?.trips);
 
-  const date = toZonedTime(
+  const date = fromZonedTime(
     parseISO(dayData.date + "T" + dayData.startTime),
     timezone,
   );

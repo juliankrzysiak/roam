@@ -35,7 +35,7 @@ export default function Map({ day, children }: MapProps) {
   const { places } = day;
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
-    { lat: -34, lng: 118 },
+    { lat: 34, lng: -118 },
   );
 
   useEffect(() => {
@@ -186,8 +186,8 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
                 <>
                   <a
                     href={placeDetails.websiteUri}
-                    className="underline"
                     target="_blank"
+                    className="underline"
                   >
                     Website
                   </a>
@@ -224,7 +224,6 @@ type OpeningHoursProps = {
 };
 
 function OpeningHours({ regularOpeningHours, date }: OpeningHoursProps) {
-  // TODO: Return nothing if opening hours not there
   const [isOpen, setIsOpen] = useState(false);
   if (!regularOpeningHours) return null;
 
@@ -281,6 +280,7 @@ type MarkersProps = {
 
 function Markers({ places }: MarkersProps) {
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
+
   const handleClick = (place: Place) => {
     const { id, position } = place;
     const placeId = place.placeId;

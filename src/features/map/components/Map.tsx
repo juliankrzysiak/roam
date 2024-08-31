@@ -184,13 +184,21 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
             <div className="mb-2 flex gap-1 text-slate-500">
               {placeDetails.websiteUri && (
                 <>
-                  <a href={placeDetails.websiteUri} className="underline">
+                  <a
+                    href={placeDetails.websiteUri}
+                    className="underline"
+                    target="_blank"
+                  >
                     Website
                   </a>
                   •
                 </>
               )}
-              <a href={placeDetails.googleMapsUri} className="underline">
+              <a
+                href={placeDetails.googleMapsUri}
+                target="_blank"
+                className="underline"
+              >
                 Google Maps
               </a>
             </div>

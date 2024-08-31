@@ -106,7 +106,7 @@ export default function PlaceCard({
             dateRange={dateRange}
           />
         </div>
-        <div className="flex items-end gap-1">
+        <div className="flex items-stretch gap-1">
           <div className="flex h-full gap-4">
             <PlaceDuration
               arrival={schedule.arrival}
@@ -117,7 +117,7 @@ export default function PlaceCard({
             <Separator orientation="vertical" />
             <Notes id={id} notes={notes} />
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col justify-between">
             <input type="checkbox" onChange={handleChangeCheckbox} />
             <GripVertical
               size={24}

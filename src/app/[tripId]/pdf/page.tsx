@@ -12,22 +12,22 @@ const PDFDeviceCheck = dynamic(
 );
 
 type Props = {
-  params: { trip: string };
+  params: { tripId: string };
 };
 
 export default async function PDFPage({ params }: Props) {
-  const { trip: tripId } = params;
+  const { tripId } = params;
   const supabase = createClient();
 
   const { data, error } = await supabase
     .from("days")
     .select("id, date")
-    .eq("trip_id", tripId);
-  if (error) return;
-  const sortedDays = data.map((day) => day.date).sort();
+    .eq("trip_id", tripId)
+    .order("date");
+  if (error) throw new Error("Could not load places.");
 
   const days = await Promise.all(
-    sortedDays.map(async (date) => {
+    data.map(async ({ date }) => {
       const day = await getDay(tripId, date);
       return day;
     }),

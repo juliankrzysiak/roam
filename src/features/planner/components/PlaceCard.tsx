@@ -15,7 +15,14 @@ import {
   Clock,
   GripVertical,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useExit } from "../hooks";
 import PlaceOptions from "./Options/PlaceOptions";
 
@@ -27,6 +34,8 @@ type PlaceCardProps = {
   timezone: string;
   dateRange: DateRange;
   handleDragEnd: () => void;
+  selectedPlaces: string[];
+  setSelectedPlaces: Dispatch<SetStateAction<string[]>>;
 };
 
 export default function PlaceCard({
@@ -35,6 +44,8 @@ export default function PlaceCard({
   timezone,
   dateRange,
   handleDragEnd,
+  selectedPlaces,
+  setSelectedPlaces,
 }: PlaceCardProps) {
   const {
     id,
@@ -59,6 +70,15 @@ export default function PlaceCard({
   function handleClick() {
     const currentPlace = { id, placeId, position };
     setCurrentPlace(currentPlace);
+  }
+
+  function handleChangeCheckbox(e: ChangeEvent<HTMLInputElement>) {
+    const isChecked = e.target.checked;
+    if (isChecked) {
+      setSelectedPlaces([...selectedPlaces, id]);
+    } else {
+      setSelectedPlaces(selectedPlaces.filter((id) => id !== place.id));
+    }
   }
 
   return (
@@ -97,11 +117,14 @@ export default function PlaceCard({
             <Separator orientation="vertical" />
             <Notes id={id} notes={notes} />
           </div>
-          <GripVertical
-            size={24}
-            className=" cursor-pointer text-slate-500"
-            onPointerDown={(e) => controls.start(e)}
-          />
+          <div className="flex flex-col gap-4">
+            <input type="checkbox" onChange={handleChangeCheckbox} />
+            <GripVertical
+              size={24}
+              className="cursor-pointer text-slate-500"
+              onPointerDown={(e) => controls.start(e)}
+            />
+          </div>
         </div>
       </article>
       {travel && (

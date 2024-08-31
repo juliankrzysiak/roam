@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
-import { DateRange, Day } from "@/types";
+import { DateRange, Day, Place } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
 import clsx from "clsx";
@@ -31,6 +31,7 @@ export default function Planner({
 }: PlannerProps) {
   const isVisible = useAtomValue(isPlannerVisibleAtom);
   const [places, setPlaces] = useState(day.places);
+  const [selectedPlaces, setSelectedPlaces] = useState<string[]>([]);
 
   function handleDragEnd() {
     const [orderOriginalPlaces, orderPlaces] = [day.places, places].map(mapId);
@@ -58,6 +59,9 @@ export default function Planner({
         <hr className="w-full border-slate-400 " />
         <TimePicker day={day} totalDuration={totalDuration} />
       </div>
+      {Boolean(selectedPlaces.length) && (
+        <SelectOptions selectedPlaces={selectedPlaces} />
+      )}
       <Reorder.Group
         axis="y"
         values={places}
@@ -81,6 +85,8 @@ export default function Planner({
               timezone={day.timezone}
               dateRange={dateRange}
               handleDragEnd={handleDragEnd}
+              selectedPlaces={selectedPlaces}
+              setSelectedPlaces={setSelectedPlaces}
             />
           );
         })}
@@ -173,5 +179,19 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
         )}
       </div>
     </form>
+  );
+}
+
+type SelectOptionsProps = {
+  selectedPlaces: string[];
+};
+
+function SelectOptions({ selectedPlaces }: SelectOptionsProps) {
+  return (
+    <div className="broder-2 mx-2 flex justify-between rounded-md border border-slate-400 px-2 py-2 shadow-lg">
+      <span>{selectedPlaces.length} places selected</span>
+      <button>Move</button>
+      <button>Delete</button>
+    </div>
   );
 }

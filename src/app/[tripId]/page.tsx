@@ -7,6 +7,7 @@ import { Day, Place, PlaceNoSchedule, Travel } from "@/types";
 import { calcDateRange, convertKmToMi, convertSecToMi } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { addMinutes, parseISO } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 type Props = {
   params: { tripId: string };
@@ -15,10 +16,10 @@ type Props = {
 export default async function MapPage({ params }: Props) {
   const { tripId } = params;
 
-  const day = await getDay(tripId);
   const tripInfo = await getTripInfo(tripId);
   if (!tripInfo) throw new Error("Couldn't connect to server.");
   const { tripName, timezone, dateRange } = tripInfo;
+  const day = await getDay(tripId, timezone);
   const totalDuration = day.places.reduce(
     (total, current) =>
       total + (current.travel?.duration || 0) + current.placeDuration,
@@ -44,6 +45,7 @@ export default async function MapPage({ params }: Props) {
 
 export async function getDay(
   tripId: string,
+  timezone: string,
   currentDate?: string,
 ): Promise<Day> {
   const supabase = createClient();
@@ -89,7 +91,10 @@ export async function getDay(
   const travelInfo = await getTravelInfo(sortedPlaces);
   const travelPlaces = await mapTravelInfo(sortedPlaces, travelInfo?.trips);
 
-  const date = parseISO(dayData.date + "T" + dayData.startTime);
+  const date = toZonedTime(
+    parseISO(dayData.date + "T" + dayData.startTime),
+    timezone,
+  );
   const scheduledPlaces = mapSchedule(travelPlaces, date);
 
   const day = {

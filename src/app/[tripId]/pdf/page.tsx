@@ -21,14 +21,14 @@ export default async function PDFPage({ params }: Props) {
 
   const { data, error } = await supabase
     .from("days")
-    .select("id, date")
+    .select("id, date, timezone")
     .eq("trip_id", tripId)
     .order("date");
   if (error) throw new Error("Could not load places.");
 
   const days = await Promise.all(
-    data.map(async ({ date }) => {
-      const day = await getDay(tripId, date);
+    data.map(async ({ date, timezone }) => {
+      const day = await getDay(tripId, timezone, date);
       return day;
     }),
   );

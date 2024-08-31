@@ -108,7 +108,7 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
     error,
     isLoading,
   } = useSWR(currentPlace?.placeId, placeDetailsFetcher);
-  if (error) return <div>failed to load</div>;
+  if (error) return <div>failed to load...</div>;
 
   async function handleCreatePlace() {
     if (!currentPlace || !placeDetails) return;

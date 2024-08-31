@@ -3,7 +3,7 @@ export type Place = {
   placeId: string;
   name: string;
   position: google.maps.LatLngLiteral;
-  address: string;
+  address: string | null;
   placeDuration: number;
   notes: string;
   schedule: {

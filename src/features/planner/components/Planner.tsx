@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
-import { DateRange, Day, Place } from "@/types";
+import { DateRange, Day } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
 import clsx from "clsx";
@@ -125,6 +125,7 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
   );
 
   useExit(formRef, handleClickOutside);
+
   // Set state when new data
   useEffect(() => {
     setDate(day.date);

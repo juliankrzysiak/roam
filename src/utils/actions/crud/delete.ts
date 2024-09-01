@@ -57,3 +57,30 @@ export async function deleteDay(dayId: string) {
     console.log(error);
   }
 }
+
+export async function deleteSelectedPlaces(
+  selectedPlaces: string[],
+  places: Place[],
+  dayId: string,
+) {
+  const supabase = createClient();
+
+  try {
+    const { data, error } = await supabase
+      .from("places")
+      .delete()
+      .in("id", selectedPlaces);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    const order_places = mapId(places).filter(
+      (id) => !selectedPlaces.includes(id),
+    );
+    const { error: orderError } = await supabase
+      .from("days")
+      .update({ order_places })
+      .eq("id", dayId);
+    if (orderError) throw new Error(`Supabase error: ${orderError.message}`);
+    revalidatePath("/[tripId]", "page");
+  } catch (error) {
+    console.log(error);
+  }
+}

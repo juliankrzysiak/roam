@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
-import { DateRange, Day } from "@/types";
+import { DateRange, Day, Place } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
 import clsx from "clsx";
@@ -15,6 +15,7 @@ import { EllipsisVertical, Moon, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
 import PlannerOptions from "./Options/PlannerOptions";
+import { deleteSelectedPlaces } from "@/utils/actions/crud/delete";
 
 type PlannerProps = {
   day: Day;
@@ -43,6 +44,11 @@ export default function Planner({
     setPlaces(day.places);
   }, [day.places]);
 
+  async function handleDelete() {
+    await deleteSelectedPlaces(selectedPlaces, places, day.id);
+    setSelectedPlaces([]);
+  }
+
   return (
     <section
       className={clsx(
@@ -60,7 +66,10 @@ export default function Planner({
         <TimePicker day={day} totalDuration={totalDuration} />
       </div>
       {Boolean(selectedPlaces.length) && (
-        <SelectOptions selectedPlaces={selectedPlaces} />
+        <SelectOptions
+          handleDelete={handleDelete}
+          selectedPlacesLength={selectedPlaces.length}
+        />
       )}
       <Reorder.Group
         axis="y"
@@ -184,15 +193,21 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
 }
 
 type SelectOptionsProps = {
-  selectedPlaces: string[];
+  handleDelete: () => Promise<void>;
+  selectedPlacesLength: number;
 };
 
-function SelectOptions({ selectedPlaces }: SelectOptionsProps) {
+function SelectOptions({
+  handleDelete,
+  selectedPlacesLength,
+}: SelectOptionsProps) {
   return (
-    <div className="broder-2 mx-2 flex justify-between rounded-md border border-slate-400 px-2 py-2 shadow-lg">
-      <span>{selectedPlaces.length} places selected</span>
+    <div className="mx-2 flex justify-between rounded-md border-2 border-slate-400 px-2 py-2 shadow-lg">
+      <span>{selectedPlacesLength} places selected</span>
       <button>Move</button>
-      <button>Delete</button>
+      <form action={handleDelete}>
+        <button>Delete</button>
+      </form>
     </div>
   );
 }

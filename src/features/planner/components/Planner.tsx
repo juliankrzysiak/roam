@@ -1,12 +1,24 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
 import { DateRange, Day } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
 import { deletePlaces } from "@/utils/actions/crud/delete";
-import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
+import {
+  movePlaces,
+  updatePlaceOrder,
+  updateStartTime,
+} from "@/utils/actions/crud/update";
 import clsx from "clsx";
 import { addMinutes, parse } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
@@ -19,6 +31,7 @@ import PlannerOptions from "./Options/PlannerOptions";
 
 type PlannerProps = {
   day: Day;
+  tripId: string;
   tripName: string;
   totalDuration: number;
   dateRange: DateRange;
@@ -26,6 +39,7 @@ type PlannerProps = {
 
 export default function Planner({
   day,
+  tripId,
   tripName,
   totalDuration,
   dateRange,
@@ -53,6 +67,17 @@ export default function Planner({
     setSelectedPlaces([]);
   }
 
+  async function handleMove(newDate: string) {
+    await movePlaces({
+      placesToMove: selectedPlaces,
+      places,
+      currentDayId: day.id,
+      newDate,
+      tripId,
+    });
+    setSelectedPlaces([]);
+  }
+
   return (
     <section
       className={clsx(
@@ -71,6 +96,10 @@ export default function Planner({
       </div>
       {Boolean(selectedPlaces.length) && (
         <SelectOptions
+          day={day}
+          dateRange={dateRange}
+          tripId={tripId}
+          handleMove={handleMove}
           handleDelete={handleDelete}
           selectedPlacesLength={selectedPlaces.length}
         />
@@ -197,21 +226,70 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
 }
 
 type SelectOptionsProps = {
+  day: Day;
+  dateRange: DateRange;
+  tripId: string;
+  handleMove: (newDate: string) => Promise<void>;
   handleDelete: () => Promise<void>;
   selectedPlacesLength: number;
 };
 
+const dateFormat = "yyyy-MM-dd";
+
 function SelectOptions({
+  day,
+  dateRange,
+  tripId,
+  handleMove,
   handleDelete,
   selectedPlacesLength,
 }: SelectOptionsProps) {
+  const { id: dayId, date, timezone } = day;
+  const [open, setOpen] = useState(false);
+  const initialDateString = formatInTimeZone(date, timezone, dateFormat);
+  const [dateString, setDateString] = useState(initialDateString);
+  const minDateString = formatInTimeZone(dateRange.from, timezone, dateFormat);
+  const maxDateString = formatInTimeZone(dateRange.to, timezone, dateFormat);
+
+  async function handleSubmit() {
+    if (dateString === initialDateString) setOpen(false);
+    else {
+      await handleMove(dateString);
+      setOpen(false);
+    }
+  }
+
   return (
     <div className="mx-2 flex justify-between rounded-md border-2 border-slate-400 px-2 py-2 shadow-lg">
       <span>{selectedPlacesLength} places selected</span>
-      <button>Move</button>
+      <button onClick={() => setOpen(true)}>Move</button>
       <form action={handleDelete}>
         <button>Delete</button>
       </form>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Move Places to New Date</DialogTitle>
+          </DialogHeader>
+          <form action={handleSubmit}>
+            <input
+              name="date"
+              type="date"
+              value={dateString}
+              onChange={(e) => setDateString(e.target.value)}
+              min={minDateString}
+              max={maxDateString}
+            />
+            <input name="tripId" type="hidden" defaultValue={tripId} />
+            <input name="dayId" type="hidden" defaultValue={dayId} />
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="submit">Submit</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

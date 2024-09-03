@@ -222,7 +222,7 @@ export async function movePlaces({
     const { error: updatePlacesError } = await supabase
       .from("places")
       .update({ day_id: newDayId })
-      .eq("day_id", currentDayId);
+      .in("id", placesToMove);
     if (updatePlacesError) throw new Error(updatePlacesError.message);
 
     const updatedCurrentDayOrderPlaces = mapId(places).filter(

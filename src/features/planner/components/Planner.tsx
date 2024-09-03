@@ -15,7 +15,7 @@ import { EllipsisVertical, Moon, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
 import PlannerOptions from "./Options/PlannerOptions";
-import { deleteSelectedPlaces } from "@/utils/actions/crud/delete";
+import { deletePlaces } from "@/utils/actions/crud/delete";
 
 type PlannerProps = {
   day: Day;
@@ -45,8 +45,11 @@ export default function Planner({
   }, [day.places]);
 
   async function handleDelete() {
-    const dayId = day.id;
-    await deleteSelectedPlaces({ selectedPlaces, places, dayId });
+    await deletePlaces({
+      placesToDelete: selectedPlaces,
+      places,
+      dayId: day.id,
+    });
     setSelectedPlaces([]);
   }
 

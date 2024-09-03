@@ -59,13 +59,13 @@ export async function deleteDay(dayId: string) {
 }
 
 type DeleteSelectedPlacesArgs = {
-  selectedPlaces: string[];
+  placesToDelete: string[];
   places: Place[];
   dayId: string;
 };
 
-export async function deleteSelectedPlaces({
-  selectedPlaces,
+export async function deletePlaces({
+  placesToDelete,
   places,
   dayId,
 }: DeleteSelectedPlacesArgs) {
@@ -75,10 +75,10 @@ export async function deleteSelectedPlaces({
     const { error } = await supabase
       .from("places")
       .delete()
-      .in("id", selectedPlaces);
+      .in("id", placesToDelete);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     const order_places = mapId(places).filter(
-      (id) => !selectedPlaces.includes(id),
+      (id) => !placesToDelete.includes(id),
     );
     const { error: orderError } = await supabase
       .from("days")

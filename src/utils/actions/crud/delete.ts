@@ -58,15 +58,21 @@ export async function deleteDay(dayId: string) {
   }
 }
 
-export async function deleteSelectedPlaces(
-  selectedPlaces: string[],
-  places: Place[],
-  dayId: string,
-) {
+type DeleteSelectedPlacesArgs = {
+  selectedPlaces: string[];
+  places: Place[];
+  dayId: string;
+};
+
+export async function deleteSelectedPlaces({
+  selectedPlaces,
+  places,
+  dayId,
+}: DeleteSelectedPlacesArgs) {
   const supabase = createClient();
 
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("places")
       .delete()
       .in("id", selectedPlaces);

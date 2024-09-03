@@ -45,7 +45,8 @@ export default function Planner({
   }, [day.places]);
 
   async function handleDelete() {
-    await deleteSelectedPlaces(selectedPlaces, places, day.id);
+    const dayId = day.id;
+    await deleteSelectedPlaces({ selectedPlaces, places, dayId });
     setSelectedPlaces([]);
   }
 

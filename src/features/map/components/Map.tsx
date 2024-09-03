@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Day, Place } from "@/types";
 import { createPlace } from "@/utils/actions/crud/create";
-import { deletePlace } from "@/utils/actions/crud/delete";
+import { deletePlaces } from "@/utils/actions/crud/delete";
 import {
   APIProvider,
   AdvancedMarker,
@@ -126,7 +126,7 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
 
   async function handleDeletePlace() {
     if (!currentPlace?.id) return;
-    await deletePlace(places, currentPlace.id, dayId);
+    await deletePlaces({ placesToDelete: [currentPlace.id], places, dayId });
     setCurrentPlace(null);
   }
 

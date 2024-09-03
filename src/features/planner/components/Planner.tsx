@@ -3,8 +3,9 @@
 import { Button } from "@/components/ui/button";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
-import { DateRange, Day, Place } from "@/types";
+import { DateRange, Day } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
+import { deletePlaces } from "@/utils/actions/crud/delete";
 import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
 import clsx from "clsx";
 import { addMinutes, parse } from "date-fns";
@@ -15,7 +16,6 @@ import { EllipsisVertical, Moon, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
 import PlannerOptions from "./Options/PlannerOptions";
-import { deletePlaces } from "@/utils/actions/crud/delete";
 
 type PlannerProps = {
   day: Day;

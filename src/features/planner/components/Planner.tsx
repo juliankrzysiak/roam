@@ -78,6 +78,14 @@ export default function Planner({
     setSelectedPlaces([]);
   }
 
+  function handleSelectAll() {
+    setSelectedPlaces(mapId(places));
+  }
+
+  function handleDeselectAll() {
+    setSelectedPlaces([]);
+  }
+
   return (
     <section
       className={clsx(
@@ -89,7 +97,10 @@ export default function Planner({
         <div className="item flex w-full items-center justify-between px-1">
           <EllipsisVertical size={18} className="invisible" />
           <h2 className="py-1 text-center text-xl tracking-wide">{tripName}</h2>
-          <PlannerOptions day={day} dateRange={dateRange} />
+          <PlannerOptions
+            handleSelectAll={handleSelectAll}
+            handleDeselectAll={handleDeselectAll}
+          />
         </div>
         <hr className="w-full border-slate-400 " />
         <TimePicker day={day} totalDuration={totalDuration} />

@@ -1,10 +1,10 @@
 "use server";
 
-import { calcDateDeltas, convertTime, formatBulkDates, mapId } from "@/utils";
+import { Place } from "@/types";
+import { convertTime, formatBulkDates, mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
-import { eachDayOfInterval, format } from "date-fns";
+import { format } from "date-fns";
 import { revalidatePath } from "next/cache";
-import { DateRange, Place } from "@/types";
 
 export async function updateTrip(id: string, name: string) {
   const supabase = createClient();

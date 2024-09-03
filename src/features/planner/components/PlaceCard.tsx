@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { currentPlaceAtom } from "@/lib/atom";
-import { DateRange, Place } from "@/types";
+import { Place } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
 import { updateNotes, updatePlaceDuration } from "@/utils/actions/crud/update";
 import { add } from "date-fns";
@@ -30,9 +30,7 @@ const svgSize = 16;
 
 type PlaceCardProps = {
   place: Place;
-  date: Date;
   timezone: string;
-  dateRange: DateRange;
   handleDragEnd: () => void;
   selectedPlaces: string[];
   setSelectedPlaces: Dispatch<SetStateAction<string[]>>;
@@ -40,9 +38,7 @@ type PlaceCardProps = {
 
 export default function PlaceCard({
   place,
-  date,
   timezone,
-  dateRange,
   handleDragEnd,
   selectedPlaces,
   setSelectedPlaces,
@@ -112,7 +108,11 @@ export default function PlaceCard({
             <Notes id={id} notes={notes} />
           </div>
           <div className="flex flex-col justify-between">
-            <input type="checkbox" onChange={handleChangeCheckbox} />
+            <input
+              type="checkbox"
+              checked={selectedPlaces.includes(id)}
+              onChange={handleChangeCheckbox}
+            />
             <GripVertical
               size={24}
               className="cursor-pointer text-slate-500"

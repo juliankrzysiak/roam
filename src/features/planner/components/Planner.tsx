@@ -134,9 +134,7 @@ export default function Planner({
             <PlaceCard
               key={place.id}
               place={place}
-              date={day.date}
               timezone={day.timezone}
-              dateRange={dateRange}
               handleDragEnd={handleDragEnd}
               selectedPlaces={selectedPlaces}
               setSelectedPlaces={setSelectedPlaces}

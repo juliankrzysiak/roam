@@ -1,10 +1,10 @@
 "use server";
 
-import { calcDateDeltas, convertTime, formatBulkDates } from "@/utils";
+import { calcDateDeltas, convertTime, formatBulkDates, mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { eachDayOfInterval, format } from "date-fns";
 import { revalidatePath } from "next/cache";
-import { DateRange } from "@/types";
+import { DateRange, Place } from "@/types";
 
 export async function updateTrip(id: string, name: string) {
   const supabase = createClient();
@@ -191,27 +191,57 @@ export async function updateName(formData: FormData) {
   }
 }
 
-export async function movePlaces(
-  tripId: string,
-  initialDateId: string,
-  newDate: string,
-) {
+type MovePlacesArgs = {
+  placesToMove: string[];
+  places: Place[];
+  currentDayId: string;
+  newDate: string;
+  tripId: string;
+};
+
+// TODO: Replace with rpc
+export async function movePlaces({
+  placesToMove,
+  places,
+  currentDayId,
+  newDate,
+  tripId,
+}: MovePlacesArgs) {
   const supabase = createClient();
   try {
-    const { data, error } = await supabase
+    const { data: newDayData, error: newDayError } = await supabase
       .from("days")
-      .select("id")
+      .select("id, order_places")
       .match({ trip_id: tripId, date: newDate })
       .limit(1)
       .single();
-    if (error) throw new Error(error.message);
+    if (newDayError) throw new Error(newDayError.message);
 
-    const { id: newDateId } = data;
-    const { error: updateError } = await supabase.rpc("move_places", {
-      day1: initialDateId,
-      day2: newDateId,
-    });
-    if (error) throw new Error(updateError?.message);
+    const { id: newDayId, order_places: newDayOrderPlaces } = newDayData;
+
+    const { error: updatePlacesError } = await supabase
+      .from("places")
+      .update({ day_id: newDayId })
+      .eq("day_id", currentDayId);
+    if (updatePlacesError) throw new Error(updatePlacesError.message);
+
+    const updatedCurrentDayOrderPlaces = mapId(places).filter(
+      (id) => !placesToMove.includes(id),
+    );
+    const updatedNewDayOrderPlaces = newDayOrderPlaces.concat(placesToMove);
+
+    const { error: updateCurrentDayError } = await supabase
+      .from("days")
+      .update({ order_places: updatedCurrentDayOrderPlaces })
+      .eq("id", currentDayId);
+    if (updateCurrentDayError) throw new Error(updateCurrentDayError.message);
+
+    const { error: updateNewDayError } = await supabase
+      .from("days")
+      .update({ order_places: updatedNewDayOrderPlaces })
+      .eq("id", newDayId);
+    if (updateNewDayError) throw new Error(updateNewDayError.message);
+
     revalidatePath("/[tripId]", "page");
   } catch (error) {
     console.log(error);

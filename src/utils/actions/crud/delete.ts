@@ -25,6 +25,7 @@ export async function deletePlaces({
       .delete()
       .in("id", placesToDelete);
     if (error) throw new Error(`Supabase error: ${error.message}`);
+
     const order_places = mapId(places).filter(
       (id) => !placesToDelete.includes(id),
     );

@@ -13,31 +13,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DateRange } from "@/types";
-import {  updateName } from "@/utils/actions/crud/update";
-import { formatInTimeZone } from "date-fns-tz";
+import { updateName } from "@/utils/actions/crud/update";
 import { SetStateAction } from "jotai";
 import { EllipsisVertical } from "lucide-react";
-import { useParams } from "next/navigation";
 import { Dispatch, useState } from "react";
 
 type Props = {
   id: string;
   name: string;
-  date: Date;
-  timezone: string;
-  dateRange: DateRange;
 };
 
 export default function PlaceOptions({
   id,
   name,
-  date,
-  timezone,
-  dateRange,
 }: Props) {
   const [isNameFormOpen, setIsNameFormOpen] = useState(false);
-  const [isPlaceFormOpen, setIsPlaceFormOpen] = useState(false);
 
   return (
     <>
@@ -49,9 +39,6 @@ export default function PlaceOptions({
           <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
             Edit Name
           </DropdownMenuItem>
-          {/* <DropdownMenuItem onClick={() => setIsPlaceFormOpen(true)}>
-            Move Place
-          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
       <EditNameForm
@@ -60,14 +47,6 @@ export default function PlaceOptions({
         open={isNameFormOpen}
         setOpen={setIsNameFormOpen}
       />
-      {/* <MovePlaceForm
-        id={id}
-        date={date}
-        timezone={timezone}
-        dateRange={dateRange}
-        open={isPlaceFormOpen}
-        setOpen={setIsPlaceFormOpen}
-      /> */}
     </>
   );
 }
@@ -77,7 +56,7 @@ type State = {
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-type EditNameFormProps = Pick<Props, "id" | "name"> & State;
+type EditNameFormProps = Props & State;
 
 function EditNameForm({ id, name, open, setOpen }: EditNameFormProps) {
   async function handleSubmit(formData: FormData) {
@@ -114,57 +93,3 @@ function EditNameForm({ id, name, open, setOpen }: EditNameFormProps) {
     </Dialog>
   );
 }
-
-const dateFormat = "yyyy-MM-dd";
-
-type MovePlaceFormProps = Omit<Props, "name"> & State;
-
-// function MovePlaceForm({
-//   id,
-//   date,
-//   timezone,
-//   dateRange,
-//   open,
-//   setOpen,
-// }: MovePlaceFormProps) {
-//   const { tripId } = useParams<{ tripId: string }>();
-//   const initialDateString = formatInTimeZone(date, timezone, dateFormat);
-//   const [dateString, setDateString] = useState(initialDateString);
-//   const minDateString = formatInTimeZone(dateRange.from, timezone, dateFormat);
-//   const maxDateString = formatInTimeZone(dateRange.to, timezone, dateFormat);
-
-//   async function handleSubmit() {
-//     if (dateString === initialDateString) setOpen(false);
-//     else {
-//       await movePlace(tripId, id, dateString);
-//       setOpen(false);
-//     }
-//   }
-
-//   return (
-//     <Dialog open={open} onOpenChange={setOpen}>
-//       <DialogContent>
-//         <DialogHeader>
-//           <DialogTitle>Move Place To New Date</DialogTitle>
-//         </DialogHeader>
-//         <form action={handleSubmit}>
-//           <input
-//             name="date"
-//             type="date"
-//             value={dateString}
-//             onChange={(e) => setDateString(e.target.value)}
-//             min={minDateString}
-//             max={maxDateString}
-//           />
-//           <input name="tripId" type="hidden" defaultValue={tripId} />
-//           <input name="placeId" type="hidden" defaultValue={id} />
-//           <DialogFooter>
-//             <DialogClose asChild>
-//               <Button type="submit">Submit</Button>
-//             </DialogClose>
-//           </DialogFooter>
-//         </form>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// }

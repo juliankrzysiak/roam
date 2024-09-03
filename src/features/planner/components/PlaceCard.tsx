@@ -98,13 +98,7 @@ export default function PlaceCard({
               {name}
             </h2>
           </button>
-          <PlaceOptions
-            id={id}
-            name={name}
-            date={date}
-            timezone={timezone}
-            dateRange={dateRange}
-          />
+          <PlaceOptions id={id} name={name} />
         </div>
         <div className="flex items-stretch gap-1">
           <div className="flex h-full gap-4">

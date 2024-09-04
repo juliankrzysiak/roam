@@ -24,7 +24,7 @@ import { addMinutes, parse } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { Reorder } from "framer-motion";
 import { useAtomValue } from "jotai";
-import { EllipsisVertical, Moon, Sun } from "lucide-react";
+import { EllipsisVertical, Moon, Sun, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
 import PlannerOptions from "./Options/PlannerOptions";
@@ -89,7 +89,7 @@ export default function Planner({
   return (
     <section
       className={clsx(
-        "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 sm:relative sm:max-w-sm",
+        "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 sm:relative sm:max-w-xs md:max-w-sm",
         !isVisible && "hidden opacity-0",
       )}
     >
@@ -269,12 +269,20 @@ function SelectOptions({
   }
 
   return (
-    <div className="mx-2 flex justify-between rounded-md border-2 border-slate-400 px-2 py-2 shadow-lg">
-      <span>{selectedPlacesLength} places selected</span>
-      <button onClick={() => setOpen(true)}>Move</button>
-      <form action={handleDelete}>
-        <button>Delete</button>
-      </form>
+    <div className="mx-2 flex justify-between rounded-md border-2 border-slate-400 px-2 py-2 text-sm shadow-lg">
+      <span>
+        {selectedPlacesLength} {selectedPlacesLength > 1 ? "places" : "place"}{" "}
+        selected
+      </span>
+      <div className="flex items-center gap-4">
+        <button onClick={() => setOpen(true)}>Move</button>
+        <form action={handleDelete}>
+          <button>Delete</button>
+        </form>
+        <button className="ml-2">
+          <XIcon size={16} />
+        </button>
+      </div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>

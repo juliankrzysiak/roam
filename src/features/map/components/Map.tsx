@@ -162,7 +162,7 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
               {placeDetails.shortFormattedAddress}
             </h3>
           </div>
-          <div className="flex flex-col gap-2 text-sm">
+          <div className="flex flex-col gap-1 text-sm">
             <div className="flex flex-col">
               <span>
                 {placeDetails?.primaryTypeDisplayName?.text || "place"}
@@ -181,7 +181,7 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
                 date={date}
               />
             </div>
-            <div className="mb-2 flex gap-1 text-slate-500">
+            <div className="mb-3 flex gap-1 text-slate-500">
               {placeDetails.websiteUri && (
                 <>
                   <a
@@ -204,7 +204,14 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
             </div>
           </div>
           {currentPlace?.id ? (
-            <Button onClick={handleDeletePlace}>Delete place</Button>
+            <Button
+              className="self-center text-red-900"
+              variant="outline"
+              size="sm"
+              onClick={handleDeletePlace}
+            >
+              Delete place
+            </Button>
           ) : (
             <Button onClick={handleCreatePlace}>Add place</Button>
           )}

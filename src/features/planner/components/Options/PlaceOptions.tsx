@@ -33,7 +33,7 @@ export default function PlaceOptions({
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger aria-label="Open options" className="h-fit">
-          <EllipsisVertical size={18} className="h-fit text-slate-500" />
+          <EllipsisVertical size={18} className="h-fit text-slate-500" aria-label="Options for this place."/>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="cursor-pointer">
           <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>

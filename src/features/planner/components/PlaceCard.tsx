@@ -90,7 +90,11 @@ export default function PlaceCard({
     >
       <article className="relative flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 py-2 pl-4 pr-1 shadow-sm">
         <div className="flex justify-between gap-2">
-          <button onClick={handleClick} className="w-fit">
+          <button
+            onClick={handleClick}
+            className="w-fit"
+            aria-label="Move to place on map."
+          >
             <h2 className="text-left text-lg font-bold underline underline-offset-2">
               {name}
             </h2>
@@ -114,9 +118,11 @@ export default function PlaceCard({
               className="text-lg"
               checked={selectedPlaces.includes(id)}
               onCheckedChange={handleChangeCheckbox}
+              aria-label="Select a place for further operations."
             />
             <GripVertical
               size={24}
+              aria-label="Drag to reorder places."
               className="cursor-pointer text-slate-500"
               onPointerDown={(e) => controls.start(e)}
             />
@@ -222,7 +228,10 @@ function PlaceDuration({
           ) : (
             <div className="flex items-center gap-1">
               <p>{formattedPlaceDuration}</p>
-              <ChevronRight size={svgSize} />
+              <ChevronRight
+                size={svgSize}
+                aria-label="Expand form for changing place duration."
+              />
             </div>
           )}
           <input type="hidden" name="id" defaultValue={id} />

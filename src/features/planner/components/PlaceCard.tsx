@@ -32,7 +32,9 @@ const svgSize = 16;
 
 type PlaceCardProps = {
   index: number;
+  dayId: string;
   place: Place;
+  places: Place[];
   timezone: string;
   handleDragEnd: () => void;
   selectedPlaces: string[];
@@ -41,7 +43,9 @@ type PlaceCardProps = {
 
 export default function PlaceCard({
   index,
+  dayId,
   place,
+  places,
   timezone,
   handleDragEnd,
   selectedPlaces,
@@ -101,7 +105,7 @@ export default function PlaceCard({
               {name}
             </h2>
           </button>
-          <PlaceOptions id={id} name={name} />
+          <PlaceOptions id={id} dayId={dayId} name={name} places={places} />
         </div>
         <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-slate-400 pl-1 pr-1 text-xs text-slate-900">
           {index + 1}

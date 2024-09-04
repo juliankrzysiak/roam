@@ -13,6 +13,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Place } from "@/types";
+import { deletePlaces } from "@/utils/actions/crud/delete";
 import { updateName } from "@/utils/actions/crud/update";
 import { SetStateAction } from "jotai";
 import { EllipsisVertical } from "lucide-react";
@@ -21,23 +23,34 @@ import { Dispatch, useState } from "react";
 type Props = {
   id: string;
   name: string;
+  dayId: string;
+  places: Place[];
 };
 
-export default function PlaceOptions({
-  id,
-  name,
-}: Props) {
+export default function PlaceOptions({ id, dayId, name, places }: Props) {
   const [isNameFormOpen, setIsNameFormOpen] = useState(false);
+
+  function handleDeletePlace() {
+    const placesToDelete = [id];
+    deletePlaces({ placesToDelete, places, dayId });
+  }
 
   return (
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger aria-label="Open options" className="h-fit">
-          <EllipsisVertical size={18} className="h-fit text-slate-500" aria-label="Options for this place."/>
+          <EllipsisVertical
+            size={18}
+            className="h-fit text-slate-500"
+            aria-label="Options for this place."
+          />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="cursor-pointer">
           <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
             Edit Name
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleDeletePlace}>
+            Delete place
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -56,7 +69,7 @@ type State = {
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-type EditNameFormProps = Props & State;
+type EditNameFormProps = Pick<Props, "id" | "name"> & State;
 
 function EditNameForm({ id, name, open, setOpen }: EditNameFormProps) {
   async function handleSubmit(formData: FormData) {

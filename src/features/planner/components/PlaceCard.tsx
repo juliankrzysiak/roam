@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { currentPlaceAtom } from "@/lib/atom";
-import { DateRange, Place } from "@/types";
+import { Place } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
 import { updateNotes, updatePlaceDuration } from "@/utils/actions/crud/update";
 import { add } from "date-fns";
@@ -15,26 +15,35 @@ import {
   Clock,
   GripVertical,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useExit } from "../hooks";
 import PlaceOptions from "./Options/PlaceOptions";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 const svgSize = 16;
 
 type PlaceCardProps = {
   place: Place;
-  date: Date;
   timezone: string;
-  dateRange: DateRange;
   handleDragEnd: () => void;
+  selectedPlaces: string[];
+  setSelectedPlaces: Dispatch<SetStateAction<string[]>>;
 };
 
 export default function PlaceCard({
   place,
-  date,
   timezone,
-  dateRange,
   handleDragEnd,
+  selectedPlaces,
+  setSelectedPlaces,
 }: PlaceCardProps) {
   const {
     id,
@@ -61,6 +70,14 @@ export default function PlaceCard({
     setCurrentPlace(currentPlace);
   }
 
+  function handleChangeCheckbox(checked: CheckedState) {
+    if (checked) {
+      setSelectedPlaces([...selectedPlaces, id]);
+    } else {
+      setSelectedPlaces(selectedPlaces.filter((id) => id !== place.id));
+    }
+  }
+
   return (
     <Reorder.Item
       value={place}
@@ -78,15 +95,9 @@ export default function PlaceCard({
               {name}
             </h2>
           </button>
-          <PlaceOptions
-            id={id}
-            name={name}
-            date={date}
-            timezone={timezone}
-            dateRange={dateRange}
-          />
+          <PlaceOptions id={id} name={name} />
         </div>
-        <div className="flex items-end gap-1">
+        <div className="flex items-stretch gap-1">
           <div className="flex h-full gap-4">
             <PlaceDuration
               arrival={schedule.arrival}
@@ -97,11 +108,19 @@ export default function PlaceCard({
             <Separator orientation="vertical" />
             <Notes id={id} notes={notes} />
           </div>
-          <GripVertical
-            size={24}
-            className=" cursor-pointer text-slate-500"
-            onPointerDown={(e) => controls.start(e)}
-          />
+          <div className="flex flex-col items-center justify-between">
+            <div></div>
+            <Checkbox
+              className="text-lg"
+              checked={selectedPlaces.includes(id)}
+              onCheckedChange={handleChangeCheckbox}
+            />
+            <GripVertical
+              size={24}
+              className="cursor-pointer text-slate-500"
+              onPointerDown={(e) => controls.start(e)}
+            />
+          </div>
         </div>
       </article>
       {travel && (

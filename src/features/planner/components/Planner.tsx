@@ -1,23 +1,37 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
 import { DateRange, Day } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
-import { updatePlaceOrder, updateStartTime } from "@/utils/actions/crud/update";
+import { deletePlaces } from "@/utils/actions/crud/delete";
+import {
+  movePlaces,
+  updatePlaceOrder,
+  updateStartTime,
+} from "@/utils/actions/crud/update";
 import clsx from "clsx";
 import { addMinutes, parse } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { Reorder } from "framer-motion";
 import { useAtomValue } from "jotai";
-import { EllipsisVertical, Moon, Sun } from "lucide-react";
+import { EllipsisVertical, Moon, Sun, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
 import PlannerOptions from "./Options/PlannerOptions";
 
 type PlannerProps = {
   day: Day;
+  tripId: string;
   tripName: string;
   totalDuration: number;
   dateRange: DateRange;
@@ -25,12 +39,14 @@ type PlannerProps = {
 
 export default function Planner({
   day,
+  tripId,
   tripName,
   totalDuration,
   dateRange,
 }: PlannerProps) {
   const isVisible = useAtomValue(isPlannerVisibleAtom);
   const [places, setPlaces] = useState(day.places);
+  const [selectedPlaces, setSelectedPlaces] = useState<string[]>([]);
 
   function handleDragEnd() {
     const [orderOriginalPlaces, orderPlaces] = [day.places, places].map(mapId);
@@ -42,10 +58,38 @@ export default function Planner({
     setPlaces(day.places);
   }, [day.places]);
 
+  async function handleDelete() {
+    await deletePlaces({
+      placesToDelete: selectedPlaces,
+      places,
+      dayId: day.id,
+    });
+    setSelectedPlaces([]);
+  }
+
+  async function handleMove(newDate: string) {
+    await movePlaces({
+      placesToMove: selectedPlaces,
+      places,
+      currentDayId: day.id,
+      newDate,
+      tripId,
+    });
+    setSelectedPlaces([]);
+  }
+
+  function handleSelectAll() {
+    setSelectedPlaces(mapId(places));
+  }
+
+  function handleDeselectAll() {
+    setSelectedPlaces([]);
+  }
+
   return (
     <section
       className={clsx(
-        "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 sm:relative sm:max-w-sm",
+        "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 sm:relative sm:max-w-xs md:max-w-sm",
         !isVisible && "hidden opacity-0",
       )}
     >
@@ -53,11 +97,22 @@ export default function Planner({
         <div className="item flex w-full items-center justify-between px-1">
           <EllipsisVertical size={18} className="invisible" />
           <h2 className="py-1 text-center text-xl tracking-wide">{tripName}</h2>
-          <PlannerOptions day={day} dateRange={dateRange} />
+          <PlannerOptions handleSelectAll={handleSelectAll} />
         </div>
         <hr className="w-full border-slate-400 " />
         <TimePicker day={day} totalDuration={totalDuration} />
       </div>
+      {Boolean(selectedPlaces.length) && (
+        <SelectOptions
+          day={day}
+          dateRange={dateRange}
+          tripId={tripId}
+          handleMove={handleMove}
+          handleDelete={handleDelete}
+          handleDeselectAll={handleDeselectAll}
+          selectedPlacesLength={selectedPlaces.length}
+        />
+      )}
       <Reorder.Group
         axis="y"
         values={places}
@@ -77,10 +132,10 @@ export default function Planner({
             <PlaceCard
               key={place.id}
               place={place}
-              date={day.date}
               timezone={day.timezone}
-              dateRange={dateRange}
               handleDragEnd={handleDragEnd}
+              selectedPlaces={selectedPlaces}
+              setSelectedPlaces={setSelectedPlaces}
             />
           );
         })}
@@ -119,6 +174,7 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
   );
 
   useExit(formRef, handleClickOutside);
+
   // Set state when new data
   useEffect(() => {
     setDate(day.date);
@@ -173,5 +229,84 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
         )}
       </div>
     </form>
+  );
+}
+
+type SelectOptionsProps = {
+  day: Day;
+  dateRange: DateRange;
+  tripId: string;
+  handleMove: (newDate: string) => Promise<void>;
+  handleDelete: () => Promise<void>;
+  handleDeselectAll: () => void;
+  selectedPlacesLength: number;
+};
+
+const dateFormat = "yyyy-MM-dd";
+
+function SelectOptions({
+  day,
+  dateRange,
+  tripId,
+  handleMove,
+  handleDelete,
+  handleDeselectAll,
+  selectedPlacesLength,
+}: SelectOptionsProps) {
+  const { id: dayId, date, timezone } = day;
+  const [open, setOpen] = useState(false);
+  const initialDateString = formatInTimeZone(date, timezone, dateFormat);
+  const [dateString, setDateString] = useState(initialDateString);
+  const minDateString = formatInTimeZone(dateRange.from, timezone, dateFormat);
+  const maxDateString = formatInTimeZone(dateRange.to, timezone, dateFormat);
+
+  async function handleSubmit() {
+    if (dateString === initialDateString) setOpen(false);
+    else {
+      await handleMove(dateString);
+      setOpen(false);
+    }
+  }
+
+  return (
+    <div className="mx-2 flex justify-between rounded-md border-2 border-slate-400 px-2 py-2 text-sm shadow-lg">
+      <span>
+        {selectedPlacesLength} {selectedPlacesLength > 1 ? "places" : "place"}{" "}
+        selected
+      </span>
+      <div className="flex items-center gap-4">
+        <button onClick={() => setOpen(true)}>Move</button>
+        <form action={handleDelete}>
+          <button>Delete</button>
+        </form>
+        <button className="ml-2" onClick={handleDeselectAll}>
+          <XIcon size={16} />
+        </button>
+      </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Move Places to New Date</DialogTitle>
+          </DialogHeader>
+          <form action={handleSubmit}>
+            <input
+              name="date"
+              type="date"
+              value={dateString}
+              onChange={(e) => setDateString(e.target.value)}
+              min={minDateString}
+              max={maxDateString}
+            />
+            <input name="tripId" type="hidden" defaultValue={tripId} />
+            <input name="dayId" type="hidden" defaultValue={dayId} />
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="submit">Submit</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

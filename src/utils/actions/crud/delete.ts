@@ -6,24 +6,34 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { deleteCookie } from "../cookies";
 
-export async function deletePlace(
-  places: Place[],
-  placeId: string,
-  dayId: string,
-) {
+type DeletePlacesArgs = {
+  placesToDelete: string[];
+  places: Place[];
+  dayId: string;
+};
+
+export async function deletePlaces({
+  placesToDelete,
+  places,
+  dayId,
+}: DeletePlacesArgs) {
   const supabase = createClient();
+
   try {
-    const { error } = await supabase.from("places").delete().eq("id", placeId);
+    const { error } = await supabase
+      .from("places")
+      .delete()
+      .in("id", placesToDelete);
     if (error) throw new Error(`Supabase error: ${error.message}`);
 
-    const order_places = mapId(places.filter((place) => place.id !== placeId));
-
+    const order_places = mapId(places).filter(
+      (id) => !placesToDelete.includes(id),
+    );
     const { error: orderError } = await supabase
       .from("days")
       .update({ order_places })
       .eq("id", dayId);
     if (orderError) throw new Error(`Supabase error: ${orderError.message}`);
-
     revalidatePath("/[tripId]", "page");
   } catch (error) {
     console.log(error);

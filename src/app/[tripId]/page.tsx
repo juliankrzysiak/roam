@@ -19,6 +19,7 @@ export default async function MapPage({ params }: Props) {
   const tripInfo = await getTripInfo(tripId);
   if (!tripInfo) throw new Error("Couldn't connect to server.");
   const { tripName, timezone, dateRange } = tripInfo;
+
   const day = await getDay(tripId, timezone);
   const totalDuration = day.places.reduce(
     (total, current) =>
@@ -30,6 +31,7 @@ export default async function MapPage({ params }: Props) {
     <main className="relative h-40 flex-grow sm:flex">
       <Planner
         day={day}
+        tripId={tripId}
         tripName={tripName}
         totalDuration={totalDuration}
         dateRange={dateRange}

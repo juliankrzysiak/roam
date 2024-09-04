@@ -268,7 +268,7 @@ export function Notes({ id, notes }: NotesProps) {
     >
       <textarea
         name="notes"
-        className="h-full max-h-96 min-h-full w-full bg-inherit px-1"
+        className="h-full max-h-96 min-h-full w-full bg-inherit px-1 text-sm"
         defaultValue={notes}
         maxLength={1000}
         placeholder="Add notes"

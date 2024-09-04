@@ -127,10 +127,11 @@ export default function Planner({
             Click a place on the map or search for it!
           </p>
         )}
-        {places.map((place) => {
+        {places.map((place,i) => {
           return (
             <PlaceCard
               key={place.id}
+              index={i}
               place={place}
               timezone={day.timezone}
               handleDragEnd={handleDragEnd}

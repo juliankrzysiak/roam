@@ -8,13 +8,9 @@ import { EllipsisVertical } from "lucide-react";
 
 type Props = {
   handleSelectAll: () => void;
-  handleDeselectAll: () => void;
 };
 
-export default function PlannerOptions({
-  handleSelectAll,
-  handleDeselectAll,
-}: Props) {
+export default function PlannerOptions({ handleSelectAll }: Props) {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger aria-label="Open options">
@@ -23,12 +19,6 @@ export default function PlannerOptions({
       <DropdownMenuContent>
         <DropdownMenuItem className="cursor-pointer" onClick={handleSelectAll}>
           <span>Select All</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onClick={handleDeselectAll}
-        >
-          <span>Deselect All</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

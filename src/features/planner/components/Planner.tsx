@@ -97,10 +97,7 @@ export default function Planner({
         <div className="item flex w-full items-center justify-between px-1">
           <EllipsisVertical size={18} className="invisible" />
           <h2 className="py-1 text-center text-xl tracking-wide">{tripName}</h2>
-          <PlannerOptions
-            handleSelectAll={handleSelectAll}
-            handleDeselectAll={handleDeselectAll}
-          />
+          <PlannerOptions handleSelectAll={handleSelectAll} />
         </div>
         <hr className="w-full border-slate-400 " />
         <TimePicker day={day} totalDuration={totalDuration} />
@@ -112,6 +109,7 @@ export default function Planner({
           tripId={tripId}
           handleMove={handleMove}
           handleDelete={handleDelete}
+          handleDeselectAll={handleDeselectAll}
           selectedPlacesLength={selectedPlaces.length}
         />
       )}
@@ -240,6 +238,7 @@ type SelectOptionsProps = {
   tripId: string;
   handleMove: (newDate: string) => Promise<void>;
   handleDelete: () => Promise<void>;
+  handleDeselectAll: () => void;
   selectedPlacesLength: number;
 };
 
@@ -251,6 +250,7 @@ function SelectOptions({
   tripId,
   handleMove,
   handleDelete,
+  handleDeselectAll,
   selectedPlacesLength,
 }: SelectOptionsProps) {
   const { id: dayId, date, timezone } = day;
@@ -279,7 +279,7 @@ function SelectOptions({
         <form action={handleDelete}>
           <button>Delete</button>
         </form>
-        <button className="ml-2">
+        <button className="ml-2" onClick={handleDeselectAll}>
           <XIcon size={16} />
         </button>
       </div>

@@ -25,6 +25,8 @@ import {
 } from "react";
 import { useExit } from "../hooks";
 import PlaceOptions from "./Options/PlaceOptions";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 const svgSize = 16;
 
@@ -68,9 +70,8 @@ export default function PlaceCard({
     setCurrentPlace(currentPlace);
   }
 
-  function handleChangeCheckbox(e: ChangeEvent<HTMLInputElement>) {
-    const isChecked = e.target.checked;
-    if (isChecked) {
+  function handleChangeCheckbox(checked: CheckedState) {
+    if (checked) {
       setSelectedPlaces([...selectedPlaces, id]);
     } else {
       setSelectedPlaces(selectedPlaces.filter((id) => id !== place.id));
@@ -107,11 +108,12 @@ export default function PlaceCard({
             <Separator orientation="vertical" />
             <Notes id={id} notes={notes} />
           </div>
-          <div className="flex flex-col justify-between">
-            <input
-              type="checkbox"
+          <div className="flex flex-col items-center justify-between">
+            <div></div>
+            <Checkbox
+              className="text-lg"
               checked={selectedPlaces.includes(id)}
-              onChange={handleChangeCheckbox}
+              onCheckedChange={handleChangeCheckbox}
             />
             <GripVertical
               size={24}

@@ -260,23 +260,19 @@ export async function updateSharing(sharing: boolean, tripId: string) {
   }
 }
 
-export async function updateSharingLink(tripId: string) {
+export async function updateSharingId(tripId: string) {
   const supabase = createClient();
-  const uuid = uuidv4();
-  const host =
-    process.env.NODE_ENV === "development"
-      ? "localhost:3000"
-      : "https://roam-gamma.vercel.app";
-  const sharing_link = `${host}/${tripId}?sharing=${uuid}`;
+  const sharing_id = uuidv4();
 
   try {
     const { data, error } = await supabase
       .from("trips")
-      .update({ sharing_link })
+      .update({ sharing_id })
       .eq("id", tripId)
-      .select("sharing_link").single();
+      .select("sharing_id")
+      .single();
     if (error) throw new Error(`Supabase error: ${error.message}`);
-    return data.sharing_link
+    return data.sharing_id;
   } catch (error) {
     console.log(error);
   }

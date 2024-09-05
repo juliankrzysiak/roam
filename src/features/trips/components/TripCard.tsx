@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { Trip } from "@/types";
 import { setCookie } from "@/utils/actions/cookies";
-import { updateSharing, updateSharingLink } from "@/utils/actions/crud/update";
+import { updateSharing, updateSharingId } from "@/utils/actions/crud/update";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { format, isEqual } from "date-fns";
 import Link from "next/link";
@@ -24,13 +24,18 @@ import TripOptions from "./TripOptions";
 
 const dateFormat = "MMM dd";
 
+const host =
+  process.env.NODE_ENV === "development"
+    ? "localhost:3000"
+    : "https://roam-gamma.vercel.app";
+
 export default function TripCard({
   tripId,
   name,
   dateRange,
   currentDate,
   sharing,
-  sharingLink,
+  sharingId,
 }: Trip) {
   let range = format(dateRange.from, dateFormat);
   if (!isEqual(dateRange.from, dateRange.to))
@@ -61,11 +66,7 @@ export default function TripCard({
             Start planning
           </Link>
         </Button>
-        <ShareTrip
-          sharing={sharing}
-          sharingLink={sharingLink}
-          tripId={tripId}
-        />
+        <ShareTrip sharing={sharing} sharingId={sharingId} tripId={tripId} />
       </div>
     </article>
   );
@@ -73,28 +74,25 @@ export default function TripCard({
 
 type ShareTripProps = {
   sharing: boolean;
-  sharingLink: string;
+  sharingId: string;
   tripId: string;
 };
 
-function ShareTrip({
-  tripId,
-  sharing,
-  sharingLink: defaultSharingLink,
-}: ShareTripProps) {
+function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
   const { toast } = useToast();
   const [checked, setChecked] = useState(sharing);
-  const [sharingLink, setSharingLink] = useState(defaultSharingLink);
+  const sharingLinkBase = `${host}/${tripId}?sharing=`;
+  const [sharingLink, setSharingLink] = useState(sharingLinkBase + sharingId);
 
   async function submitSharingForm() {
     if (checked === sharing) return;
     await updateSharing(checked, tripId);
   }
 
-  async function submitSharingLinkForm() {
-    const data = await updateSharingLink(tripId);
-    if (!data) return;
-    setSharingLink(data);
+  async function submitSharingIdForm() {
+    const sharingId = await updateSharingId(tripId);
+    if (!sharingId) return;
+    setSharingLink(sharingLinkBase + sharingId);
     toast({ description: "New link created." });
   }
 
@@ -120,7 +118,7 @@ function ShareTrip({
               </DialogDescription>
             </DialogHeader>
             <form
-              action={submitSharingLinkForm}
+              action={submitSharingIdForm}
               className="flex flex-col items-center gap-4"
             >
               <Input value={sharingLink} readOnly />

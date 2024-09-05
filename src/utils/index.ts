@@ -64,12 +64,8 @@ export function formatBulkDates(trip_id: string, dates: Date[]) {
 }
 
 /* -------------------------------- dateRange ------------------------------- */
-type TripNoDateRange = {
-  tripId: string;
-  name: string;
+type TripNoDateRange = Omit<Trip, "dateRange"> & {
   days: { date: string; orderPlaces: string[] }[];
-  currentDate: string;
-  timezone: string;
 };
 
 export function mapDateRange(trips: TripNoDateRange[]): Trip[] {

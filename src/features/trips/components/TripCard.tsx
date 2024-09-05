@@ -74,7 +74,7 @@ export default function TripCard({
 
 type ShareTripProps = {
   sharing: boolean;
-  sharingId: string;
+  sharingId: string | null;
   tripId: string;
 };
 
@@ -82,7 +82,8 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
   const { toast } = useToast();
   const [checked, setChecked] = useState(sharing);
   const sharingLinkBase = `${host}/${tripId}?sharing=`;
-  const [sharingLink, setSharingLink] = useState(sharingLinkBase + sharingId);
+  const defaultSharingLink = sharingId ? sharingLinkBase + sharingId : "";
+  const [sharingLink, setSharingLink] = useState(defaultSharingLink);
 
   async function submitSharingForm() {
     if (checked === sharing) return;

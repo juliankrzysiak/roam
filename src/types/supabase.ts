@@ -59,6 +59,7 @@ export type Database = {
           notes: string
           place_duration: number
           place_id: string
+          sharing: boolean
           trip_duration: number
         }
         Insert: {
@@ -72,6 +73,7 @@ export type Database = {
           notes?: string
           place_duration?: number
           place_id: string
+          sharing?: boolean
           trip_duration?: number
         }
         Update: {
@@ -85,6 +87,7 @@ export type Database = {
           notes?: string
           place_duration?: number
           place_id?: string
+          sharing?: boolean
           trip_duration?: number
         }
         Relationships: [
@@ -103,6 +106,7 @@ export type Database = {
           current_date: string
           id: string
           name: string
+          sharing: boolean
           timezone: string
           user_id: string | null
         }
@@ -111,6 +115,7 @@ export type Database = {
           current_date: string
           id?: string
           name: string
+          sharing?: boolean
           timezone: string
           user_id?: string | null
         }
@@ -119,6 +124,7 @@ export type Database = {
           current_date?: string
           id?: string
           name?: string
+          sharing?: boolean
           timezone?: string
           user_id?: string | null
         }
@@ -165,6 +171,7 @@ export type Database = {
           notes: string
           place_duration: number
           place_id: string
+          sharing: boolean
           trip_duration: number
         }[]
       }

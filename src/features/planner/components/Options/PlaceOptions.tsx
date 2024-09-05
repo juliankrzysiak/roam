@@ -13,12 +13,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { IsSharedContext } from "@/context/IsSharedContext";
 import { Place } from "@/types";
 import { deletePlaces } from "@/utils/actions/crud/delete";
 import { updateName } from "@/utils/actions/crud/update";
 import { SetStateAction } from "jotai";
 import { EllipsisVertical } from "lucide-react";
-import { Dispatch, useState } from "react";
+import { Dispatch, useContext, useState } from "react";
 
 type Props = {
   id: string;
@@ -28,6 +29,7 @@ type Props = {
 };
 
 export default function PlaceOptions({ id, dayId, name, places }: Props) {
+  const isShared = useContext(IsSharedContext);
   const [isNameFormOpen, setIsNameFormOpen] = useState(false);
 
   function handleDeletePlace() {
@@ -46,10 +48,13 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="cursor-pointer">
-          <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
+          <DropdownMenuItem
+            onClick={() => setIsNameFormOpen(true)}
+            disabled={isShared}
+          >
             Edit Name
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleDeletePlace}>
+          <DropdownMenuItem onClick={handleDeletePlace} disabled={isShared}>
             Delete place
           </DropdownMenuItem>
         </DropdownMenuContent>

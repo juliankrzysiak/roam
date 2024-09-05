@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
+import { IsSharedContext } from "@/context/IsSharedContext";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
 import { updateNotes, updatePlaceDuration } from "@/utils/actions/crud/update";
+import { CheckedState } from "@radix-ui/react-checkbox";
 import { add } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { Reorder, useDragControls } from "framer-motion";
@@ -16,17 +19,15 @@ import {
   GripVertical,
 } from "lucide-react";
 import {
-  ChangeEvent,
   Dispatch,
   SetStateAction,
+  useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
 import { useExit } from "../hooks";
 import PlaceOptions from "./Options/PlaceOptions";
-import { Checkbox } from "@/components/ui/checkbox";
-import { CheckedState } from "@radix-ui/react-checkbox";
 
 const svgSize = 16;
 
@@ -61,6 +62,7 @@ export default function PlaceCard({
     travel,
     notes,
   } = place;
+  const isShared = useContext(IsSharedContext);
   const itemRef = useRef<HTMLDivElement | null>(null);
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const controls = useDragControls();
@@ -128,12 +130,13 @@ export default function PlaceCard({
               checked={selectedPlaces.includes(id)}
               onCheckedChange={handleChangeCheckbox}
               aria-label="Select a place for further operations."
+              disabled={isShared}
             />
             <GripVertical
               size={24}
               aria-label="Drag to reorder places."
               className="cursor-pointer text-slate-500"
-              onPointerDown={(e) => controls.start(e)}
+              onPointerDown={(e) => !isShared && controls.start(e)}
             />
           </div>
         </div>
@@ -162,6 +165,7 @@ function PlaceDuration({
   id,
   timezone,
 }: PlaceDurationProps) {
+  const isShared = useContext(IsSharedContext);
   const formRef = useRef<HTMLFormElement | null>(null);
   useExit(formRef, handleClickOutside);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -202,7 +206,7 @@ function PlaceDuration({
           aria-label="Duration at location"
         >
           <Clock size={svgSize} />
-          {isFormVisible ? (
+          {isFormVisible && !isShared ? (
             <>
               <div className="flex gap-1">
                 <input
@@ -262,6 +266,7 @@ type NotesProps = {
 };
 
 export function Notes({ id, notes }: NotesProps) {
+  const isShared = useContext(IsSharedContext);
   const formRef = useRef<HTMLFormElement | null>(null);
 
   return (
@@ -276,6 +281,7 @@ export function Notes({ id, notes }: NotesProps) {
         defaultValue={notes}
         maxLength={1000}
         placeholder="Add notes"
+        disabled={isShared}
       />
       <input name="id" type="hidden" defaultValue={id} />
       <input name="initialNotes" type="hidden" defaultValue={notes} />

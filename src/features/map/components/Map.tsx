@@ -21,6 +21,7 @@ import useSWR from "swr";
 import { PlaceDetails } from "../types";
 import { placeDetailsFetcher } from "../utils";
 import { Polyline } from "./Polyline";
+import { IsSharedContext } from "@/context/IsSharedContext";
 
 /* -------------------------------------------------------------------------- */
 /*                                     Map                                    */
@@ -28,10 +29,11 @@ import { Polyline } from "./Polyline";
 
 type MapProps = {
   day: Day;
+  isShared: boolean;
   children: React.ReactNode;
 };
 
-export default function Map({ day, children }: MapProps) {
+export default function Map({ day, isShared, children }: MapProps) {
   const { places } = day;
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
@@ -57,28 +59,32 @@ export default function Map({ day, children }: MapProps) {
   }
 
   return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
-      <GoogleMap
-        defaultZoom={13}
-        defaultCenter={defaultCenter}
-        mapId={"2b28f32837556830"}
-        onClick={handleMapClick}
-        disableDefaultUI
+    <IsSharedContext.Provider value={isShared}>
+      <APIProvider
+        apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
       >
-        <Markers places={places} />
-        {currentPlace && (
-          <InfoWindow date={day.date} dayId={day.id} places={places} />
-        )}
-        {children}
-        {day.path && (
-          <Polyline
-            strokeWeight={5}
-            strokeColor={"#fb923c"}
-            encodedPath={day.path}
-          />
-        )}
-      </GoogleMap>
-    </APIProvider>
+        <GoogleMap
+          defaultZoom={13}
+          defaultCenter={defaultCenter}
+          mapId={"2b28f32837556830"}
+          onClick={handleMapClick}
+          disableDefaultUI
+        >
+          <Markers places={places} />
+          {currentPlace && (
+            <InfoWindow date={day.date} dayId={day.id} places={places} />
+          )}
+          {children}
+          {day.path && (
+            <Polyline
+              strokeWeight={5}
+              strokeColor={"#fb923c"}
+              encodedPath={day.path}
+            />
+          )}
+        </GoogleMap>
+      </APIProvider>
+    </IsSharedContext.Provider>
   );
 }
 

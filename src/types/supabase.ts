@@ -107,6 +107,7 @@ export type Database = {
           id: string
           name: string
           sharing: boolean
+          sharing_link: string | null
           timezone: string
           user_id: string | null
         }
@@ -116,6 +117,7 @@ export type Database = {
           id?: string
           name: string
           sharing?: boolean
+          sharing_link?: string | null
           timezone: string
           user_id?: string | null
         }
@@ -125,6 +127,7 @@ export type Database = {
           id?: string
           name?: string
           sharing?: boolean
+          sharing_link?: string | null
           timezone?: string
           user_id?: string | null
         }

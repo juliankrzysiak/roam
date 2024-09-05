@@ -14,11 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Trip } from "@/types";
 import { setCookie } from "@/utils/actions/cookies";
-import { updateSharing } from "@/utils/actions/crud/update";
+import { updateSharing, updateSharingLink } from "@/utils/actions/crud/update";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { format, isEqual } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import TripOptions from "./TripOptions";
 
 const dateFormat = "MMM dd";
@@ -29,6 +30,7 @@ export default function TripCard({
   dateRange,
   currentDate,
   sharing,
+  sharingLink,
 }: Trip) {
   let range = format(dateRange.from, dateFormat);
   if (!isEqual(dateRange.from, dateRange.to))
@@ -59,7 +61,11 @@ export default function TripCard({
             Start planning
           </Link>
         </Button>
-        <ShareTrip sharing={sharing} tripId={tripId} />
+        <ShareTrip
+          sharing={sharing}
+          sharingLink={sharingLink}
+          tripId={tripId}
+        />
       </div>
     </article>
   );
@@ -67,14 +73,22 @@ export default function TripCard({
 
 type ShareTripProps = {
   sharing: boolean;
+  sharingLink: string;
   tripId: string;
 };
 
 function ShareTrip({ tripId, sharing }: ShareTripProps) {
   const [checked, setChecked] = useState(sharing);
+  const [sharingLink, setSharingLink] = useState("");
 
   async function submitSharingForm() {
     await updateSharing(checked, tripId);
+  }
+
+  async function createNewSharingLink() {
+    const data = await updateSharingLink(tripId);
+    if (!data) return;
+    setSharingLink(data);
   }
 
   return (
@@ -93,8 +107,11 @@ function ShareTrip({ tripId, sharing }: ShareTripProps) {
                 The trip will not be editable by anyone except you.
               </DialogDescription>
             </DialogHeader>
-            <form action="" className="flex flex-col items-center gap-4">
-              <Input />
+            <form
+              action={createNewSharingLink}
+              className="flex flex-col items-center gap-4"
+            >
+              <Input defaultValue={sharingLink} />
               <Button>Create new link</Button>
             </form>
           </div>

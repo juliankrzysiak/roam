@@ -5,6 +5,7 @@ import { convertTime, formatBulkDates, mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { format } from "date-fns";
 import { revalidatePath } from "next/cache";
+import { v4 as uuidv4 } from "uuid";
 
 export async function updateTrip(id: string, name: string) {
   const supabase = createClient();
@@ -254,6 +255,28 @@ export async function updateSharing(sharing: boolean, tripId: string) {
   try {
     await supabase.from("trips").update({ sharing }).eq("id", tripId);
     revalidatePath("/trips");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateSharingLink(tripId: string) {
+  const supabase = createClient();
+  const uuid = uuidv4();
+  const host =
+    process.env.NODE_ENV === "development"
+      ? "localhost:3000"
+      : "https://roam-gamma.vercel.app";
+  const sharing_link = `${host}/${tripId}?sharing=${uuid}`;
+
+  try {
+    const { data, error } = await supabase
+      .from("trips")
+      .update({ sharing_link })
+      .eq("id", tripId)
+      .select("sharing_link").single();
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    return data.sharing_link
   } catch (error) {
     console.log(error);
   }

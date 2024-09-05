@@ -87,10 +87,11 @@ function ShareTrip({
   const [sharingLink, setSharingLink] = useState(defaultSharingLink);
 
   async function submitSharingForm() {
+    if (checked === sharing) return;
     await updateSharing(checked, tripId);
   }
 
-  async function createNewSharingLink() {
+  async function submitSharingLinkForm() {
     const data = await updateSharingLink(tripId);
     if (!data) return;
     setSharingLink(data);
@@ -119,7 +120,7 @@ function ShareTrip({
               </DialogDescription>
             </DialogHeader>
             <form
-              action={createNewSharingLink}
+              action={submitSharingLinkForm}
               className="flex flex-col items-center gap-4"
             >
               <Input value={sharingLink} readOnly />

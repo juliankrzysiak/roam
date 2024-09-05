@@ -14,12 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Trip } from "@/types";
 import { setCookie } from "@/utils/actions/cookies";
-import { format, isEqual } from "date-fns";
-import Link from "next/link";
-import TripOptions from "./TripOptions";
-import { useState } from "react";
 import { updateSharing } from "@/utils/actions/crud/update";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { format, isEqual } from "date-fns";
+import Link from "next/link";
+import { useState } from "react";
+import TripOptions from "./TripOptions";
 
 const dateFormat = "MMM dd";
 
@@ -85,31 +85,38 @@ function ShareTrip({ tripId, sharing }: ShareTripProps) {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Share Trip</DialogTitle>
-          <DialogDescription>
-            Create a link to share your trip with friends. The trip will not be
-            editable by anyone except you.
-          </DialogDescription>
-        </DialogHeader>
-        <form action="" className="flex flex-col items-center gap-4">
-          <Input />
-          <Button>Create new link</Button>
-        </form>
-        <form
-          action={submitSharingForm}
-          id="sharingForm"
-          className="flex items-center gap-2"
-        >
-          <span className="flex items-center gap-2">
-            {`Sharing for this trip is ${checked ? "on" : "off"}`}
-            <Switch
-              checked={checked}
-              onCheckedChange={() => setChecked(!checked)}
-            />
-          </span>
-        </form>
-        <DialogFooter>
+        <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-4">
+            <DialogHeader>
+              <DialogTitle>Create Trip Link</DialogTitle>
+              <DialogDescription>
+                The trip will not be editable by anyone except you.
+              </DialogDescription>
+            </DialogHeader>
+            <form action="" className="flex flex-col items-center gap-4">
+              <Input />
+              <Button>Create new link</Button>
+            </form>
+          </div>
+          <div className="flex flex-col gap-4">
+            <DialogHeader>
+              <DialogTitle>Change Sharing Status</DialogTitle>
+              <DialogDescription>
+                This is regardless of any link created or shared.
+              </DialogDescription>
+            </DialogHeader>
+            <form action={submitSharingForm} id="sharingForm">
+              <label className="flex items-center gap-4">
+                {`Sharing is ${checked ? "on" : "off"}`}
+                <Switch
+                  checked={checked}
+                  onCheckedChange={() => setChecked(!checked)}
+                />
+              </label>
+            </form>
+          </div>
+        </div>
+        <DialogFooter className="mt-4">
           <DialogClose asChild>
             <Button type="submit" form="sharingForm">
               Save Changes

@@ -17,6 +17,9 @@ import { setCookie } from "@/utils/actions/cookies";
 import { format, isEqual } from "date-fns";
 import Link from "next/link";
 import TripOptions from "./TripOptions";
+import { useState } from "react";
+import { updateSharing } from "@/utils/actions/crud/update";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 const dateFormat = "MMM dd";
 
@@ -56,7 +59,7 @@ export default function TripCard({
             Start planning
           </Link>
         </Button>
-        <ShareTrip sharing={sharing} />
+        <ShareTrip sharing={sharing} tripId={tripId} />
       </div>
     </article>
   );
@@ -64,9 +67,16 @@ export default function TripCard({
 
 type ShareTripProps = {
   sharing: boolean;
+  tripId: string;
 };
 
-function ShareTrip({ sharing }: ShareTripProps) {
+function ShareTrip({ tripId, sharing }: ShareTripProps) {
+  const [checked, setChecked] = useState(sharing);
+
+  async function submitSharingForm() {
+    await updateSharing(checked, tripId);
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -86,12 +96,25 @@ function ShareTrip({ sharing }: ShareTripProps) {
           <Input />
           <Button>Create new link</Button>
         </form>
-        <form action="" className="flex items-center gap-2">
-          <p>{`Sharing is ${sharing ? "on" : "off"}`}</p>
-          <Switch checked={sharing} />
+        <form
+          action={submitSharingForm}
+          id="sharingForm"
+          className="flex items-center gap-2"
+        >
+          <span className="flex items-center gap-2">
+            {`Sharing for this trip is ${checked ? "on" : "off"}`}
+            <Switch
+              checked={checked}
+              onCheckedChange={() => setChecked(!checked)}
+            />
+          </span>
         </form>
         <DialogFooter>
-          <Button type="submit">Save Changes</Button>
+          <DialogClose asChild>
+            <Button type="submit" form="sharingForm">
+              Save Changes
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -52,6 +52,7 @@ export async function updateTripDates(
         .eq("trip_id", tripId)
         .in("date", formattedDates);
       if (error) throw new Error(`Supabase error: ${error.message}`);
+      revalidatePath("/trips");
     } catch (error) {
       console.log(error);
     }
@@ -243,6 +244,16 @@ export async function movePlaces({
     if (updateNewDayError) throw new Error(updateNewDayError.message);
 
     revalidatePath("/[tripId]", "page");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateSharing(sharing: boolean, tripId: string) {
+  const supabase = createClient();
+  try {
+    await supabase.from("trips").update({ sharing }).eq("id", tripId);
+    revalidatePath("/trips");
   } catch (error) {
     console.log(error);
   }

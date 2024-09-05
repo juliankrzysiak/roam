@@ -1,6 +1,5 @@
-import { Place, Trip } from "@/types";
-import { format, formatISO, parse, parseISO } from "date-fns";
-import { DateRange } from "@/types";
+import { DateRange, Place, Trip } from "@/types";
+import { format, formatISO, parse } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 
 export function mapId(places: Place[]) {
@@ -65,12 +64,8 @@ export function formatBulkDates(trip_id: string, dates: Date[]) {
 }
 
 /* -------------------------------- dateRange ------------------------------- */
-type TripNoDateRange = {
-  tripId: string;
-  name: string;
+type TripNoDateRange = Omit<Trip, "dateRange"> & {
   days: { date: string; orderPlaces: string[] }[];
-  currentDate: string;
-  timezone: string;
 };
 
 export function mapDateRange(trips: TripNoDateRange[]): Trip[] {

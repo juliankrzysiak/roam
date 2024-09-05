@@ -1,27 +1,41 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { DateRange } from "@/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/components/ui/use-toast";
+import { Trip } from "@/types";
+import { setCookie } from "@/utils/actions/cookies";
+import { updateSharing, updateSharingId } from "@/utils/actions/crud/update";
+import { DialogClose } from "@radix-ui/react-dialog";
 import { format, isEqual } from "date-fns";
 import Link from "next/link";
+import { useState } from "react";
 import TripOptions from "./TripOptions";
-import { setCookie } from "@/utils/actions/cookies";
-
-type Props = {
-  tripId: string;
-  name: string;
-  dateRange: DateRange;
-  currentDate: string;
-};
 
 const dateFormat = "MMM dd";
+
+const host =
+  process.env.NODE_ENV === "development"
+    ? "localhost:3000"
+    : "https://roam-gamma.vercel.app";
 
 export default function TripCard({
   tripId,
   name,
   dateRange,
   currentDate,
-}: Props) {
+  sharing,
+  sharingId,
+}: Trip) {
   let range = format(dateRange.from, dateFormat);
   if (!isEqual(dateRange.from, dateRange.to))
     range += ` - ${format(dateRange.to, dateFormat)}`;
@@ -38,13 +52,114 @@ export default function TripCard({
         dateRange={dateRange}
         currentDate={currentDate}
       />
+      {sharing && (
+        <span className="absolute left-2 top-2 text-sm text-slate-500">
+          shared
+        </span>
+      )}
       <h3 className="text-2xl font-semibold">{name}</h3>
       <p>{range}</p>
-      <Button variant="default" size="sm" asChild className="mt-4 w-full">
-        <Link href={`/${tripId}`} onClick={handleClick}>
-          Schedule
-        </Link>
-      </Button>
+      <div className="mt-4 flex w-full gap-2">
+        <Button variant="default" size="sm" asChild className="flex-1">
+          <Link href={`/${tripId}`} onClick={handleClick}>
+            Start planning
+          </Link>
+        </Button>
+        <ShareTrip sharing={sharing} sharingId={sharingId} tripId={tripId} />
+      </div>
     </article>
+  );
+}
+
+type ShareTripProps = {
+  sharing: boolean;
+  sharingId: string | null;
+  tripId: string;
+};
+
+function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
+  const { toast } = useToast();
+  const [checked, setChecked] = useState(sharing);
+  const sharingLinkBase = `${host}/${tripId}?sharing=`;
+  const defaultSharingLink = sharingId ? sharingLinkBase + sharingId : "";
+  const [sharingLink, setSharingLink] = useState(defaultSharingLink);
+
+  async function submitSharingForm() {
+    if (checked === sharing) return;
+    await updateSharing(checked, tripId);
+  }
+
+  async function submitSharingIdForm() {
+    const sharingId = await updateSharingId(tripId);
+    if (!sharingId) return;
+    setSharingLink(sharingLinkBase + sharingId);
+    toast({ description: "New link created." });
+  }
+
+  function copyToClipboard() {
+    navigator.clipboard.writeText(sharingLink);
+    toast({ description: "Link copied." });
+  }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="flex-1">
+          Share trip
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-xl">
+        <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-4">
+            <DialogHeader>
+              <DialogTitle>Create Trip Link</DialogTitle>
+              <DialogDescription>
+                The trip will not be editable by anyone except you.
+              </DialogDescription>
+            </DialogHeader>
+            <form
+              action={submitSharingIdForm}
+              className="flex flex-col items-center gap-4"
+            >
+              <span className="text-center">{sharingLink}</span>
+              <div className="flex gap-2">
+                <Button>Create new link</Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={copyToClipboard}
+                >
+                  Copy link
+                </Button>
+              </div>
+            </form>
+          </div>
+          <div className="flex flex-col gap-4">
+            <DialogHeader>
+              <DialogTitle>Change Sharing Status</DialogTitle>
+              <DialogDescription>
+                This is regardless of any link created or shared.
+              </DialogDescription>
+            </DialogHeader>
+            <form action={submitSharingForm} id="sharingForm">
+              <label className="flex items-center gap-4">
+                {`Sharing is ${checked ? "on" : "off"}`}
+                <Switch
+                  checked={checked}
+                  onCheckedChange={() => setChecked(!checked)}
+                />
+              </label>
+            </form>
+          </div>
+        </div>
+        <DialogFooter className="mt-4">
+          <DialogClose asChild>
+            <Button type="submit" form="sharingForm">
+              Save Changes
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

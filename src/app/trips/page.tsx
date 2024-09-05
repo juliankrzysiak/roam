@@ -1,25 +1,24 @@
 import NewTripForm from "@/features/trips/components/NewTripForm";
-import TripCard from "@/features/trips/components/TripCard";
 import TripSection from "@/features/trips/components/TripSection";
 import { Trip } from "@/types";
 import { mapDateRange } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { isPast } from "date-fns";
-import { redirect } from "next/navigation";
 
 export default async function Trips() {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/");
+  if (!user) throw new Error("No authorization.");
 
   const { data, error } = await supabase
     .from("trips")
     .select(
-      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone",
+      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone, sharing, sharingId:sharing_id",
     )
-    .order("date", { referencedTable: "days" });
+    .order("date", { referencedTable: "days" })
+    .eq("user_id", user.id);
   if (error) throw new Error(error.message);
 
   // todo: replace with rpc

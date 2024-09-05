@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { IsSharedContext } from "@/context/IsSharedContext";
 import { currentPlaceAtom } from "@/lib/atom";
 import { Day, Place } from "@/types";
 import { createPlace } from "@/utils/actions/crud/create";
@@ -16,12 +17,11 @@ import {
 } from "@vis.gl/react-google-maps";
 import { useAtom, useSetAtom } from "jotai";
 import { ChevronsUpDown, LoaderCircle, Star, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { PlaceDetails } from "../types";
 import { placeDetailsFetcher } from "../utils";
 import { Polyline } from "./Polyline";
-import { IsSharedContext } from "@/context/IsSharedContext";
 
 /* -------------------------------------------------------------------------- */
 /*                                     Map                                    */
@@ -99,6 +99,7 @@ type InfoWindowProps = {
 };
 
 function InfoWindow({ date, dayId, places }: InfoWindowProps) {
+  const isShared = useContext(IsSharedContext);
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const advancedMarkerRef = useRef<AdvancedMarkerRef>(null);
   const map = useMap();
@@ -209,17 +210,30 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
               </a>
             </div>
           </div>
-          {currentPlace?.id ? (
-            <Button
-              className="self-center text-red-900"
-              variant="outline"
-              size="sm"
-              onClick={handleDeletePlace}
-            >
-              Delete place
-            </Button>
-          ) : (
-            <Button onClick={handleCreatePlace}>Add place</Button>
+          {!isShared && (
+            <>
+              {currentPlace?.id ? (
+                <form
+                  action={handleDeletePlace}
+                  className="flex justify-center"
+                >
+                  <Button
+                    className="self-center text-red-900"
+                    variant="outline"
+                    size="sm"
+                    disabled={isShared}
+                  >
+                    Delete place
+                  </Button>
+                </form>
+              ) : (
+                <form action={handleCreatePlace}>
+                  <Button className="w-full" disabled={isShared}>
+                    Add place
+                  </Button>
+                </form>
+              )}
+            </>
           )}
         </>
       )}

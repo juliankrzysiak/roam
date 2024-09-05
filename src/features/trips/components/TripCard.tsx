@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/components/ui/use-toast";
 import { Trip } from "@/types";
 import { setCookie } from "@/utils/actions/cookies";
 import { updateSharing, updateSharingLink } from "@/utils/actions/crud/update";
@@ -19,7 +20,6 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { format, isEqual } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import TripOptions from "./TripOptions";
 
 const dateFormat = "MMM dd";
@@ -77,9 +77,14 @@ type ShareTripProps = {
   tripId: string;
 };
 
-function ShareTrip({ tripId, sharing }: ShareTripProps) {
+function ShareTrip({
+  tripId,
+  sharing,
+  sharingLink: defaultSharingLink,
+}: ShareTripProps) {
+  const { toast } = useToast();
   const [checked, setChecked] = useState(sharing);
-  const [sharingLink, setSharingLink] = useState("");
+  const [sharingLink, setSharingLink] = useState(defaultSharingLink);
 
   async function submitSharingForm() {
     await updateSharing(checked, tripId);
@@ -89,6 +94,12 @@ function ShareTrip({ tripId, sharing }: ShareTripProps) {
     const data = await updateSharingLink(tripId);
     if (!data) return;
     setSharingLink(data);
+    toast({ description: "New link created." });
+  }
+
+  function copyToClipboard() {
+    navigator.clipboard.writeText(sharingLink);
+    toast({ description: "Link copied." });
   }
 
   return (
@@ -98,7 +109,7 @@ function ShareTrip({ tripId, sharing }: ShareTripProps) {
           Share trip
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-3xl">
         <div className="flex flex-col gap-12">
           <div className="flex flex-col gap-4">
             <DialogHeader>
@@ -111,8 +122,17 @@ function ShareTrip({ tripId, sharing }: ShareTripProps) {
               action={createNewSharingLink}
               className="flex flex-col items-center gap-4"
             >
-              <Input defaultValue={sharingLink} />
-              <Button>Create new link</Button>
+              <Input value={sharingLink} readOnly />
+              <div className="flex gap-2">
+                <Button>Create new link</Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={copyToClipboard}
+                >
+                  Copy link
+                </Button>
+              </div>
             </form>
           </div>
           <div className="flex flex-col gap-4">

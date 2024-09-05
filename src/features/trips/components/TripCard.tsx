@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { Trip } from "@/types";
@@ -109,7 +108,7 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
           Share trip
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="sm:max-w-xl">
         <div className="flex flex-col gap-12">
           <div className="flex flex-col gap-4">
             <DialogHeader>
@@ -122,7 +121,7 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
               action={submitSharingIdForm}
               className="flex flex-col items-center gap-4"
             >
-              <Input value={sharingLink} readOnly />
+              <span className="text-center">{sharingLink}</span>
               <div className="flex gap-2">
                 <Button>Create new link</Button>
                 <Button

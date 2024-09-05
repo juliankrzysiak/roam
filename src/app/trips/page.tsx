@@ -17,7 +17,7 @@ export default async function Trips() {
   const { data, error } = await supabase
     .from("trips")
     .select(
-      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone",
+      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone, sharing",
     )
     .order("date", { referencedTable: "days" });
   if (error) throw new Error(error.message);

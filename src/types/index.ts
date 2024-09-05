@@ -38,6 +38,7 @@ export type Trip = {
   dateRange: DateRange;
   currentDate: string;
   timezone: string;
+  sharing: boolean;
 };
 
 export type DateRange = {

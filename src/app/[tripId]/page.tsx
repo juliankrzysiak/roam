@@ -11,16 +11,21 @@ import { fromZonedTime } from "date-fns-tz";
 
 type Props = {
   params: { tripId: string };
-  searchParams: { sharing?: boolean };
+  searchParams: { sharing?: string };
 };
 
 export default async function MapPage({ params, searchParams }: Props) {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   const { tripId } = params;
   const { sharing } = searchParams;
   const tripInfo = await getTripInfo(tripId);
   if (!tripInfo) throw new Error("Couldn't connect to server.");
-  const { tripName, timezone, dateRange, isTripShared } = tripInfo;
-  const isShared = isTripShared && Boolean(sharing);
+  const { tripName, timezone, dateRange, isTripShared, sharingId } = tripInfo;
+  const isShared = isTripShared && sharing === sharingId;
+  if (!isShared && !session) throw new Error("No authorization.");
 
   const day = await getDay(tripId, timezone);
   const totalDuration = day.places.reduce(
@@ -161,12 +166,17 @@ export async function getTripInfo(tripId: string) {
   try {
     const { data: tripNameData, error: tripNameError } = await supabase
       .from("trips")
-      .select("name, timezone, sharing")
+      .select("name, timezone, sharing, sharingId:sharing_id")
       .eq("id", tripId)
       .limit(1)
       .single();
     if (tripNameError) throw new Error(`${tripNameError.message}`);
-    const { name: tripName, timezone, sharing: isTripShared } = tripNameData;
+    const {
+      name: tripName,
+      timezone,
+      sharing: isTripShared,
+      sharingId,
+    } = tripNameData;
 
     const { data: daysData, error: daysError } = await supabase
       .from("days")
@@ -181,6 +191,7 @@ export async function getTripInfo(tripId: string) {
       timezone,
       dateRange,
       isTripShared,
+      sharingId,
     };
   } catch (error) {
     console.log(error);

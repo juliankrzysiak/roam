@@ -1,6 +1,5 @@
-import { Place, Trip } from "@/types";
-import { format, formatISO, parse, parseISO } from "date-fns";
-import { DateRange } from "@/types";
+import { DateRange, Place, Trip } from "@/types";
+import { format, formatISO, parse } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 
 export function mapId(places: Place[]) {

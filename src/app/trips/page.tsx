@@ -1,23 +1,21 @@
 import NewTripForm from "@/features/trips/components/NewTripForm";
-import TripCard from "@/features/trips/components/TripCard";
 import TripSection from "@/features/trips/components/TripSection";
 import { Trip } from "@/types";
 import { mapDateRange } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { isPast } from "date-fns";
-import { redirect } from "next/navigation";
 
 export default async function Trips() {
   const supabase = createClient();
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/");
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) throw new Error("No authorization.");
 
   const { data, error } = await supabase
     .from("trips")
     .select(
-      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone, sharing, sharingLink:sharing_link",
+      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone, sharing, sharingId:sharing_id",
     )
     .order("date", { referencedTable: "days" });
   if (error) throw new Error(error.message);

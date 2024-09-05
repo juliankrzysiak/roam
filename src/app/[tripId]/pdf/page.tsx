@@ -18,7 +18,10 @@ type Props = {
 export default async function PDFPage({ params }: Props) {
   const { tripId } = params;
   const supabase = createClient();
-
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) throw new Error("No authorization.");
   const { data, error } = await supabase
     .from("days")
     .select("id, date, timezone")

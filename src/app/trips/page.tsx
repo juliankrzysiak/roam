@@ -8,16 +8,17 @@ import { isPast } from "date-fns";
 export default async function Trips() {
   const supabase = createClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  if (!session) throw new Error("No authorization.");
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("No authorization.");
 
   const { data, error } = await supabase
     .from("trips")
     .select(
       "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone, sharing, sharingId:sharing_id",
     )
-    .order("date", { referencedTable: "days" });
+    .order("date", { referencedTable: "days" })
+    .eq("user_id", user.id);
   if (error) throw new Error(error.message);
 
   // todo: replace with rpc

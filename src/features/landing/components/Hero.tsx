@@ -15,18 +15,35 @@ export default function Hero() {
     const rightBound = boundsRef.current.getBoundingClientRect().right;
     const width = movingRef.current?.getBoundingClientRect().width;
 
-    function mouseMoveHandler(ev: MouseEvent) {
-      requestAnimationFrame(() => {
-        if (!movingRef.current) return;
-        const mouseX = ev.clientX - leftBound - width / 2;
-        if (mouseX > 0 && mouseX < rightBound - leftBound - width) {
-          movingRef.current.style.transform = `translateX(${mouseX}px)`;
-        }
-      });
+    function debounce(callback, wait: number) {
+      let timeoutId: number | null = null;
+      return (...args) => {
+        if (timeoutId) window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+          callback.apply(null, args);
+        }, wait);
+      };
     }
 
-    document.addEventListener("mousemove", mouseMoveHandler);
-    return () => document.removeEventListener("mousemove", mouseMoveHandler);
+    let previousMouseX = 0;
+    function mouseMoveHandler(ev: PointerEvent) {
+      debounce(
+        requestAnimationFrame(() => {
+          if (!movingRef.current) return;
+          const mouseX = ev.clientX - leftBound - width / 2;
+          const directionX = Math.sign(mouseX - previousMouseX);
+          if (mouseX > 0 && mouseX < rightBound - leftBound - width) {
+            movingRef.current.style.transform = `translateX(${mouseX}px) scaleX(${directionX})`;
+          }
+          previousMouseX = mouseX;
+        }),
+        2000,
+      );
+    }
+
+    document.addEventListener("pointermove", mouseMoveHandler);
+
+    return () => document.removeEventListener("pointermove", mouseMoveHandler);
   }, []);
   return (
     <section className="my-12 flex flex-col items-center justify-center gap-16 px-8 lg:my-24 xl:my-36">
@@ -37,11 +54,7 @@ export default function Hero() {
         <div className="mb-8 flex w-full">
           <MapPin size={36} />
           <div className="flex w-full flex-col" ref={boundsRef}>
-            <Car
-              size={36}
-              ref={movingRef}
-              className=" duration-1000 ease-out"
-            />
+            <Car size={36} ref={movingRef} className="duration-1000 ease-out" />
             <div className="mr-1 flex-1 border-b border-dashed border-slate-900"></div>
           </div>
           <Flag size={36} />

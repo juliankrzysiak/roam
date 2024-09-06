@@ -15,11 +15,12 @@ export default function Hero() {
     const rightBound = boundsRef.current.getBoundingClientRect().right;
     const width = movingRef.current?.getBoundingClientRect().width;
 
-    function debounce(callback, wait: number) {
+    function debounce(callback: unknown, wait: number) {
       let timeoutId: number | null = null;
-      return (...args) => {
+      return (...args: unknown[]) => {
         if (timeoutId) window.clearTimeout(timeoutId);
         timeoutId = window.setTimeout(() => {
+          // @ts-expect-error
           callback.apply(null, args);
         }, wait);
       };

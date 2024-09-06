@@ -1,15 +1,33 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import Demo from "@/features/auth/components/Demo";
 import SignUp from "@/features/auth/components/StartPlanning";
-import { isSignUpFormVisibleAtom } from "@/lib/atom";
-import { useSetAtom } from "jotai";
-import { Flag, MapPin } from "lucide-react";
+import { Car, Flag, MapPin } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 export default function Hero() {
-  const setOpen = useSetAtom(isSignUpFormVisibleAtom);
+  const boundsRef = useRef<HTMLDivElement>(null);
+  const movingRef = useRef<SVGSVGElement>(null);
 
+  useEffect(() => {
+    if (!boundsRef.current || !movingRef.current) return;
+    const leftBound = boundsRef.current.getBoundingClientRect().left;
+    const rightBound = boundsRef.current.getBoundingClientRect().right;
+    const width = movingRef.current?.getBoundingClientRect().width;
+
+    function mouseMoveHandler(ev: MouseEvent) {
+      requestAnimationFrame(() => {
+        if (!movingRef.current) return;
+        const mouseX = ev.clientX - leftBound - width / 2;
+        if (mouseX > 0 && mouseX < rightBound - leftBound - width) {
+          movingRef.current.style.transform = `translateX(${mouseX}px)`;
+        }
+      });
+    }
+
+    document.addEventListener("mousemove", mouseMoveHandler);
+    return () => document.removeEventListener("mousemove", mouseMoveHandler);
+  }, []);
   return (
     <section className="my-12 flex flex-col items-center justify-center gap-16 px-8 lg:my-24 xl:my-36">
       <div className="flex flex-col text-center">
@@ -18,19 +36,20 @@ export default function Hero() {
         </h1>
         <div className="mb-8 flex w-full">
           <MapPin size={36} />
-          <div className="mr-1 flex-1 border-b border-dashed border-slate-900"></div>
+          <div className="flex w-full flex-col" ref={boundsRef}>
+            <Car
+              size={36}
+              ref={movingRef}
+              className=" duration-1000 ease-out"
+            />
+            <div className="mr-1 flex-1 border-b border-dashed border-slate-900"></div>
+          </div>
           <Flag size={36} />
         </div>
         <h2 className="text-4xl">Map out your next roadtrip with ease</h2>
       </div>
       <div className="flex flex-col items-center gap-2">
         <SignUp />
-        {/* <Button
-          className="bg-emerald-800 py-6 text-lg xl:text-xl"
-          onClick={() => setOpen(true)}
-        >
-          Start planning
-        </Button> */}
         or
         <Demo />
       </div>

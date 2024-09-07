@@ -8,11 +8,11 @@ export default function Demo() {
   const router = useRouter();
   const supabase = createClient();
 
-  async function handleClick() {
+  async function submitForm() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    const { data, error } = await supabase.auth.signInAnonymously();
+    const { error } = await supabase.auth.signInAnonymously();
 
     try {
       if (user) throw new Error("You already have an account.");
@@ -25,8 +25,10 @@ export default function Demo() {
   }
 
   return (
-    <Button variant="outline" className="text-sm" onClick={handleClick}>
-      Try it out
-    </Button>
+    <form action={submitForm}>
+      <Button variant="outline" className="text-sm">
+        Try it out
+      </Button>
+    </form>
   );
 }

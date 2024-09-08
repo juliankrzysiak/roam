@@ -30,7 +30,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useExit } from "../hooks";
 import PlannerOptions from "./Options/PlannerOptions";
 
-
 type PlannerProps = {
   day: Day;
   tripId: string;
@@ -46,7 +45,7 @@ export default function Planner({
   tripName,
   totalDuration,
   dateRange,
-  isShared
+  isShared,
 }: PlannerProps) {
   const isVisible = useAtomValue(isPlannerVisibleAtom);
   const [places, setPlaces] = useState(day.places);
@@ -226,20 +225,18 @@ function TimePicker({ day, totalDuration }: TimePickerProps) {
               }
             />
             <input type="hidden" name="id" defaultValue={day.id} />
+            <Button size="sm" aria-label="Save time">
+              Save
+            </Button>
           </>
         ) : (
           <span>{formattedStartTime}</span>
         )}
       </label>
-      <div className="flex items-center gap-2">
+      <label className="flex items-center gap-2">
         <Moon size={18} aria-label="End Time" />
-        <span id="endTime">{endTime}</span>
-        {isFormVisible && !isShared && (
-          <Button size="sm" aria-label="Save time">
-            Save
-          </Button>
-        )}
-      </div>
+        <output>{endTime}</output>
+      </label>
     </form>
   );
 }

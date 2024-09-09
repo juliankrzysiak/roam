@@ -19,7 +19,7 @@ import * as z from "zod";
 const formSchema = z.object({
   name: z.string(),
   email: z.string().email({ message: "Must be a valid email address." }),
-  password: z.string().min(6).max(50),
+  password: z.string().min(6),
 });
 
 interface Props {
@@ -109,9 +109,10 @@ export default function SignUpForm({ setOpen }: Props) {
 
               <FormControl>
                 <Input
-                  placeholder="Choose a password with at least six characters"
+                  placeholder="At least six characters"
                   type="password"
                   required
+                  min={6}
                   {...field}
                 />
               </FormControl>

@@ -6,12 +6,16 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
 
-export async function createTrip(name: string, dates: Date[]) {
+export async function createTrip(
+  name: string,
+  dates: Date[],
+  timezone: string,
+) {
   const supabase = createClient();
 
   try {
     const tripId = uuidv4();
-    const bulkDates = formatBulkDates(tripId, dates);
+    const bulkDates = formatBulkDates(tripId, dates, timezone);
     // Saving the first date as the current date of the trip
     const firstDate = bulkDates[0].date;
 
@@ -19,7 +23,7 @@ export async function createTrip(name: string, dates: Date[]) {
       id: tripId,
       name,
       current_date: firstDate,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezone,
     };
 
     const { error } = await supabase

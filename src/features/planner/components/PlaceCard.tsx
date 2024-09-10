@@ -103,7 +103,7 @@ export default function PlaceCard({
           Insert New Place Before
         </p>
       )}
-      <article className="relative flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 py-2 pl-7 pr-1 shadow-sm">
+      <article className="relative flex flex-col gap-2 rounded-md border border-emerald-900 bg-slate-200 py-2 pl-7 pr-1 shadow-sm">
         <div className="flex justify-between gap-2">
           <button
             onClick={handleClick}
@@ -116,7 +116,7 @@ export default function PlaceCard({
           </button>
           <PlaceOptions id={id} dayId={dayId} name={name} places={places} />
         </div>
-        <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-slate-400 pl-1 pr-1 text-xs text-slate-900">
+        <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-emerald-900 pl-1 pr-1 text-xs text-slate-900">
           {index + 1}
         </span>
         <div className="flex items-stretch gap-1">

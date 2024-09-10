@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { IsSharedContext } from "@/context/IsSharedContext";
 import PlaceCard from "@/features/planner/components/PlaceCard";
-import { isPlannerVisibleAtom } from "@/lib/atom";
+import { insertBeforeIdAtom, isPlannerVisibleAtom } from "@/lib/atom";
 import { DateRange, Day } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
 import { deletePlaces } from "@/utils/actions/crud/delete";
@@ -48,6 +48,7 @@ export default function Planner({
   isShared,
 }: PlannerProps) {
   const isVisible = useAtomValue(isPlannerVisibleAtom);
+  const insertBeforeId = useAtomValue(insertBeforeIdAtom);
   const [places, setPlaces] = useState(day.places);
   const [selectedPlaces, setSelectedPlaces] = useState<string[]>([]);
 
@@ -142,6 +143,7 @@ export default function Planner({
                 place={place}
                 places={day.places}
                 timezone={day.timezone}
+                insertBefore={place.id === insertBeforeId}
                 handleDragEnd={handleDragEnd}
                 selectedPlaces={selectedPlaces}
                 setSelectedPlaces={setSelectedPlaces}

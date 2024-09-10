@@ -37,6 +37,7 @@ type PlaceCardProps = {
   place: Place;
   places: Place[];
   timezone: string;
+  insertBefore: boolean;
   handleDragEnd: () => void;
   selectedPlaces: string[];
   setSelectedPlaces: Dispatch<SetStateAction<string[]>>;
@@ -48,6 +49,7 @@ export default function PlaceCard({
   place,
   places,
   timezone,
+  insertBefore,
   handleDragEnd,
   selectedPlaces,
   setSelectedPlaces,
@@ -96,6 +98,7 @@ export default function PlaceCard({
       onDragEnd={handleDragEnd}
       ref={itemRef}
     >
+      {insertBefore && <span>insert new places here</span>}
       <article className="relative flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 py-2 pl-7 pr-1 shadow-sm">
         <div className="flex justify-between gap-2">
           <button

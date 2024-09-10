@@ -50,7 +50,11 @@ type NewPlace = {
   address: string;
 };
 
-export async function createPlace(newPlace: NewPlace, places: Place[]) {
+export async function createPlace(
+  newPlace: NewPlace,
+  places: Place[],
+  insertBeforeId: string | null,
+) {
   const supabase = createClient();
 
   try {
@@ -62,11 +66,15 @@ export async function createPlace(newPlace: NewPlace, places: Place[]) {
       .single();
     if (error) throw new Error(`Supabase error: ${error.message}`);
 
-    const order_places = [...mapId(places), place.id];
+    const idPlaces = mapId(places);
+    const insertBeforeIndex = insertBeforeId
+      ? idPlaces.findIndex((placeId) => placeId === insertBeforeId)
+      : idPlaces.length;
+    idPlaces.splice(insertBeforeIndex, 0, place.id);
 
     const { error: orderError } = await supabase
       .from("days")
-      .update({ order_places })
+      .update({ order_places: idPlaces })
       .eq("id", newPlace.day_id);
     if (orderError) throw new Error(`Supabase error: ${orderError.message}`);
 

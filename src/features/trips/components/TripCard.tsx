@@ -17,8 +17,9 @@ import { setCookie } from "@/utils/actions/cookies";
 import { updateSharing, updateSharingId } from "@/utils/actions/crud/update";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { format, isEqual } from "date-fns";
+import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TripOptions from "./TripOptions";
 
 const dateFormat = "MMM dd";
@@ -80,9 +81,18 @@ type ShareTripProps = {
 function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
   const { toast } = useToast();
   const [checked, setChecked] = useState(sharing);
+
+  const [locked, setLocked] = useState(true);
   const sharingLinkBase = `${host}/${tripId}?sharing=`;
   const defaultSharingLink = sharingId ? sharingLinkBase + sharingId : "";
   const [sharingLink, setSharingLink] = useState(defaultSharingLink);
+
+  useEffect(() => {
+    const locked = localStorage.getItem("locked");
+    if (typeof locked !== "string") return;
+    const initialLocked = Boolean(JSON.parse(locked));
+    setLocked(initialLocked);
+  }, []);
 
   async function submitSharingForm() {
     if (checked === sharing) return;
@@ -99,6 +109,12 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
   function copyToClipboard() {
     navigator.clipboard.writeText(sharingLink);
     toast({ description: "Link copied." });
+  }
+
+  function lockLink() {
+    const newLocked = !locked;
+    localStorage.setItem("locked", JSON.stringify(newLocked));
+    setLocked(newLocked);
   }
 
   return (
@@ -123,7 +139,17 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
             >
               <span className="text-center">{sharingLink}</span>
               <div className="flex gap-2">
-                <Button>Create new link</Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={lockLink}
+                  aria-label={
+                    (locked ? "Unlock" : "Lock") + " creating new link"
+                  }
+                >
+                  {locked ? <LockKeyhole /> : <LockKeyholeOpen />}
+                </Button>
+                <Button disabled={locked}>Create new link</Button>
                 <Button
                   type="button"
                   variant="secondary"

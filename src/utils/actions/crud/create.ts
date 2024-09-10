@@ -67,9 +67,13 @@ export async function createPlace(
     if (error) throw new Error(`Supabase error: ${error.message}`);
 
     const idPlaces = mapId(places);
-    const insertBeforeIndex = insertBeforeId
-      ? idPlaces.findIndex((placeId) => placeId === insertBeforeId)
-      : idPlaces.length;
+    let insertBeforeIndex = idPlaces.length;
+    if (insertBeforeId) {
+      const foundIndex = idPlaces.findIndex(
+        (placeId) => placeId === insertBeforeId,
+      );
+      if (foundIndex > -1) insertBeforeIndex = foundIndex;
+    }
     idPlaces.splice(insertBeforeIndex, 0, place.id);
 
     const { error: orderError } = await supabase

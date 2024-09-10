@@ -98,7 +98,11 @@ export default function PlaceCard({
       onDragEnd={handleDragEnd}
       ref={itemRef}
     >
-      {insertBefore && <span>insert new places here</span>}
+      {insertBefore && (
+        <p className="mb-2 rounded-md bg-emerald-700 p-1 text-center text-lg font-semibold text-slate-100">
+          Insert New Place Before
+        </p>
+      )}
       <article className="relative flex flex-col gap-2 rounded-md border border-slate-400 bg-slate-200 py-2 pl-7 pr-1 shadow-sm">
         <div className="flex justify-between gap-2">
           <button

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { IsSharedContext } from "@/context/IsSharedContext";
-import { currentPlaceAtom } from "@/lib/atom";
+import { currentPlaceAtom, insertBeforeIdAtom } from "@/lib/atom";
 import { Day, Place } from "@/types";
 import { createPlace } from "@/utils/actions/crud/create";
 import { deletePlaces } from "@/utils/actions/crud/delete";
@@ -15,7 +15,7 @@ import {
   Pin,
   useMap,
 } from "@vis.gl/react-google-maps";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { ChevronsUpDown, LoaderCircle, Star, X } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import useSWR from "swr";
@@ -101,6 +101,7 @@ type InfoWindowProps = {
 function InfoWindow({ date, dayId, places }: InfoWindowProps) {
   const isShared = useContext(IsSharedContext);
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
+  const insertBeforeId = useAtomValue(insertBeforeIdAtom);
   const advancedMarkerRef = useRef<AdvancedMarkerRef>(null);
   const map = useMap();
 
@@ -127,7 +128,7 @@ function InfoWindow({ date, dayId, places }: InfoWindowProps) {
     } = currentPlace;
 
     const newPlace = { name, day_id: dayId, lng, lat, place_id, address };
-    await createPlace(newPlace, places);
+    await createPlace(newPlace, places, insertBeforeId);
     setCurrentPlace(null);
   }
 

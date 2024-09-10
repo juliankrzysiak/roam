@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { IsSharedContext } from "@/context/IsSharedContext";
 import PlaceCard from "@/features/planner/components/PlaceCard";
-import { isPlannerVisibleAtom } from "@/lib/atom";
+import { insertBeforeIdAtom, isPlannerVisibleAtom } from "@/lib/atom";
 import { DateRange, Day } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
 import { deletePlaces } from "@/utils/actions/crud/delete";
@@ -48,6 +48,7 @@ export default function Planner({
   isShared,
 }: PlannerProps) {
   const isVisible = useAtomValue(isPlannerVisibleAtom);
+  const insertBeforeId = useAtomValue(insertBeforeIdAtom);
   const [places, setPlaces] = useState(day.places);
   const [selectedPlaces, setSelectedPlaces] = useState<string[]>([]);
 
@@ -93,7 +94,7 @@ export default function Planner({
     <IsSharedContext.Provider value={isShared}>
       <section
         className={clsx(
-          "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-600 bg-slate-100 sm:relative sm:max-w-xs md:max-w-sm",
+          "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-900 bg-slate-100 sm:relative sm:max-w-xs md:max-w-sm",
           !isVisible && "hidden opacity-0",
         )}
       >
@@ -142,6 +143,7 @@ export default function Planner({
                 place={place}
                 places={day.places}
                 timezone={day.timezone}
+                insertBefore={place.id === insertBeforeId}
                 handleDragEnd={handleDragEnd}
                 selectedPlaces={selectedPlaces}
                 setSelectedPlaces={setSelectedPlaces}

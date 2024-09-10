@@ -14,10 +14,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IsSharedContext } from "@/context/IsSharedContext";
+import { insertBeforeIdAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { deletePlaces } from "@/utils/actions/crud/delete";
 import { updateName } from "@/utils/actions/crud/update";
-import { SetStateAction } from "jotai";
+import { SetStateAction, useAtom, useSetAtom } from "jotai";
 import { EllipsisVertical } from "lucide-react";
 import { Dispatch, useContext, useState } from "react";
 
@@ -30,11 +31,17 @@ type Props = {
 
 export default function PlaceOptions({ id, dayId, name, places }: Props) {
   const isShared = useContext(IsSharedContext);
+  const [insertBeforeId, setInsertBeforeId] = useAtom(insertBeforeIdAtom);
   const [isNameFormOpen, setIsNameFormOpen] = useState(false);
 
   function handleDeletePlace() {
     const placesToDelete = [id];
     deletePlaces({ placesToDelete, places, dayId });
+  }
+
+  function handleInsertBefore() {
+    if (insertBeforeId === id) setInsertBeforeId(null);
+    else setInsertBeforeId(id);
   }
 
   return (
@@ -48,6 +55,9 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="cursor-pointer">
+          <DropdownMenuItem onClick={handleInsertBefore}>
+            Toggle Insert Before
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setIsNameFormOpen(true)}
             disabled={isShared}

@@ -19,8 +19,7 @@ import * as z from "zod";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Must be a valid email address." }),
-  // TODO: validator.js for strong password checking
-  password: z.string().min(6).max(20),
+  password: z.string().min(6),
 });
 
 interface Props {
@@ -70,6 +69,7 @@ export default function LoginForm({ setOpen }: Props) {
               <FormControl>
                 <Input
                   placeholder="Enter your email address"
+                  type="email"
                   required
                   {...field}
                 />

@@ -159,7 +159,8 @@ function EditTrip({
     async function submitFormData() {
       if (name !== initialName) await updateTrip(tripId, name);
       if (newDateRange && !isSameDate) {
-        await updateTripDates(tripId, [datesToAdd, datesToRemove]);
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        await updateTripDates(tripId, [datesToAdd, datesToRemove], timezone);
         if (
           !isWithinInterval(currentDate, {
             start: newDateRange.from,

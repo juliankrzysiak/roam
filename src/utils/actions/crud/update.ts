@@ -26,12 +26,13 @@ export async function updateTrip(id: string, name: string) {
 export async function updateTripDates(
   tripId: string,
   ranges: [Date[], Date[]],
+  timezone: string,
 ) {
   const supabase = createClient();
   const [daysToAdd, daysToRemove] = ranges;
 
   if (daysToAdd.length) {
-    const bulkDates = formatBulkDates(tripId, daysToAdd);
+    const bulkDates = formatBulkDates(tripId, daysToAdd, timezone);
     try {
       const { error } = await supabase.from("days").insert(bulkDates);
       if (error) throw new Error(`Supabase error: ${error.message}`);

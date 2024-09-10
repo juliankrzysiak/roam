@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { createClient as createClientJS } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { deleteCookie } from "../cookies";
 
 type AccountArgs = {
   name: string;
@@ -63,6 +64,7 @@ export async function deleteData() {
       .delete()
       .eq("user_id", userId);
     if (error) throw new Error();
+    deleteCookie("tripId");
     return { description: "Your data has been deleted." };
   } catch (error) {
     console.log(error);
@@ -91,6 +93,7 @@ export async function deleteAccount() {
     await supabase.auth.signOut();
     const { error } = await supabaseJS.auth.admin.deleteUser(userId);
     if (error) throw new Error(error.message);
+    deleteCookie("tripId");
     return { description: "Your account and data have been deleted." };
   } catch (error) {
     console.log(error);

@@ -43,7 +43,8 @@ export default function NewTripForm() {
   async function onSubmit(values: z.infer<typeof newTripFormSchema>) {
     const { name, dateRange } = values;
     const dates = getEachDateInRange(dateRange.from, dateRange.to);
-    await createTrip(name, dates);
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    await createTrip(name, dates, timezone);
     setOpen(false);
   }
 

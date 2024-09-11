@@ -47,7 +47,11 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
   return (
     <>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger aria-label="Open options" className="h-fit">
+        <DropdownMenuTrigger
+          aria-label="Open options"
+          className="h-fit"
+          disabled={isShared}
+        >
           <EllipsisVertical
             size={18}
             className="h-fit text-slate-500"
@@ -58,13 +62,10 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
           <DropdownMenuItem onClick={handleInsertBefore}>
             Toggle Insert Before
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setIsNameFormOpen(true)}
-            disabled={isShared}
-          >
+          <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
             Edit Name
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleDeletePlace} disabled={isShared}>
+          <DropdownMenuItem onClick={handleDeletePlace}>
             Delete place
           </DropdownMenuItem>
         </DropdownMenuContent>

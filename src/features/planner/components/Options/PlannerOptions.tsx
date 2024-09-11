@@ -17,15 +17,11 @@ export default function PlannerOptions({ handleSelectAll }: Props) {
 
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger aria-label="Open options">
+      <DropdownMenuTrigger aria-label="Open options" disabled={isShared}>
         <EllipsisVertical size={18} className="text-slate-500" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onClick={handleSelectAll}
-          disabled={isShared}
-        >
+        <DropdownMenuItem className="cursor-pointer" onClick={handleSelectAll}>
           <span>Select All</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

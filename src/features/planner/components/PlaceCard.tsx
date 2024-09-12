@@ -6,7 +6,7 @@ import { currentPlaceAtom, insertBeforeIdAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
 import { updateNotes, updatePlaceDuration } from "@/utils/actions/crud/update";
-import { CheckedState } from "@radix-ui/react-checkbox";
+import clsx from "clsx";
 import { add } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { Reorder, useDragControls } from "framer-motion";
@@ -69,6 +69,8 @@ export default function PlaceCard({
   const [insertBeforeId, setInsertBeforeId] = useAtom(insertBeforeIdAtom);
   const controls = useDragControls();
 
+  const selected = selectedPlaces.includes(id);
+
   useEffect(() => {
     if (currentPlace && currentPlace.placeId === placeId) {
       itemRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -80,8 +82,13 @@ export default function PlaceCard({
     setCurrentPlace(currentPlace);
   }
 
-  function handleChangeCheckbox(checked: CheckedState) {
-    if (checked) {
+  function handleChangeCheckbox() {
+    setSelectedPlaces([...selectedPlaces, id]);
+  }
+
+  function handleSelectPlace() {
+    if (!selectedPlaces.length) return;
+    if (!selected) {
       setSelectedPlaces([...selectedPlaces, id]);
     } else {
       setSelectedPlaces(selectedPlaces.filter((id) => id !== place.id));
@@ -97,6 +104,7 @@ export default function PlaceCard({
       dragControls={controls}
       onDragEnd={handleDragEnd}
       ref={itemRef}
+      onClick={handleSelectPlace}
     >
       {insertBeforeId === id && (
         <div className="mb-2 flex items-center justify-between rounded-md bg-emerald-700 font-semibold text-slate-100">
@@ -106,7 +114,13 @@ export default function PlaceCard({
           </Button>
         </div>
       )}
-      <article className="relative flex flex-col gap-2 rounded-md border border-emerald-900 bg-slate-200 py-2 pl-7 pr-1 shadow-sm">
+      <article
+        className={clsx(
+          "relative flex flex-col gap-2 rounded-md border border-emerald-900 bg-slate-200 py-2 pl-7 pr-1 shadow-sm",
+          selected && "border-4",
+          selectedPlaces.length && "pointer-events-none",
+        )}
+      >
         <div className="flex justify-between gap-2">
           <button
             onClick={handleClick}

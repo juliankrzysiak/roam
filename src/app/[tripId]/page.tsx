@@ -35,21 +35,23 @@ export default async function MapPage({ params, searchParams }: Props) {
   );
 
   return (
-    <main className="relative h-40 flex-grow sm:flex">
-      <Planner
-        day={day}
-        tripId={tripId}
-        tripName={tripName}
-        totalDuration={totalDuration}
-        dateRange={dateRange}
-        isShared={isShared}
-      />
-      <Map day={day} isShared={isShared}>
-        <MapSearch />
-        <MapDatePicker tripId={tripId} day={day} dateRange={dateRange} />
-      </Map>
+    <>
+      <main className="relative h-40 flex-grow sm:flex">
+        <Planner
+          day={day}
+          tripId={tripId}
+          tripName={tripName}
+          totalDuration={totalDuration}
+          dateRange={dateRange}
+          isShared={isShared}
+        />
+        <Map day={day} isShared={isShared}>
+          <MapSearch />
+          <MapDatePicker tripId={tripId} day={day} dateRange={dateRange} />
+        </Map>
+      </main>
       <TogglePlannerButton />
-    </main>
+    </>
   );
 }
 

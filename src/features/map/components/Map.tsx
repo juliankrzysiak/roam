@@ -41,20 +41,29 @@ export default function Map({ day, isShared, children }: MapProps) {
   );
 
   useEffect(() => {
+    const savedLat = localStorage.getItem("lat");
+    const savedLng = localStorage.getItem("lng");
     if (places.length) {
-      const { position } = places[0];
+      const { position } = places[places.length - 1];
       setDefaultCenter(position);
+    } else if (savedLat && savedLng) {
+      const savedPosition = { lat: Number(savedLat), lng: Number(savedLng) };
+      setDefaultCenter(savedPosition);
     } else
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude: lat, longitude: lng } = position.coords;
         setDefaultCenter({ lat, lng });
       });
-  }, [day.id]);
+  }, []);
 
   function handleMapClick(e: MapMouseEvent) {
     const { placeId, latLng: position } = e.detail;
     if (!position || !placeId) setCurrentPlace(null);
-    else setCurrentPlace({ placeId, position });
+    else {
+      setCurrentPlace({ placeId, position });
+      localStorage.setItem("lat", position.lat.toString());
+      localStorage.setItem("lng", position.lng.toString());
+    }
     e.stop();
   }
 
@@ -64,7 +73,7 @@ export default function Map({ day, isShared, children }: MapProps) {
         apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
       >
         <GoogleMap
-          defaultZoom={13}
+          defaultZoom={12}
           defaultCenter={defaultCenter}
           mapId={"2b28f32837556830"}
           onClick={handleMapClick}

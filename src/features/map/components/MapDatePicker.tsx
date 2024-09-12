@@ -19,10 +19,9 @@ export default function MapDatePicker({
   const map = useMap();
 
   useEffect(() => {
-    const firstLocation = day.places.at(0)?.position;
-    if (!map || !firstLocation) return;
-    map.panTo(firstLocation);
-    map.panBy(0, -150);
+    const lastLocation = day.places.at(-1)?.position;
+    if (!map || !lastLocation) return;
+    map.panTo(lastLocation);
   }, [day.id]);
 
   return (

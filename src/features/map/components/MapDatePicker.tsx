@@ -2,7 +2,7 @@
 
 import { DatePicker } from "@/components/general/DatePicker";
 import { DateRange, Day } from "@/types";
-import { useMap } from "@vis.gl/react-google-maps";
+import { ControlPosition, MapControl, useMap } from "@vis.gl/react-google-maps";
 import { useEffect } from "react";
 
 type MapControlsProps = {
@@ -26,12 +26,14 @@ export default function MapDatePicker({
   }, [day.id]);
 
   return (
-    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-lg border-2 border-emerald-900">
-      <DatePicker
-        initialDate={day.date}
-        dateRange={dateRange}
-        tripId={tripId}
-      />
-    </div>
+    <MapControl position={ControlPosition.BOTTOM_CENTER}>
+      <div className="mb-4 rounded-lg border-2 border-emerald-900">
+        <DatePicker
+          initialDate={day.date}
+          dateRange={dateRange}
+          tripId={tripId}
+        />
+      </div>
+    </MapControl>
   );
 }

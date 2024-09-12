@@ -11,15 +11,22 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { IsSharedContext } from "@/context/IsSharedContext";
 import { insertBeforeIdAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { deletePlaces } from "@/utils/actions/crud/delete";
 import { updateName } from "@/utils/actions/crud/update";
+import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import { SetStateAction, useAtom, useSetAtom } from "jotai";
-import { EllipsisVertical } from "lucide-react";
+import { Delete, EllipsisVertical } from "lucide-react";
 import { Dispatch, useContext, useState } from "react";
 
 type Props = {
@@ -60,14 +67,26 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="cursor-pointer">
           <DropdownMenuItem onClick={handleInsertBefore}>
-            Toggle Insert Before
+            <span>Toggle Insert Before</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
-            Edit Name
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleDeletePlace}>
-            Delete place
-          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
+              <span>Edit Name</span>
+            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <span>Delete Place</span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem onClick={handleDeletePlace}>
+                    <span>Confirm Delete</span>
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       <EditNameForm
@@ -100,16 +119,8 @@ function EditNameForm({ id, name, open, setOpen }: EditNameFormProps) {
           <DialogTitle>Edit Name</DialogTitle>
         </DialogHeader>
         <form id="editNameForm" action={handleSubmit}>
-          <input
-            className="w-full rounded-md border border-slate-500 px-1"
-            name="name"
-            type="text"
-            min={1}
-            max={75}
-            defaultValue={name}
-            autoFocus
-          />
-          <input name="id" type="hidden" defaultValue={id}></input>
+          <Input name="name" type="text" min={1} max={75} defaultValue={name} />
+          <input name="id" type="hidden" defaultValue={id} />
         </form>
         <DialogFooter>
           <DialogClose asChild>

@@ -60,7 +60,7 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="cursor-pointer">
           <DropdownMenuItem onClick={handleInsertBefore}>
-            Toggle Insert Before
+            Toggle New Place Position
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
             Edit Name

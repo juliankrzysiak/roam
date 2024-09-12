@@ -72,10 +72,10 @@ export default function PlaceCard({
   const selected = selectedPlaces.includes(id);
 
   useEffect(() => {
-    if (currentPlace && currentPlace.placeId === placeId) {
+    if (currentPlace?.id === id) {
       itemRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [placeId]);
+  }, [currentPlace?.id]);
 
   function handleClick() {
     const currentPlace = { id, placeId, position };
@@ -99,6 +99,7 @@ export default function PlaceCard({
     <Reorder.Item
       value={place}
       id={id}
+      // Allows for dragging
       className="touch-none"
       dragListener={false}
       dragControls={controls}

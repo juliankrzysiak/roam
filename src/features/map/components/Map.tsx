@@ -69,7 +69,6 @@ export default function Map({ day, isShared, children }: MapProps) {
           mapId={"2b28f32837556830"}
           onClick={handleMapClick}
           fullscreenControl={false}
-          mapTypeId="terrain"
           reuseMaps
         >
           <Markers places={places} />

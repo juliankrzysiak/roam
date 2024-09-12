@@ -209,7 +209,6 @@ function PlaceDuration({
           setIsFormVisible(false);
         }}
         ref={formRef}
-        onClick={() => setIsFormVisible(true)}
       >
         <label
           className="flex cursor-pointer items-center gap-2"
@@ -249,20 +248,25 @@ function PlaceDuration({
               </Button>
             </>
           ) : (
-            <div className="flex items-center gap-1">
-              <p>{formattedPlaceDuration}</p>
+            <button
+              className="flex items-center gap-1"
+              type="button"
+              aria-label="Click to expand form"
+              onClick={() => setIsFormVisible(true)}
+            >
+              <span>{formattedPlaceDuration}</span>
               <ChevronRight
                 size={svgSize}
                 aria-label="Expand form for changing place duration."
               />
-            </div>
+            </button>
           )}
           <input type="hidden" name="id" defaultValue={id} />
         </label>
       </form>
       <span className="flex items-center gap-2">
-        <ArrowLeft size={svgSize} />{" "}
-        {formatInTimeZone(departure, timezone, timeFormat)}
+        <ArrowLeft size={svgSize} />
+        <output>{formatInTimeZone(departure, timezone, timeFormat)}</output>
       </span>
     </div>
   );

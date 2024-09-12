@@ -51,7 +51,12 @@ export default function MapSearch() {
   }
 
   return (
-    <div className="absolute top-4 flex w-full  justify-between gap-2 px-4">
+    <div
+      className={clsx(
+        "absolute right-0 top-4 flex justify-between gap-2 px-4",
+        open && "w-full",
+      )}
+    >
       <div></div>
       {open && (
         <input
@@ -68,6 +73,7 @@ export default function MapSearch() {
         <button
           className="rounded-full border-2 border-emerald-900 bg-slate-50 p-2"
           onClick={handleClick}
+          aria-label="Search location"
         >
           {open ? <X size={18} /> : <Search size={18} />}
         </button>
@@ -90,6 +96,7 @@ function CurrentLocationButton() {
     <button
       className="w-fit rounded-full border-2 border-emerald-900 bg-slate-50 p-1"
       onClick={handleClick}
+      aria-label="Center on current position"
     >
       <LocateFixed size={18} />
     </button>

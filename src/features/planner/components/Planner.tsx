@@ -48,7 +48,6 @@ export default function Planner({
   isShared,
 }: PlannerProps) {
   const isVisible = useAtomValue(isPlannerVisibleAtom);
-  const insertBeforeId = useAtomValue(insertBeforeIdAtom);
   const [places, setPlaces] = useState(day.places);
   const [selectedPlaces, setSelectedPlaces] = useState<string[]>([]);
 
@@ -143,7 +142,6 @@ export default function Planner({
                 place={place}
                 places={day.places}
                 timezone={day.timezone}
-                insertBefore={place.id === insertBeforeId}
                 handleDragEnd={handleDragEnd}
                 selectedPlaces={selectedPlaces}
                 setSelectedPlaces={setSelectedPlaces}

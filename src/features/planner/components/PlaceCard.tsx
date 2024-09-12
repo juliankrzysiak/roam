@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { IsSharedContext } from "@/context/IsSharedContext";
-import { currentPlaceAtom } from "@/lib/atom";
+import { currentPlaceAtom, insertBeforeIdAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
 import { updateNotes, updatePlaceDuration } from "@/utils/actions/crud/update";
@@ -38,7 +38,6 @@ type PlaceCardProps = {
   place: Place;
   places: Place[];
   timezone: string;
-  insertBefore: boolean;
   handleDragEnd: () => void;
   selectedPlaces: string[];
   setSelectedPlaces: Dispatch<SetStateAction<string[]>>;
@@ -50,7 +49,6 @@ export default function PlaceCard({
   place,
   places,
   timezone,
-  insertBefore,
   handleDragEnd,
   selectedPlaces,
   setSelectedPlaces,
@@ -68,6 +66,7 @@ export default function PlaceCard({
   const isShared = useContext(IsSharedContext);
   const itemRef = useRef<HTMLDivElement | null>(null);
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
+  const [insertBeforeId, setInsertBeforeId] = useAtom(insertBeforeIdAtom);
   const controls = useDragControls();
 
   useEffect(() => {
@@ -99,10 +98,10 @@ export default function PlaceCard({
       onDragEnd={handleDragEnd}
       ref={itemRef}
     >
-      {insertBefore && (
-        <div className="mb-8 flex items-center justify-between rounded-md bg-emerald-700 font-semibold text-slate-100">
-          <p className="flex-1 text-center">New Place Position</p>
-          <Button>
+      {insertBeforeId === id && (
+        <div className="mb-2 flex items-center justify-between rounded-md bg-emerald-700 font-semibold text-slate-100">
+          <p className="flex-1 text-center">Insert New Place Before</p>
+          <Button onClick={() => setInsertBeforeId(null)}>
             <X size={16} />
           </Button>
         </div>

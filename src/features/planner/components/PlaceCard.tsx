@@ -122,8 +122,8 @@ export default function PlaceCard({
         <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-emerald-900 pl-1 pr-1 text-xs text-slate-900">
           {index + 1}
         </span>
-        <div className="flex items-stretch gap-1">
-          <div className="flex h-full gap-4">
+        <div className="flex items-stretch justify-between gap-1">
+          <div className="flex h-full w-full gap-4">
             <PlaceDuration
               arrival={schedule.arrival}
               placeDuration={placeDuration}
@@ -288,6 +288,7 @@ export function Notes({ id, notes }: NotesProps) {
       action={updateNotes}
       ref={formRef}
       onBlur={() => formRef.current?.requestSubmit()}
+      className="w-full"
     >
       <textarea
         name="notes"

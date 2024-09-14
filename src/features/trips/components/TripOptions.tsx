@@ -12,6 +12,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -71,23 +72,24 @@ export default function TripOptions({
           <EllipsisVertical size={20} className="text-slate-500" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => setOpenEdit(true)}
-          >
-            <span>Edit</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer" asChild>
             <Link href={`/${tripId}/pdf`}>Print</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => setOpenDelete(true)}
-          >
-            <span>Delete</span>
-          </DropdownMenuItem>
+          <DropdownMenuGroup>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => setOpenEdit(true)}
+            >
+              <span>Edit</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => setOpenDelete(true)}
+            >
+              <span>Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       <EditTrip

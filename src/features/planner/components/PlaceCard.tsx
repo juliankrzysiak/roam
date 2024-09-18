@@ -331,7 +331,16 @@ function TripDetails({ duration, distance }: TripDetailsProps) {
 
   return (
     <div className="flex justify-between gap-2 px-5 py-1 text-sm">
-      <span>{travelTime}</span>
+      <form action="">
+        <label className="flex gap-1">
+          {travelTime}
+          <select>
+            <option value="driving">driving</option>
+            <option value="walking">walking</option>
+            <option value="cycling">cycling</option>
+          </select>
+        </label>
+      </form>
       <span>{distance} mi</span>
     </div>
   );

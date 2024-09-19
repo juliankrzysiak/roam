@@ -22,6 +22,7 @@ import useSWR from "swr";
 import { PlaceDetails } from "../types";
 import { placeDetailsFetcher } from "../utils";
 import { Polyline } from "./Polyline";
+import MapSearch from "./MapSearch";
 
 /* -------------------------------------------------------------------------- */
 /*                                     Map                                    */
@@ -39,6 +40,7 @@ export default function Map({ day, isShared, children }: MapProps) {
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
     { lat: 34, lng: -118 },
   );
+  const [showPath, setShowPath] = useState(Boolean(day?.path));
 
   useEffect(() => {
     const savedLat = localStorage.getItem("lat");
@@ -67,6 +69,10 @@ export default function Map({ day, isShared, children }: MapProps) {
     e.stop();
   }
 
+  function handlePath() {
+    setShowPath(!showPath);
+  }
+
   return (
     <IsSharedContext.Provider value={isShared}>
       <APIProvider
@@ -85,7 +91,8 @@ export default function Map({ day, isShared, children }: MapProps) {
             <InfoWindow date={day.date} dayId={day.id} places={places} />
           )}
           {children}
-          {day.path && (
+          <MapSearch path={showPath} handlePath={handlePath} />
+          {showPath && (
             <Polyline
               strokeWeight={5}
               strokeColor={"#fb923c"}

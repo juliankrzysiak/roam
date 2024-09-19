@@ -1,7 +1,6 @@
 import TogglePlannerButton from "@/components/general/TogglePlannerButton";
 import Map from "@/features/map/components/Map";
 import MapDatePicker from "@/features/map/components/MapDatePicker";
-import MapSearch from "@/features/map/components/MapSearch";
 import Planner from "@/features/planner/components/Planner";
 import {
   Day,
@@ -53,7 +52,6 @@ export default async function MapPage({ params, searchParams }: Props) {
           isShared={isShared}
         />
         <Map day={day} isShared={isShared}>
-          <MapSearch />
           <MapDatePicker tripId={tripId} day={day} dateRange={dateRange} />
         </Map>
       </main>

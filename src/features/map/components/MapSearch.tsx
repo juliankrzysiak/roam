@@ -4,11 +4,13 @@ import { currentPlaceAtom } from "@/lib/atom";
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import clsx from "clsx";
 import { useSetAtom } from "jotai";
-import { LocateFixed, Search, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { LocateFixed, Route, RouteOff, Search, X } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 // Main template stolen from https://github.com/visgl/react-google-maps/tree/main/examples/autocomplete
-export default function MapSearch() {
+type Props = { path: boolean; handlePath: () => void };
+
+export default function MapSearch({ path, handlePath }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
@@ -77,6 +79,7 @@ export default function MapSearch() {
         >
           {open ? <X size={18} /> : <Search size={18} />}
         </button>
+        <TogglePathButton path={path} handlePath={handlePath} />
         <CurrentLocationButton />
       </div>
     </div>
@@ -99,6 +102,18 @@ function CurrentLocationButton() {
       aria-label="Center on current position"
     >
       <LocateFixed size={18} />
+    </button>
+  );
+}
+
+function TogglePathButton({ path, handlePath }: Props) {
+  return (
+    <button
+      className="w-fit rounded-full border-2 border-emerald-900 bg-slate-50 p-1"
+      onClick={handlePath}
+      aria-label="Toggle route lines"
+    >
+      {path ? <RouteOff /> : <Route />}
     </button>
   );
 }

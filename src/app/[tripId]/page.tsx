@@ -6,8 +6,9 @@ import Planner from "@/features/planner/components/Planner";
 import {
   Day,
   Place,
-  PlaceNoComputedTravel,
   PlaceNoSchedule,
+  RawPlaceData,
+  TotalTravel,
   Travel,
 } from "@/types";
 import { calcDateRange, convertKmToMi, convertSecToMi } from "@/utils";
@@ -36,7 +37,7 @@ export default async function MapPage({ params, searchParams }: Props) {
   const day = await getDay(tripId, timezone);
   const totalDuration = day.places.reduce(
     (total, current) =>
-      total + (current.computedTravel?.duration || 0) + current.placeDuration,
+      total + (current.travel?.duration || 0) + current.schedule.duration,
     0,
   );
 
@@ -93,22 +94,19 @@ export async function getDay(
   const { data: placesData, error } = await supabase
     .from("places")
     .select(
-      "id, name, lat, lng, placeDuration:place_duration, placeId:place_id, address, notes, duration:travel_duration, distance:travel_distance, routingProfile:routing_profile",
+      "id, name, lat, lng, placeDuration:place_duration, placeId:place_id, address, notes, routingProfile:routing_profile",
     )
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
   // TODO: Replace this with rpc
-  const sortedPlaces = dayData.orderPlaces.map((id) => {
+  const sortedPlaces: RawPlaceData[] = dayData.orderPlaces.map((id) => {
     const place = placesData.find((place) => place.id === id);
     if (!place) throw new Error("Couldn't find place.");
-    const { lat, lng, distance, duration, ...placeProps } = place;
+    const { lat, lng, ...placeProps } = place;
     const position = { lat, lng };
-    const userTravel = {
-      distance,
-      duration,
-    };
-    return { ...placeProps, position, userTravel };
+
+    return { ...placeProps, position };
   });
 
   const travelInfo = await getTravelInfo(sortedPlaces);
@@ -133,8 +131,8 @@ export async function getDay(
   };
 }
 
-async function getTravelInfo(places: PlaceNoSchedule[]): Promise<{
-  totalTravel: Travel;
+async function getTravelInfo(places: RawPlaceData[]): Promise<{
+  totalTravel: TotalTravel;
   trips?: Travel[];
   path?: string;
 }> {
@@ -157,35 +155,36 @@ async function getTravelInfo(places: PlaceNoSchedule[]): Promise<{
   let walkingTravelInfo = [];
   let cyclingTravelInfo = [];
   if (places.some((place) => place.routingProfile === "walking")) {
-    const drivingRes = await fetch(
-      `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}?overview=full&geometries=polyline&access_token=${process.env.MAPBOX_API_KEY}`,
+    const walkingRes = await fetch(
+      `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}?access_token=${process.env.MAPBOX_API_KEY}`,
     );
-    walkingTravelInfo = await drivingRes.json();
+    walkingTravelInfo = await walkingRes.json();
   }
   if (places.some((place) => place.routingProfile === "cycling")) {
-    const drivingRes = await fetch(
+    const cyclingRes = await fetch(
       `https://api.mapbox.com/directions/v5/mapbox/cycling/${coordinates}?access_token=${process.env.MAPBOX_API_KEY}`,
     );
-    cyclingTravelInfo = await drivingRes.json();
+    cyclingTravelInfo = await cyclingRes.json();
   }
 
-  const trips: Travel[] | undefined = drivingTravelInfo.routes[0].legs.map(
+  const trips: Travel[] = drivingTravelInfo.routes[0].legs.map(
     (leg: { distance: number; duration: number }, i: number) => {
-      let distance = 0;
-      let duration = 0;
+      let { distance, duration } = leg;
+      let routingProfile = "driving";
       if (places[i].routingProfile === "walking") {
         distance = walkingTravelInfo.routes[0].legs[i].distance;
         duration = walkingTravelInfo.routes[0].legs[i].duration;
-      } else if (places[i].routingProfile === "cycling") {
+        routingProfile = "walking";
+      }
+      if (places[i].routingProfile === "cycling") {
         distance = cyclingTravelInfo.routes[0].legs[i].distance;
         duration = cyclingTravelInfo.routes[0].legs[i].duration;
-      } else {
-        distance = leg.distance;
-        duration = leg.duration;
+        routingProfile = "cycling";
       }
       return {
         distance: convertKmToMi(distance),
         duration: convertSecToMi(duration),
+        routingProfile,
       };
     },
   );
@@ -212,14 +211,15 @@ async function getTravelInfo(places: PlaceNoSchedule[]): Promise<{
 }
 
 async function mapTravelInfo(
-  places: PlaceNoComputedTravel[],
+  places: RawPlaceData[],
   trips: Travel[] | undefined,
-): Promise<PlaceNoSchedule[]> {
+): Promise<Omit<PlaceNoSchedule, "routingProfile">[]> {
   if (!trips) return places;
   else
     return places.map((place, i) => {
-      const computedTravel = trips[i];
-      return { ...place, computedTravel };
+      const travel = trips[i];
+      const { routingProfile, ...placeProps } = place;
+      return { ...placeProps, travel };
     });
 }
 
@@ -266,11 +266,11 @@ function mapSchedule(places: PlaceNoSchedule[], startTime: Date): Place[] {
   let departure;
 
   const calculatedPlaces = places.map((place) => {
-    const { placeDuration } = place;
-    departure = addMinutes(arrival, placeDuration);
-    const schedule = { arrival, departure };
-    const updatedPlace = { ...place, schedule };
-    arrival = addMinutes(departure, place.computedTravel?.duration || 0);
+    const { placeDuration: duration, ...placeProps } = place;
+    departure = addMinutes(arrival, duration);
+    const schedule = { arrival, duration, departure };
+    const updatedPlace = { ...placeProps, schedule };
+    arrival = addMinutes(departure, place.travel?.duration || 0);
     return updatedPlace;
   });
 

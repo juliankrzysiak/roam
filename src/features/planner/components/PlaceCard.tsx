@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { IsSharedContext } from "@/context/IsSharedContext";
 import { currentPlaceAtom, insertBeforeIdAtom } from "@/lib/atom";
-import { Place } from "@/types";
+import { Place, Travel } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
 import {
   updateNotes,
@@ -57,17 +57,7 @@ export default function PlaceCard({
   selectedPlaces,
   setSelectedPlaces,
 }: PlaceCardProps) {
-  const {
-    id,
-    placeId,
-    position,
-    name,
-    schedule,
-    placeDuration,
-    routingProfile,
-    computedTravel: travel,
-    notes,
-  } = place;
+  const { id, placeId, position, name, schedule, travel, notes } = place;
   const isShared = useContext(IsSharedContext);
   const itemRef = useRef<HTMLDivElement | null>(null);
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
@@ -146,7 +136,7 @@ export default function PlaceCard({
           <div className="flex h-full w-full gap-4">
             <PlaceDuration
               arrival={schedule.arrival}
-              placeDuration={placeDuration}
+              placeDuration={schedule.duration}
               id={id}
               timezone={timezone}
             />
@@ -174,7 +164,7 @@ export default function PlaceCard({
       {travel && (
         <TripDetails
           id={id}
-          routingProfile={routingProfile}
+          routingProfile={travel.routingProfile}
           duration={travel.duration}
           distance={travel.distance}
         />
@@ -333,7 +323,7 @@ export function Notes({ id, notes }: NotesProps) {
 
 type TripDetailsProps = {
   id: string;
-  routingProfile: Place["routingProfile"];
+  routingProfile: Travel["routingProfile"];
   duration: number;
   distance: number;
 };

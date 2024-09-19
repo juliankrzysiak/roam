@@ -1,6 +1,6 @@
 "use server";
 
-import { Place } from "@/types";
+import { Place, Travel } from "@/types";
 import { convertTime, formatBulkDates, mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { format } from "date-fns";
@@ -283,7 +283,7 @@ export async function updateRoutingProfile(formData: FormData) {
   const supabase = createClient();
   const routing_profile = formData.get(
     "routingProfile",
-  ) as Place["routingProfile"];
+  ) as Travel["routingProfile"];
   const id = formData.get("id") as string;
 
   try {

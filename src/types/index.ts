@@ -4,38 +4,40 @@ export type Place = {
   name: string;
   position: google.maps.LatLngLiteral;
   address: string | null;
-  placeDuration: number;
   notes: string;
-  routingProfile: "driving" | "walking" | "cycling";
   schedule: {
     arrival: Date;
+    duration: number;
     departure: Date;
   };
-  userTravel: {
-    distance: number | null;
-    duration: number | null;
-  };
-  computedTravel?: {
-    distance: number;
-    duration: number;
-  };
+  travel?: Travel;
 };
 
-export type PlaceNoComputedTravel = Omit<Place, "schedule" | "computedTravel">;
-export type PlaceNoSchedule = Omit<Place, "schedule">;
+export type Travel = {
+  distance: number;
+  duration: number;
+  routingProfile: RoutingProfile;
+};
+
+export type TotalTravel = Omit<Travel, "routingProfile">;
+
+type RoutingProfile = "driving" | "walking" | "cycling";
+
+export type RawPlaceData = Omit<Place, "schedule" | "travel"> & {
+  placeDuration: number;
+  routingProfile: RoutingProfile;
+};
+export type PlaceNoSchedule = Omit<Place, "schedule"> & {
+  placeDuration: number;
+};
 
 export type Day = {
   id: string;
   date: Date;
   timezone: string;
   places: Place[];
-  travel: Travel;
+  travel: TotalTravel;
   path?: string;
-};
-
-export type Travel = {
-  distance: number;
-  duration: number;
 };
 
 export type Trip = {

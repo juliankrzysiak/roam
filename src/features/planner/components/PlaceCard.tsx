@@ -347,9 +347,9 @@ function TripDetails({
             name="routingProfile"
             onChange={() => formRef.current?.requestSubmit()}
           >
-            <option value="driving">driving</option>
-            <option value="walking">walking</option>
-            <option value="cycling">cycling</option>
+            <option value="driving">drive</option>
+            <option value="walking">walk</option>
+            <option value="cycling">cycle</option>
           </select>
         </label>
         <input type="hidden" name="id" defaultValue={id} />

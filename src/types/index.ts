@@ -6,16 +6,22 @@ export type Place = {
   address: string | null;
   placeDuration: number;
   notes: string;
+  routingProfile: "driving" | "walking" | "cycling";
   schedule: {
     arrival: Date;
     departure: Date;
   };
-  travel?: {
+  userTravel: {
+    distance: number | null;
+    duration: number | null;
+  };
+  computedTravel?: {
     distance: number;
     duration: number;
   };
 };
 
+export type PlaceNoComputedTravel = Omit<Place, "schedule" | "computedTravel">;
 export type PlaceNoSchedule = Omit<Place, "schedule">;
 
 export type Day = {

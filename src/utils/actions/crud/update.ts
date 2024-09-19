@@ -91,12 +91,12 @@ export async function updateTripDuration(formData: FormData) {
 
   const hours = Number(formData.get("hours"));
   const minutes = Number(formData.get("minutes"));
-  const { minutes: trip_duration } = convertTime({ hours, minutes });
+  const { minutes: travel_duration } = convertTime({ hours, minutes });
 
   try {
     const { error } = await supabase
       .from("places")
-      .update({ trip_duration })
+      .update({ travel_duration })
       .eq("id", id);
     if (error) throw new Error(`Supabase error: ${error.message}`);
     revalidatePath("/[tripId]", "page");
@@ -274,6 +274,25 @@ export async function updateSharingId(tripId: string) {
       .single();
     if (error) throw new Error(`Supabase error: ${error.message}`);
     return data.sharing_id;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateRoutingProfile(formData: FormData) {
+  const supabase = createClient();
+  const routing_profile = formData.get(
+    "routingProfile",
+  ) as Place["routingProfile"];
+  const id = formData.get("id") as string;
+
+  try {
+    const { error } = await supabase
+      .from("places")
+      .update({ routing_profile })
+      .eq("id", id);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/[tripId]", "page");
   } catch (error) {
     console.log(error);
   }

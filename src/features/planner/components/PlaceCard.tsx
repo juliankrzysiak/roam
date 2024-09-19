@@ -5,7 +5,11 @@ import { IsSharedContext } from "@/context/IsSharedContext";
 import { currentPlaceAtom, insertBeforeIdAtom } from "@/lib/atom";
 import { Place } from "@/types";
 import { convertTime, formatPlaceDuration, formatTravelTime } from "@/utils";
-import { updateNotes, updatePlaceDuration } from "@/utils/actions/crud/update";
+import {
+  updateNotes,
+  updatePlaceDuration,
+  updateRoutingProfile,
+} from "@/utils/actions/crud/update";
 import clsx from "clsx";
 import { add } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
@@ -60,7 +64,8 @@ export default function PlaceCard({
     name,
     schedule,
     placeDuration,
-    travel,
+    routingProfile,
+    computedTravel: travel,
     notes,
   } = place;
   const isShared = useContext(IsSharedContext);
@@ -167,7 +172,12 @@ export default function PlaceCard({
         </div>
       </article>
       {travel && (
-        <TripDetails duration={travel.duration} distance={travel.distance} />
+        <TripDetails
+          id={id}
+          routingProfile={routingProfile}
+          duration={travel.duration}
+          distance={travel.distance}
+        />
       )}
     </Reorder.Item>
   );
@@ -322,24 +332,37 @@ export function Notes({ id, notes }: NotesProps) {
 /* ------------------------------- TripDetails ------------------------------ */
 
 type TripDetailsProps = {
+  id: string;
+  routingProfile: Place["routingProfile"];
   duration: number;
   distance: number;
 };
 
-function TripDetails({ duration, distance }: TripDetailsProps) {
+function TripDetails({
+  id,
+  routingProfile,
+  duration,
+  distance,
+}: TripDetailsProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const travelTime = formatTravelTime(convertTime({ minutes: duration }));
 
   return (
     <div className="flex justify-between gap-2 px-5 py-1 text-sm">
-      <form action="">
+      <form action={updateRoutingProfile} ref={formRef}>
         <label className="flex gap-1">
           {travelTime}
-          <select>
+          <select
+            defaultValue={routingProfile}
+            name="routingProfile"
+            onChange={() => formRef.current?.requestSubmit()}
+          >
             <option value="driving">driving</option>
             <option value="walking">walking</option>
             <option value="cycling">cycling</option>
           </select>
         </label>
+        <input type="hidden" name="id" defaultValue={id} />
       </form>
       <span>{distance} mi</span>
     </div>

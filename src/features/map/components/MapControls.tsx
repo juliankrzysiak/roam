@@ -13,10 +13,22 @@ import { useSetAtom } from "jotai";
 import { LocateFixed, Route, RouteOff, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-// Main template stolen from https://github.com/visgl/react-google-maps/tree/main/examples/autocomplete
 type Props = { path: boolean; handlePath: () => void };
 
-export default function MapSearch({ path, handlePath }: Props) {
+export default function MapControls({ path, handlePath }: Props) {
+  return (
+    <MapControl position={ControlPosition.TOP_RIGHT}>
+      <div className="flex flex-col items-end gap-4 pr-4 pt-3">
+        <MapSearch />
+        <TogglePathButton path={path} handlePath={handlePath} />
+        <CurrentLocationButton />
+      </div>
+    </MapControl>
+  );
+}
+
+// Main template stolen from https://github.com/visgl/react-google-maps/tree/main/examples/autocomplete
+function MapSearch() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [placeAutocomplete, setPlaceAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
@@ -56,31 +68,37 @@ export default function MapSearch({ path, handlePath }: Props) {
   }
 
   return (
-    <MapControl position={ControlPosition.TOP_RIGHT}>
-      <div className="flex flex-col items-end gap-4 pr-4 pt-3">
-        <div className="flex h-10 items-center">
-          {open ? (
-            <Input
-              className="w-72 border-2 border-emerald-800 md:w-96"
-              ref={inputRef}
-              type="search"
-              placeholder="Search for a place"
-              autoFocus
-            />
-          ) : (
-            <button
-              className="rounded-full border-2 border-emerald-800 bg-slate-50 p-2"
-              onClick={() => setOpen(true)}
-              aria-label="Search location"
-            >
-              {open ? <X size={18} /> : <Search size={18} />}
-            </button>
-          )}
-        </div>
-        <TogglePathButton path={path} handlePath={handlePath} />
-        <CurrentLocationButton />
-      </div>
-    </MapControl>
+    <div className="flex h-10 items-center">
+      {open ? (
+        <Input
+          className="w-72 border-2 border-emerald-800 md:w-96"
+          ref={inputRef}
+          type="search"
+          placeholder="Search for a place"
+          autoFocus
+        />
+      ) : (
+        <button
+          className="rounded-full border-2 border-emerald-800 bg-slate-50 p-2"
+          onClick={() => setOpen(true)}
+          aria-label="Search location"
+        >
+          {open ? <X size={18} /> : <Search size={18} />}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function TogglePathButton({ path, handlePath }: Props) {
+  return (
+    <button
+      className="rounded-full border-2 border-emerald-800 bg-slate-50 p-1"
+      onClick={handlePath}
+      aria-label="Toggle route lines"
+    >
+      {path ? <RouteOff /> : <Route />}
+    </button>
   );
 }
 
@@ -95,23 +113,11 @@ function CurrentLocationButton() {
   }
   return (
     <button
-      className="w-fit rounded-full border-2 border-emerald-800 bg-slate-50 p-1"
+      className="mr-[2px] rounded-full border-2 border-emerald-800 bg-slate-50 p-1"
       onClick={handleClick}
       aria-label="Center on current position"
     >
       <LocateFixed size={18} />
-    </button>
-  );
-}
-
-function TogglePathButton({ path, handlePath }: Props) {
-  return (
-    <button
-      className="w-fit rounded-full border-2 border-emerald-800 bg-slate-50 p-1"
-      onClick={handlePath}
-      aria-label="Toggle route lines"
-    >
-      {path ? <RouteOff /> : <Route />}
     </button>
   );
 }

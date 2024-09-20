@@ -22,7 +22,7 @@ import useSWR from "swr";
 import { PlaceDetails } from "../types";
 import { placeDetailsFetcher } from "../utils";
 import { Polyline } from "./Polyline";
-import MapSearch from "./MapSearch";
+import MapControls from "./MapControls";
 
 /* -------------------------------------------------------------------------- */
 /*                                     Map                                    */
@@ -91,7 +91,7 @@ export default function Map({ day, isShared, children }: MapProps) {
             <InfoWindow date={day.date} dayId={day.id} places={places} />
           )}
           {children}
-          <MapSearch path={showPath} handlePath={handlePath} />
+          <MapControls path={showPath} handlePath={handlePath} />
           {showPath && (
             <Polyline
               strokeWeight={5}

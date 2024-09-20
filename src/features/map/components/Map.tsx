@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { IsSharedContext } from "@/context/IsSharedContext";
 import { currentPlaceAtom, insertBeforeIdAtom } from "@/lib/atom";
-import { Day, Place } from "@/types";
+import { DateRange, Day, Place } from "@/types";
 import { createPlace } from "@/utils/actions/crud/create";
 import { deletePlaces } from "@/utils/actions/crud/delete";
 import {
@@ -23,24 +23,27 @@ import { PlaceDetails } from "../types";
 import { placeDetailsFetcher } from "../utils";
 import { Polyline } from "./Polyline";
 import MapControls from "./MapControls";
+import MapDatePicker from "./MapDatePicker";
 
 /* -------------------------------------------------------------------------- */
 /*                                     Map                                    */
 /* -------------------------------------------------------------------------- */
 
 type MapProps = {
+  tripId: string;
   day: Day;
   isShared: boolean;
-  children: React.ReactNode;
+  dateRange: DateRange;
 };
 
-export default function Map({ day, isShared, children }: MapProps) {
+export default function Map({ tripId, day, isShared, dateRange }: MapProps) {
   const { places } = day;
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
     { lat: 34, lng: -118 },
   );
   const [showPath, setShowPath] = useState(Boolean(day?.path));
+  const [pathColor, setPathColor] = useState<string>("#831843");
 
   useEffect(() => {
     const savedLat = localStorage.getItem("lat");
@@ -86,16 +89,16 @@ export default function Map({ day, isShared, children }: MapProps) {
           fullscreenControl={false}
           reuseMaps
         >
+          <MapControls path={showPath} handlePath={handlePath} />
+          <MapDatePicker tripId={tripId} day={day} dateRange={dateRange} />
           <Markers places={places} />
           {currentPlace && (
             <InfoWindow date={day.date} dayId={day.id} places={places} />
           )}
-          {children}
-          <MapControls path={showPath} handlePath={handlePath} />
           {showPath && (
             <Polyline
               strokeWeight={5}
-              strokeColor={"#fb923c"}
+              strokeColor={pathColor}
               encodedPath={day.path}
             />
           )}

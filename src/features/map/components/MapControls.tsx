@@ -1,20 +1,41 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
+import { useExit } from "@/features/planner/hooks";
 import { currentPlaceAtom } from "@/lib/atom";
-import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import clsx from "clsx";
+import {
+  ControlPosition,
+  MapControl,
+  useMap,
+  useMapsLibrary,
+} from "@vis.gl/react-google-maps";
 import { useSetAtom } from "jotai";
-import { LocateFixed, Search, X } from "lucide-react";
+import { LocateFixed, Route, RouteOff, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+type Props = { path: boolean; handlePath: () => void };
+
+export default function MapControls({ path, handlePath }: Props) {
+  return (
+    <MapControl position={ControlPosition.TOP_RIGHT}>
+      <div className="flex flex-col items-end gap-4 pr-4 pt-3">
+        <MapSearch />
+        <TogglePathButton path={path} handlePath={handlePath} />
+        <CurrentLocationButton />
+      </div>
+    </MapControl>
+  );
+}
+
 // Main template stolen from https://github.com/visgl/react-google-maps/tree/main/examples/autocomplete
-export default function MapSearch() {
+function MapSearch() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [open, setOpen] = useState(false);
-  const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const [placeAutocomplete, setPlaceAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
   const places = useMapsLibrary("places");
+  const setCurrentPlace = useSetAtom(currentPlaceAtom);
+  const [open, setOpen] = useState(false);
+  useExit(inputRef, () => setOpen(false));
 
   useEffect(() => {
     if (!places || !inputRef.current) return;
@@ -46,40 +67,38 @@ export default function MapSearch() {
     inputRef.current.value = "";
   }
 
-  function handleClick() {
-    setOpen(!open);
-  }
-
   return (
-    <div
-      className={clsx(
-        "absolute right-0 top-4 flex justify-between gap-2 px-4",
-        open && "w-full",
-      )}
-    >
-      <div></div>
-      {open && (
-        <input
+    <div className="flex h-10 items-center">
+      {open ? (
+        <Input
+          className="w-72 border-2 border-emerald-800 md:w-96"
           ref={inputRef}
-          autoFocus
           type="search"
-          placeholder="Search location"
-          className={clsx(
-            "h-fit w-full max-w-xl rounded-lg border-2 border-emerald-900 px-2 py-1",
-          )}
+          placeholder="Search for a place"
+          autoFocus
         />
-      )}
-      <div className="flex flex-col items-center gap-4">
+      ) : (
         <button
-          className="rounded-full border-2 border-emerald-900 bg-slate-50 p-2"
-          onClick={handleClick}
+          className="rounded-full border-2 border-emerald-800 bg-slate-50 p-1"
+          onClick={() => setOpen(true)}
           aria-label="Search location"
         >
-          {open ? <X size={18} /> : <Search size={18} />}
+          <Search />
         </button>
-        <CurrentLocationButton />
-      </div>
+      )}
     </div>
+  );
+}
+
+function TogglePathButton({ path, handlePath }: Props) {
+  return (
+    <button
+      className="rounded-full border-2 border-emerald-800 bg-slate-50 p-1"
+      onClick={handlePath}
+      aria-label="Toggle route lines"
+    >
+      {path ? <RouteOff /> : <Route />}
+    </button>
   );
 }
 
@@ -94,7 +113,7 @@ function CurrentLocationButton() {
   }
   return (
     <button
-      className="w-fit rounded-full border-2 border-emerald-900 bg-slate-50 p-1"
+      className="mr-[2px] rounded-full border-2 border-emerald-800 bg-slate-50 p-1"
       onClick={handleClick}
       aria-label="Center on current position"
     >

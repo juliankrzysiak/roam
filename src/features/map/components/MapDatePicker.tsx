@@ -26,7 +26,7 @@ export default function MapDatePicker({
 
   return (
     <MapControl position={ControlPosition.BOTTOM_CENTER}>
-      <div className="mb-4 rounded-lg border-2 border-emerald-900">
+      <div className="mb-4 rounded-lg border-2 border-emerald-800">
         <DatePicker
           initialDate={day.date}
           dateRange={dateRange}

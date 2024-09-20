@@ -1,9 +1,14 @@
 import TogglePlannerButton from "@/components/general/TogglePlannerButton";
 import Map from "@/features/map/components/Map";
-import MapDatePicker from "@/features/map/components/MapDatePicker";
-import MapSearch from "@/features/map/components/MapSearch";
 import Planner from "@/features/planner/components/Planner";
-import { Day, Place, PlaceNoSchedule, Travel } from "@/types";
+import {
+  Day,
+  Place,
+  PlaceNoSchedule,
+  RawPlaceData,
+  TotalTravel,
+  Travel,
+} from "@/types";
 import { calcDateRange, convertKmToMi, convertSecToMi } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { addMinutes, parseISO } from "date-fns";
@@ -30,7 +35,7 @@ export default async function MapPage({ params, searchParams }: Props) {
   const day = await getDay(tripId, timezone);
   const totalDuration = day.places.reduce(
     (total, current) =>
-      total + (current.travel?.duration || 0) + current.placeDuration,
+      total + (current.travel?.duration || 0) + current.schedule.duration,
     0,
   );
 
@@ -45,10 +50,12 @@ export default async function MapPage({ params, searchParams }: Props) {
           dateRange={dateRange}
           isShared={isShared}
         />
-        <Map day={day} isShared={isShared}>
-          <MapSearch />
-          <MapDatePicker tripId={tripId} day={day} dateRange={dateRange} />
-        </Map>
+        <Map
+          tripId={tripId}
+          day={day}
+          isShared={isShared}
+          dateRange={dateRange}
+        />
       </main>
       <TogglePlannerButton />
     </>
@@ -87,17 +94,19 @@ export async function getDay(
   const { data: placesData, error } = await supabase
     .from("places")
     .select(
-      "id, name, lat, lng, placeDuration:place_duration, placeId:place_id, address, notes",
+      "id, name, lat, lng, placeDuration:place_duration, placeId:place_id, address, notes, routingProfile:routing_profile",
     )
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
 
   // TODO: Replace this with rpc
-  const sortedPlaces = dayData.orderPlaces.map((id) => {
+  const sortedPlaces: RawPlaceData[] = dayData.orderPlaces.map((id) => {
     const place = placesData.find((place) => place.id === id);
     if (!place) throw new Error("Couldn't find place.");
     const { lat, lng, ...placeProps } = place;
-    return { ...placeProps, position: { lat, lng } };
+    const position = { lat, lng };
+
+    return { ...placeProps, position };
   });
 
   const travelInfo = await getTravelInfo(sortedPlaces);
@@ -112,7 +121,7 @@ export async function getDay(
   const day = {
     ...dayData,
     date,
-    travel: travelInfo.travel,
+    travel: travelInfo.totalTravel,
     path: travelInfo?.path,
   };
 
@@ -122,12 +131,14 @@ export async function getDay(
   };
 }
 
-async function getTravelInfo(
-  places: PlaceNoSchedule[],
-): Promise<{ trips?: Travel[]; travel: Travel; path?: string }> {
+async function getTravelInfo(places: RawPlaceData[]): Promise<{
+  totalTravel: TotalTravel;
+  trips?: Travel[];
+  path?: string;
+}> {
   if (places.length < 2)
     return {
-      travel: {
+      totalTravel: {
         distance: 0,
         duration: 0,
       },
@@ -136,30 +147,90 @@ async function getTravelInfo(
     .map((place) => `${place.position.lng},${place.position.lat}`)
     .join(";");
 
-  const profile = "mapbox/driving";
-  const res = await fetch(
-    `https://api.mapbox.com/directions/v5/${profile}/${coordinates}?overview=full&geometries=polyline&access_token=${process.env.MAPBOX_API_KEY}`,
+  const drivingRes = await fetch(
+    `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?overview=full&geometries=polyline&access_token=${process.env.MAPBOX_API_KEY}`,
   );
-  const tripInformation = await res.json();
-  const travel = {
-    distance: convertKmToMi(tripInformation.routes[0].distance),
-    duration: convertSecToMi(tripInformation.routes[0].duration),
-  };
+  const drivingTravelInfo = await drivingRes.json();
 
-  const trips = tripInformation.routes[0].legs.map(
-    (leg: { distance: number; duration: number }) => {
-      const distance = convertKmToMi(leg.distance);
-      const duration = convertSecToMi(leg.duration);
-      return { distance, duration };
+  type TravelResponse = {
+    routes: {
+      legs: {
+        distance: number;
+        duration: number;
+      }[];
+      distance: number;
+      duration: number;
+    }[];
+  };
+  let walkingTravelInfo = {} as TravelResponse;
+  let cyclingTravelInfo = {} as TravelResponse;
+  if (places.some((place) => place.routingProfile === "walking")) {
+    const walkingRes = await fetch(
+      `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}?access_token=${process.env.MAPBOX_API_KEY}`,
+    );
+    walkingTravelInfo = await walkingRes.json();
+  }
+  if (places.some((place) => place.routingProfile === "cycling")) {
+    const cyclingRes = await fetch(
+      `https://api.mapbox.com/directions/v5/mapbox/cycling/${coordinates}?access_token=${process.env.MAPBOX_API_KEY}`,
+    );
+    cyclingTravelInfo = await cyclingRes.json();
+  }
+
+  const trips: Travel[] = drivingTravelInfo.routes[0].legs.map(
+    (leg: { distance: number; duration: number }, i: number) => {
+      let { distance, duration } = leg;
+      let routingProfile = "driving";
+      if (places[i].routingProfile === "walking") {
+        distance = walkingTravelInfo.routes[0].legs[i].distance;
+        duration = walkingTravelInfo.routes[0].legs[i].duration;
+        routingProfile = "walking";
+      }
+      if (places[i].routingProfile === "cycling") {
+        distance = cyclingTravelInfo.routes[0].legs[i].distance;
+        duration = cyclingTravelInfo.routes[0].legs[i].duration;
+        routingProfile = "cycling";
+      }
+      return {
+        distance: convertKmToMi(distance),
+        duration: convertSecToMi(duration),
+        routingProfile,
+      };
     },
   );
-  const path = tripInformation.routes[0].geometry as string;
+
+  const totalDistance =
+    drivingTravelInfo.routes[0].distance +
+    (walkingTravelInfo.routes[0].distance || 0) +
+    (cyclingTravelInfo.routes[0].distance || 0);
+  const totalDuration =
+    drivingTravelInfo.routes[0].duration +
+    (walkingTravelInfo.routes[0].duration || 0) +
+    (cyclingTravelInfo.routes[0].duration || 0);
+  const totalTravel = {
+    distance: convertKmToMi(totalDistance),
+    duration: convertSecToMi(totalDuration),
+  };
+  const path = drivingTravelInfo.routes[0].geometry as string;
 
   return {
     trips,
-    travel,
+    totalTravel,
     path,
   };
+}
+
+async function mapTravelInfo(
+  places: RawPlaceData[],
+  trips: Travel[] | undefined,
+): Promise<Omit<PlaceNoSchedule, "routingProfile">[]> {
+  if (!trips) return places;
+  else
+    return places.map((place, i) => {
+      const travel = trips[i];
+      const { routingProfile, ...placeProps } = place;
+      return { ...placeProps, travel };
+    });
 }
 
 export async function getTripInfo(tripId: string) {
@@ -200,27 +271,15 @@ export async function getTripInfo(tripId: string) {
   }
 }
 
-async function mapTravelInfo(
-  places: PlaceNoSchedule[],
-  trips: Travel[] | undefined,
-): Promise<PlaceNoSchedule[]> {
-  if (!trips) return places;
-  else
-    return places.map((place, i) => {
-      const travel = trips[i];
-      return { ...place, travel };
-    });
-}
-
 function mapSchedule(places: PlaceNoSchedule[], startTime: Date): Place[] {
   let arrival = startTime;
   let departure;
 
   const calculatedPlaces = places.map((place) => {
-    const { placeDuration } = place;
-    departure = addMinutes(arrival, placeDuration);
-    const schedule = { arrival, departure };
-    const updatedPlace = { ...place, schedule };
+    const { placeDuration: duration, ...placeProps } = place;
+    departure = addMinutes(arrival, duration);
+    const schedule = { arrival, duration, departure };
+    const updatedPlace = { ...placeProps, schedule };
     arrival = addMinutes(departure, place.travel?.duration || 0);
     return updatedPlace;
   });

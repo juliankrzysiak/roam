@@ -92,7 +92,7 @@ type PlaceProps = {
 
 function PDFPlace({ place }: PlaceProps) {
   const placeDuration = formatPlaceDuration(
-    convertTime({ minutes: place.placeDuration }),
+    convertTime({ minutes: place.schedule.duration }),
   );
   const arrival = format(place.schedule.arrival, timeFormat);
   const departure = format(place.schedule.departure, timeFormat);

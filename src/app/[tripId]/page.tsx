@@ -133,7 +133,7 @@ export async function getDay(
 
 async function getTravelInfo(places: RawPlaceData[]): Promise<{
   totalTravel: TotalTravel;
-  trips?: Travel[];
+  trips?: TotalTravel[];
   path?: string;
 }> {
   if (places.length < 2)
@@ -160,6 +160,7 @@ async function getTravelInfo(places: RawPlaceData[]): Promise<{
       }[];
       distance: number;
       duration: number;
+      geometry: string;
     }[];
   };
   let walkingTravelInfo = {} as TravelResponse;
@@ -177,41 +178,31 @@ async function getTravelInfo(places: RawPlaceData[]): Promise<{
     cyclingTravelInfo = await cyclingRes.json();
   }
 
-  const trips: Travel[] = drivingTravelInfo.routes[0].legs.map(
+  const trips: TotalTravel[] = drivingTravelInfo.routes[0].legs.map(
     (leg: { distance: number; duration: number }, i: number) => {
       let { distance, duration } = leg;
-      let routingProfile = "driving";
       if (places[i].routingProfile === "walking") {
         distance = walkingTravelInfo.routes[0].legs[i].distance;
         duration = walkingTravelInfo.routes[0].legs[i].duration;
-        routingProfile = "walking";
       }
       if (places[i].routingProfile === "cycling") {
         distance = cyclingTravelInfo.routes[0].legs[i].distance;
         duration = cyclingTravelInfo.routes[0].legs[i].duration;
-        routingProfile = "cycling";
       }
       return {
         distance: convertKmToMi(distance),
         duration: convertSecToMi(duration),
-        routingProfile,
       };
     },
   );
 
-  const totalDistance =
-    drivingTravelInfo.routes[0].distance +
-    (walkingTravelInfo.routes[0].distance || 0) +
-    (cyclingTravelInfo.routes[0].distance || 0);
-  const totalDuration =
-    drivingTravelInfo.routes[0].duration +
-    (walkingTravelInfo.routes[0].duration || 0) +
-    (cyclingTravelInfo.routes[0].duration || 0);
+  const totalDistance = trips.reduce((total, trip) => total + trip.distance, 0);
+  const totalDuration = trips.reduce((total, trip) => total + trip.duration, 0);
   const totalTravel = {
-    distance: convertKmToMi(totalDistance),
-    duration: convertSecToMi(totalDuration),
+    distance: totalDistance,
+    duration: totalDuration,
   };
-  const path = drivingTravelInfo.routes[0].geometry as string;
+  const path = drivingTravelInfo.routes[0].geometry;
 
   return {
     trips,
@@ -222,13 +213,13 @@ async function getTravelInfo(places: RawPlaceData[]): Promise<{
 
 async function mapTravelInfo(
   places: RawPlaceData[],
-  trips: Travel[] | undefined,
+  trips: TotalTravel[] | undefined,
 ): Promise<Omit<PlaceNoSchedule, "routingProfile">[]> {
   if (!trips) return places;
   else
     return places.map((place, i) => {
-      const travel = trips[i];
       const { routingProfile, ...placeProps } = place;
+      const travel = trips[i] && { ...trips[i], routingProfile };
       return { ...placeProps, travel };
     });
 }

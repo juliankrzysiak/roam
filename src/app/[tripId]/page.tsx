@@ -152,8 +152,18 @@ async function getTravelInfo(places: RawPlaceData[]): Promise<{
   );
   const drivingTravelInfo = await drivingRes.json();
 
-  let walkingTravelInfo = [];
-  let cyclingTravelInfo = [];
+  type TravelResponse = {
+    routes: {
+      legs: {
+        distance: number;
+        duration: number;
+      }[];
+      distance: number;
+      duration: number;
+    }[];
+  };
+  let walkingTravelInfo = {} as TravelResponse;
+  let cyclingTravelInfo = {} as TravelResponse;
   if (places.some((place) => place.routingProfile === "walking")) {
     const walkingRes = await fetch(
       `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}?access_token=${process.env.MAPBOX_API_KEY}`,
@@ -191,12 +201,12 @@ async function getTravelInfo(places: RawPlaceData[]): Promise<{
 
   const totalDistance =
     drivingTravelInfo.routes[0].distance +
-    (walkingTravelInfo.routes?.at(0).distance || 0) +
-    (cyclingTravelInfo.routes?.at(0).distance || 0);
+    (walkingTravelInfo.routes[0].distance || 0) +
+    (cyclingTravelInfo.routes[0].distance || 0);
   const totalDuration =
     drivingTravelInfo.routes[0].duration +
-    (walkingTravelInfo.routes?.at(0).duration || 0) +
-    (cyclingTravelInfo.routes?.at(0).duration || 0);
+    (walkingTravelInfo.routes[0].duration || 0) +
+    (cyclingTravelInfo.routes[0].duration || 0);
   const totalTravel = {
     distance: convertKmToMi(totalDistance),
     duration: convertSecToMi(totalDuration),

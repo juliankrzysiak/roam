@@ -79,11 +79,11 @@ function MapSearch() {
         />
       ) : (
         <button
-          className="rounded-full border-2 border-emerald-800 bg-slate-50 p-2"
+          className="rounded-full border-2 border-emerald-800 bg-slate-50 p-1"
           onClick={() => setOpen(true)}
           aria-label="Search location"
         >
-          {open ? <X size={18} /> : <Search size={18} />}
+          <Search />
         </button>
       )}
     </div>

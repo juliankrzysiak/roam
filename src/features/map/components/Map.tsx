@@ -43,7 +43,6 @@ export default function Map({ tripId, day, isShared, dateRange }: MapProps) {
     { lat: 34, lng: -118 },
   );
   const [showPath, setShowPath] = useState(Boolean(day?.path));
-  const [pathColor, setPathColor] = useState<string>("#831843");
 
   useEffect(() => {
     const savedLat = localStorage.getItem("lat");
@@ -98,7 +97,7 @@ export default function Map({ tripId, day, isShared, dateRange }: MapProps) {
           {showPath && (
             <Polyline
               strokeWeight={5}
-              strokeColor={pathColor}
+              strokeColor={"#831843"}
               encodedPath={day.path}
             />
           )}

@@ -60,6 +60,10 @@ export default function Map({ tripId, day, isShared, dateRange }: MapProps) {
       });
   }, []);
 
+  useEffect(() => {
+    if (!day.path) setShowPath(false);
+  }, [day.path]);
+
   function handleMapClick(e: MapMouseEvent) {
     const { placeId, latLng: position } = e.detail;
     if (!position || !placeId) setCurrentPlace(null);

@@ -124,7 +124,7 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
           Share trip
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent>
         <div className="flex flex-col gap-12">
           <div className="flex flex-col gap-4">
             <DialogHeader>
@@ -137,7 +137,7 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
               action={submitSharingIdForm}
               className="flex flex-col items-center gap-4"
             >
-              <span className="text-center">{sharingLink}</span>
+              <p className="break-all text-center">{sharingLink}</p>
               <div className="flex gap-2">
                 <Button
                   type="button"

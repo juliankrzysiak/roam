@@ -121,7 +121,7 @@ export default function PlaceCard({
         )}
         <article
           className={clsx(
-            "relative flex flex-col gap-2 rounded-md border border-emerald-900 bg-slate-200 py-2 pl-7 pr-1 shadow-sm",
+            "relative flex flex-grow flex-col gap-2 rounded-md border border-emerald-900 bg-slate-200 py-2 pl-7 pr-1 shadow-sm",
             selected && "border-4",
             selectedPlaces.length && "pointer-events-none",
           )}

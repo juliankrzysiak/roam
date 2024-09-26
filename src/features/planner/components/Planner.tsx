@@ -93,7 +93,7 @@ export default function Planner({
     <IsSharedContext.Provider value={isShared}>
       <section
         className={clsx(
-          "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-900 bg-slate-100 sm:relative sm:max-w-xs md:max-w-sm",
+          "absolute left-0 top-0 z-10 flex h-full w-full flex-col border-r-2 border-emerald-900 bg-slate-100 sm:relative sm:max-w-xs md:max-w-sm xl:max-w-lg",
           !isVisible && "hidden opacity-0",
         )}
       >

@@ -46,7 +46,7 @@ export default function TripCard({
   }
 
   return (
-    <article className="relative flex flex-col items-center justify-between gap-2 rounded-lg bg-slate-100 p-6 text-center">
+    <article className="relative flex flex-col items-center justify-between gap-1 rounded-lg bg-slate-100 px-4 py-6 text-center">
       <TripOptions
         tripId={tripId}
         name={name}
@@ -60,8 +60,8 @@ export default function TripCard({
       )}
       <h3 className="text-2xl font-semibold">{name}</h3>
       <p>{range}</p>
-      <div className="mt-4 flex w-full gap-2">
-        <Button variant="default" size="sm" asChild className="flex-1">
+      <div className="mt-6 flex w-full max-w-sm flex-col items-center gap-3">
+        <Button variant="default" className="w-full" asChild>
           <Link href={`/${tripId}`} onClick={handleClick}>
             Start planning
           </Link>
@@ -120,11 +120,11 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="flex-1">
+        <Button variant="outline" className="w-full max-w-xs">
           Share trip
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent>
         <div className="flex flex-col gap-12">
           <div className="flex flex-col gap-4">
             <DialogHeader>
@@ -137,7 +137,7 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
               action={submitSharingIdForm}
               className="flex flex-col items-center gap-4"
             >
-              <span className="text-center">{sharingLink}</span>
+              <p className="break-all text-center">{sharingLink}</p>
               <div className="flex gap-2">
                 <Button
                   type="button"

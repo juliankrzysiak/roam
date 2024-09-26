@@ -25,8 +25,8 @@ import { Place } from "@/types";
 import { deletePlaces } from "@/utils/actions/crud/delete";
 import { updateName } from "@/utils/actions/crud/update";
 import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
-import { SetStateAction, useAtom, useSetAtom } from "jotai";
-import { Delete, EllipsisVertical } from "lucide-react";
+import { SetStateAction, useAtom } from "jotai";
+import { EllipsisVertical } from "lucide-react";
 import { Dispatch, useContext, useState } from "react";
 
 type Props = {

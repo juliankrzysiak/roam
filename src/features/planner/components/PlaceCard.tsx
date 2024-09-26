@@ -95,7 +95,7 @@ export default function PlaceCard({
       value={place}
       id={id}
       // Allows for dragging
-      className="touch-none"
+      className={clsx(selected && "touch-none")}
       dragListener={false}
       dragControls={controls}
       onDragEnd={handleDragEnd}
@@ -110,57 +110,59 @@ export default function PlaceCard({
           </Button>
         </div>
       )}
-      <article
-        className={clsx(
-          "relative flex flex-col gap-2 rounded-md border border-emerald-900 bg-slate-200 py-2 pl-7 pr-1 shadow-sm",
-          selected && "border-4",
-          selectedPlaces.length && "pointer-events-none",
+      <div className="flex items-center">
+        {Boolean(selectedPlaces.length) && (
+          <GripVertical
+            size={28}
+            aria-label="Drag to reorder places."
+            className="cursor-pointer text-slate-500"
+            onPointerDown={(e) => !isShared && controls.start(e)}
+          />
         )}
-      >
-        <div className="flex justify-between gap-2">
-          <button
-            onClick={handleClick}
-            className="w-fit"
-            aria-label="Move to place on map."
-          >
-            <h2 className="text-left text-lg font-bold underline underline-offset-2">
-              {name}
-            </h2>
-          </button>
-          <PlaceOptions id={id} dayId={dayId} name={name} places={places} />
-        </div>
-        <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-emerald-900 pl-1 pr-1 text-xs text-slate-900">
-          {index + 1}
-        </span>
-        <div className="flex items-stretch justify-between gap-1">
-          <div className="flex h-full w-full gap-4">
-            <PlaceDuration
-              arrival={schedule.arrival}
-              placeDuration={schedule.duration}
-              id={id}
-              timezone={timezone}
-            />
-            <Separator orientation="vertical" />
-            <Notes id={id} notes={notes} />
+        <article
+          className={clsx(
+            "relative flex flex-col gap-2 rounded-md border border-emerald-900 bg-slate-200 py-2 pl-7 pr-1 shadow-sm",
+            selected && "border-4",
+            selectedPlaces.length && "pointer-events-none",
+          )}
+        >
+          <div className="flex justify-between gap-2">
+            <button
+              onClick={handleClick}
+              className="w-fit"
+              aria-label="Move to place on map."
+            >
+              <h2 className="text-left text-lg font-bold underline underline-offset-2">
+                {name}
+              </h2>
+            </button>
+            <PlaceOptions id={id} dayId={dayId} name={name} places={places} />
           </div>
-          <div className="flex flex-col items-center justify-between">
-            <div></div>
-            <Checkbox
-              className="text-lg"
-              checked={selectedPlaces.includes(id)}
-              onCheckedChange={handleChangeCheckbox}
-              aria-label="Select a place for further operations."
-              disabled={isShared}
-            />
-            <GripVertical
-              size={24}
-              aria-label="Drag to reorder places."
-              className="cursor-pointer text-slate-500"
-              onPointerDown={(e) => !isShared && controls.start(e)}
-            />
+          <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-emerald-900 pl-1 pr-1 text-xs text-slate-900">
+            {index + 1}
+          </span>
+          <div className=" flex items-stretch justify-between gap-1">
+            <div className="flex h-full w-full gap-4">
+              <PlaceDuration
+                arrival={schedule.arrival}
+                placeDuration={schedule.duration}
+                id={id}
+                timezone={timezone}
+              />
+              <Separator orientation="vertical" />
+              <Notes id={id} notes={notes} />
+            </div>
+            <label className="flex items-end px-1">
+              <Checkbox
+                checked={selectedPlaces.includes(id)}
+                onCheckedChange={handleChangeCheckbox}
+                aria-label="Select a place for further operations."
+                disabled={isShared}
+              />
+            </label>
           </div>
-        </div>
-      </article>
+        </article>
+      </div>
       {travel && (
         <TripDetails
           id={id}

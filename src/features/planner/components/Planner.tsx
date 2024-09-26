@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { IsSharedContext } from "@/context/IsSharedContext";
 import PlaceCard from "@/features/planner/components/PlaceCard";
-import { insertBeforeIdAtom, isPlannerVisibleAtom } from "@/lib/atom";
+import { isPlannerVisibleAtom } from "@/lib/atom";
 import { DateRange, Day } from "@/types";
 import { checkSameArr, convertTime, formatTravelTime, mapId } from "@/utils";
 import { deletePlaces } from "@/utils/actions/crud/delete";
@@ -124,7 +124,10 @@ export default function Planner({
           values={places}
           onReorder={setPlaces}
           layoutScroll
-          className="flex h-full flex-1 flex-col gap-4 overflow-auto px-4 py-2"
+          className={clsx(
+            "flex h-full flex-1 flex-col gap-4 overflow-auto px-4 py-2",
+            selectedPlaces.length && "pl-0",
+          )}
         >
           {places.length < 1 && (
             <p className="text-center text-sm text-slate-600">

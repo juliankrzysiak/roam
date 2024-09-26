@@ -60,8 +60,8 @@ export default function TripCard({
       )}
       <h3 className="text-2xl font-semibold">{name}</h3>
       <p>{range}</p>
-      <div className="mt-6 grid w-full max-w-sm gap-3">
-        <Button variant="default" asChild>
+      <div className="mt-6 flex w-full max-w-sm flex-col items-center gap-3">
+        <Button variant="default" className="w-full" asChild>
           <Link href={`/${tripId}`} onClick={handleClick}>
             Start planning
           </Link>
@@ -120,7 +120,7 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" className="w-full max-w-xs">
           Share trip
         </Button>
       </DialogTrigger>

@@ -56,12 +56,12 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
           aria-label="Open options"
-          className="h-fit"
+          className="h-fit pl-2"
           disabled={isShared}
         >
           <EllipsisVertical
             size={18}
-            className="h-fit text-slate-500"
+            className=" text-slate-500"
             aria-label="Options for this place."
           />
         </DropdownMenuTrigger>

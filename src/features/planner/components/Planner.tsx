@@ -300,10 +300,16 @@ function SelectOptions({
           <DialogHeader>
             <DialogTitle>Move Places to New Date</DialogTitle>
           </DialogHeader>
-          <form action={handleSubmit}>
-            <input
+          <form
+            id="moveDateForm"
+            name="moveDate"
+            action={handleSubmit}
+            className="flex justify-center sm:justify-start"
+          >
+            <Input
               name="date"
               type="date"
+              className="w-fit"
               value={dateString}
               onChange={(e) => setDateString(e.target.value)}
               min={minDateString}
@@ -311,9 +317,12 @@ function SelectOptions({
             />
             <input name="tripId" type="hidden" defaultValue={tripId} />
             <input name="dayId" type="hidden" defaultValue={dayId} />
+          </form>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="submit">Submit</Button>
+              <Button type="submit" form="moveDateForm">
+                Submit
+              </Button>
               </DialogClose>
             </DialogFooter>
           </form>

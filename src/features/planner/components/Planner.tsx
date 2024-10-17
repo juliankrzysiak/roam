@@ -1,5 +1,6 @@
 "use client";
 
+import ConfirmDialog from "@/components/general/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { IsSharedContext } from "@/context/IsSharedContext";
 import PlaceCard from "@/features/planner/components/PlaceCard";
 import { isPlannerVisibleAtom } from "@/lib/atom";
@@ -281,18 +283,22 @@ function SelectOptions({
   }
 
   return (
-    <div className="mx-2 flex justify-between rounded-md border-2 border-slate-400 px-2 py-2 text-sm shadow-lg">
+    <div className="mx-2 flex items-center justify-between rounded-md border-2 border-slate-400 px-2 py-2 text-sm shadow-lg">
       <span>
         {selectedPlacesLength} {selectedPlacesLength > 1 ? "places" : "place"}{" "}
         selected
       </span>
       <div className="flex items-center gap-4">
-        <button onClick={() => setOpen(true)}>Move</button>
-        <form action={handleDelete}>
-          <button>Delete</button>
-        </form>
-        <button className="ml-2" onClick={handleDeselectAll}>
-          <XIcon size={16} />
+        <Button className="h-fit" onClick={() => setOpen(true)}>
+          Move
+        </Button>
+        <ConfirmDialog handleSubmit={handleDelete}>
+          <Button className="h-fit" variant="destructive">
+            Delete
+          </Button>
+        </ConfirmDialog>
+        <button onClick={handleDeselectAll}>
+          <XIcon size={20} />
         </button>
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -300,10 +306,16 @@ function SelectOptions({
           <DialogHeader>
             <DialogTitle>Move Places to New Date</DialogTitle>
           </DialogHeader>
-          <form action={handleSubmit}>
-            <input
+          <form
+            id="moveDateForm"
+            name="moveDate"
+            action={handleSubmit}
+            className="flex justify-center sm:justify-start"
+          >
+            <Input
               name="date"
               type="date"
+              className="w-fit"
               value={dateString}
               onChange={(e) => setDateString(e.target.value)}
               min={minDateString}
@@ -311,12 +323,14 @@ function SelectOptions({
             />
             <input name="tripId" type="hidden" defaultValue={tripId} />
             <input name="dayId" type="hidden" defaultValue={dayId} />
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="submit">Submit</Button>
-              </DialogClose>
-            </DialogFooter>
           </form>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="submit" form="moveDateForm">
+                Submit
+              </Button>
+            </DialogClose>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

@@ -1,4 +1,4 @@
-import { mapDateRange } from "@/utils";
+import { formatDateRange, mapDateRange } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 
 type Props = {
@@ -21,10 +21,14 @@ export default async function TripPage({ params }: Props) {
   const trip = mapDateRange(data).pop();
   if (!trip) throw new Error("Couldn't get trip information");
 
+  const formattedRange = formatDateRange(trip.dateRange, "EEE, MMM dd");
+
   return (
     <main className="flex flex-col items-center px-6 py-4">
-      <h2 className="text-3xl">{trip.name}</h2>
-      <div></div>
+      <h2 className="mb-4 text-3xl">{trip.name}</h2>
+      <div>
+        <span className="text-xl">{formattedRange}</span>
+      </div>
     </main>
   );
 }

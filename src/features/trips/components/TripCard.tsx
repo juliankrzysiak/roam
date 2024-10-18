@@ -13,16 +13,14 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { Trip } from "@/types";
+import { formatDateRange } from "@/utils";
 import { setCookie } from "@/utils/actions/cookies";
 import { updateSharing, updateSharingId } from "@/utils/actions/crud/update";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { format, isEqual } from "date-fns";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import TripOptions from "./TripOptions";
-
-const dateFormat = "MMM dd";
 
 const host =
   process.env.NODE_ENV === "development"
@@ -35,11 +33,8 @@ export default function TripCard({
   dateRange,
   currentDate,
   sharing,
-  sharingId,
 }: Trip) {
-  let range = format(dateRange.from, dateFormat);
-  if (!isEqual(dateRange.from, dateRange.to))
-    range += ` - ${format(dateRange.to, dateFormat)}`;
+  const formattedRange = formatDateRange(dateRange);
 
   async function handleClick() {
     setCookie("tripId", tripId);
@@ -59,14 +54,16 @@ export default function TripCard({
         </span>
       )}
       <h3 className="text-2xl font-semibold">{name}</h3>
-      <p>{range}</p>
+      <p>{formattedRange}</p>
       <div className="mt-6 flex w-full max-w-sm flex-col items-center gap-3">
         <Button variant="default" className="w-full" asChild>
           <Link href={`/${tripId}`} onClick={handleClick}>
             Start planning
           </Link>
         </Button>
-        <ShareTrip sharing={sharing} sharingId={sharingId} tripId={tripId} />
+        <Button variant="outline" className="w-full" asChild>
+          <Link href={`trips/${tripId}`}>See details</Link>
+        </Button>
       </div>
     </article>
   );

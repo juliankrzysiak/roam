@@ -1,5 +1,5 @@
 import { DateRange, Place, Trip } from "@/types";
-import { format, formatISO, parse } from "date-fns";
+import { format, formatISO, isEqual, parse } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 
 export function mapId(places: Place[]) {
@@ -54,7 +54,11 @@ function calcDateDelta(arr1: Date[], arr2: Date[]) {
   );
 }
 
-export function formatBulkDates(trip_id: string, dates: Date[], timezone: string) {
+export function formatBulkDates(
+  trip_id: string,
+  dates: Date[],
+  timezone: string,
+) {
   return dates.map((date) => ({
     trip_id,
     date: format(date, "yyyy-MM-dd"),
@@ -92,6 +96,13 @@ export function calcDateRange(dates: calcDateRangesParam, timezone: string) {
   };
 
   return dateRange;
+}
+
+export function formatDateRange(dateRange: DateRange, dateFormat = "MMM dd") {
+  let range = format(dateRange.from, dateFormat);
+  if (!isEqual(dateRange.from, dateRange.to))
+    range += ` - ${format(dateRange.to, dateFormat)}`;
+  return range;
 }
 
 /* --------------------------------- Convert -------------------------------- */

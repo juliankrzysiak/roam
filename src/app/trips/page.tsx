@@ -34,10 +34,10 @@ export default async function Trips() {
   type InitialObject = { upcomingTrips: Trip[]; pastTrips: Trip[] };
   const initialObject: InitialObject = { upcomingTrips: [], pastTrips: [] };
 
-  const { upcomingTrips, pastTrips } = trips.reduce((previous, current) => {
-    if (isPast(current.dateRange.to)) previous.pastTrips.push(current);
-    else previous.upcomingTrips.push(current);
-    return previous;
+  const { upcomingTrips, pastTrips } = trips.reduce((acc, current) => {
+    if (isPast(current.dateRange.to)) acc.pastTrips.push(current);
+    else acc.upcomingTrips.push(current);
+    return acc;
   }, initialObject);
 
   return (

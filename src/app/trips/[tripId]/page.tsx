@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ShareTrip from "@/features/trips/components/ShareTrip";
-import { formatDateRange, mapDateRange } from "@/utils";
+import { formatDateRange, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 
@@ -14,14 +14,13 @@ export default async function TripPage({ params }: Props) {
   const { data, error } = await supabase
     .from("trips")
     .select(
-      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, sharing, sharingId:sharing_id, timezone",
+      "tripId:id, name, days (date, totalDuration:total_duration, totalDistance:total_distance, orderPlaces:order_places), currentDate:current_date, isSharing: is_sharing, sharingId:sharing_id, timezone",
     )
     .eq("id", tripId)
     .order("date", { referencedTable: "days" })
     .limit(1);
   if (error) throw new Error("Couldn't get trip information.");
-
-  const trip = mapDateRange(data).pop();
+  const trip = formatTripData(data).pop();
   if (!trip) throw new Error("Couldn't get trip information");
 
   const formattedRange = formatDateRange(trip.dateRange, "EEE, MMM dd");
@@ -45,6 +44,10 @@ export default async function TripPage({ params }: Props) {
             <Link href={`/pdf/${tripId}`}>Print</Link>
           </Button>
         </div>
+      </div>
+      <div>
+        <h3>Totals</h3>
+        <span>Duration: </span>
       </div>
     </main>
   );

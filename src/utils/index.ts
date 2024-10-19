@@ -1,4 +1,4 @@
-import { DateRange, Place, Trip } from "@/types";
+import { DateRange, Place, Trip, TripData } from "@/types";
 import { format, formatISO, isEqual, parse } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 
@@ -67,36 +67,50 @@ export function formatBulkDates(
 }
 
 /* -------------------------------- dateRange ------------------------------- */
-type TripNoDateRange = Omit<Trip, "dateRange"> & {
-  days: { date: string; orderPlaces: string[] }[];
-};
 
-export function mapDateRange(trips: TripNoDateRange[]): Trip[] {
-  return trips.map((trip) => {
-    const dateRange = calcDateRange(trip.days, trip.timezone);
-    // Remove a property and add a property
-    const { days, ...newTrip } = { ...trip, dateRange };
-    return newTrip;
+export function formatTripData(tripData: TripData[]): Trip[] {
+  return tripData.map((trip) => {
+    const formattedDays = trip.days.map((day) => {
+      const formattedDate = fromZonedTime(day.date, trip.timezone);
+      const totals = {
+        distance: day.totalDistance,
+        duration: day.totalDuration,
+      };
+      return {
+        date: formattedDate,
+        orderPlaces: day.orderPlaces,
+        totals,
+      };
+    });
+    const dateRange = calcDateRange(
+      trip.days.map((day) => day.date),
+      trip.timezone,
+    );
+    const sharing = {
+      isSharing: trip.isSharing,
+      sharingId: trip.sharingId,
+    };
+    const { isSharing, sharingId, ...formattedTripData } = {
+      ...trip,
+      days: formattedDays,
+      dateRange,
+      sharing,
+    };
+    return formattedTripData;
   });
 }
 
-type calcDateRangesParam = { date: string; orderPlaces: string[] }[];
+export function calcDateRange(dates: string[], timezone: string): DateRange {
+  const from = fromZonedTime(dates[0], timezone);
+  const to = fromZonedTime(dates[dates.length - 1], timezone);
 
-export function calcDateRange(dates: calcDateRangesParam, timezone: string) {
-  const from = fromZonedTime(dates[0].date, timezone);
-  const to = fromZonedTime(dates[dates.length - 1].date, timezone);
-  const datesWithPlaces = dates.flatMap((date) =>
-    date.orderPlaces.length ? fromZonedTime(date.date, timezone) : [],
-  );
-
-  const dateRange: DateRange = {
+  return {
     from,
     to,
-    datesWithPlaces,
   };
-
-  return dateRange;
 }
+
+function calcDatesWithPlaces() {}
 
 export function formatDateRange(dateRange: DateRange, dateFormat = "MMM dd") {
   let range = format(dateRange.from, dateFormat);

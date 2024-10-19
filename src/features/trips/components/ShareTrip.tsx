@@ -15,24 +15,26 @@ import { useToast } from "@/components/ui/use-toast";
 import { updateSharing, updateSharingId } from "@/utils/actions/crud/update";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 const host =
   process.env.NODE_ENV === "development"
     ? "localhost:3000"
     : "https://roam-gamma.vercel.app";
 
-type ShareTripProps = {
+type Props = {
   sharing: boolean;
   sharingId: string | null;
   tripId: string;
+  children: ReactNode;
 };
 
 export default function ShareTrip({
   tripId,
   sharing,
   sharingId,
-}: ShareTripProps) {
+  children,
+}: Props) {
   const { toast } = useToast();
   const [checked, setChecked] = useState(sharing);
 
@@ -73,11 +75,7 @@ export default function ShareTrip({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="w-full max-w-xs">
-          Share trip
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <div className="flex flex-col gap-12">
           <div className="flex flex-col gap-4">

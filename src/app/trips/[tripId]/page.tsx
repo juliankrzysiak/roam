@@ -1,6 +1,8 @@
+import { Button } from "@/components/ui/button";
 import ShareTrip from "@/features/trips/components/ShareTrip";
 import { formatDateRange, mapDateRange } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
+import Link from "next/link";
 
 type Props = {
   params: { tripId: string };
@@ -27,14 +29,21 @@ export default async function TripPage({ params }: Props) {
   return (
     <main className="flex flex-col items-center px-6 py-4">
       <h2 className="mb-4 text-3xl">{trip.name}</h2>
-      <div>
+      <div className="flex flex-col gap-2">
         <span className="text-xl">{formattedRange}</span>
-        <div>
+        <div className="flex gap-2 ">
           <ShareTrip
             tripId={tripId}
             sharing={trip.sharing}
             sharingId={trip.sharingId}
-          />
+          >
+            <Button variant="outline" className="flex-1">
+              Share
+            </Button>
+          </ShareTrip>
+          <Button variant="outline" asChild className="flex-1">
+            <Link href={`/pdf/${tripId}`}>Print</Link>
+          </Button>
         </div>
       </div>
     </main>

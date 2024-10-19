@@ -107,10 +107,17 @@ function PDFPlace({ place }: PlaceProps) {
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
       <View wrap={false} style={{ flexDirection: "column", gap: 4 }}>
         <View>
-          <Text style={[styles.fontBase, { textDecoration: "underline" }]}>
+          <Text
+            style={[
+              styles.fontBase,
+              { textDecoration: "underline", marginBottom: "2px" },
+            ]}
+          >
             {place.name}
           </Text>
-          <Text style={styles.fontXs}>{place.address}</Text>
+          <Text style={styles.fontXs}>
+            {place.address || `${place.position.lat}, ${place.position.lng}`}
+          </Text>
         </View>
         <View style={styles.fontXs}>
           <View>
@@ -121,7 +128,6 @@ function PDFPlace({ place }: PlaceProps) {
           {travelTime && <Text style={{ marginTop: 8 }}>T: {travelTime}</Text>}
         </View>
       </View>
-      <Text style={styles.fontXs}>{place.notes}</Text>
     </View>
   );
 }

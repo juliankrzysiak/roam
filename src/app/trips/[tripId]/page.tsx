@@ -1,3 +1,4 @@
+import ShareTrip from "@/features/trips/components/ShareTrip";
 import { formatDateRange, mapDateRange } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 
@@ -28,6 +29,13 @@ export default async function TripPage({ params }: Props) {
       <h2 className="mb-4 text-3xl">{trip.name}</h2>
       <div>
         <span className="text-xl">{formattedRange}</span>
+        <div>
+          <ShareTrip
+            tripId={tripId}
+            sharing={trip.sharing}
+            sharingId={trip.sharingId}
+          />
+        </div>
       </div>
     </main>
   );

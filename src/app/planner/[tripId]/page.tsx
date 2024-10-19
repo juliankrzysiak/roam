@@ -32,6 +32,14 @@ export default async function MapPage({ params, searchParams }: Props) {
   if (!isShared && !session) throw new Error("No authorization.");
 
   const day = await getDay(tripId, timezone);
+  const { error } = await supabase
+    .from("days")
+    .update({
+      total_distance: day.travel.distance,
+      total_duration: day.travel.duration,
+    })
+    .eq("id", day.id);
+  if (error) throw new Error("Couldn't update info for the current day.");
   const totalDuration = day.places.reduce(
     (total, current) =>
       total + (current.travel?.duration || 0) + current.schedule.duration,
@@ -197,6 +205,7 @@ async function getTravelInfo(places: RawPlaceData[]): Promise<{
 
   const totalDistance = trips.reduce((total, trip) => total + trip.distance, 0);
   const totalDuration = trips.reduce((total, trip) => total + trip.duration, 0);
+
   const totalTravel = {
     distance: totalDistance,
     duration: totalDuration,

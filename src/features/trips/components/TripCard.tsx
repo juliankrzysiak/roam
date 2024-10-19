@@ -37,7 +37,7 @@ export default function TripCard({
       <p>{formattedRange}</p>
       <div className="mt-6 flex w-full max-w-sm flex-col items-center gap-3">
         <Button variant="default" className="w-full" asChild>
-          <Link href={`/${tripId}`} onClick={handleClick}>
+          <Link href={`/planner/${tripId}`} onClick={handleClick}>
             Start planning
           </Link>
         </Button>

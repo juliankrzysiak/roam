@@ -1,4 +1,4 @@
-import { getDay } from "@/app/[tripId]/page";
+import { getDay } from "@/app/planner/[tripId]/page";
 import { createClient } from "@/utils/supabase/server";
 import { FileText } from "lucide-react";
 import dynamic from "next/dynamic";

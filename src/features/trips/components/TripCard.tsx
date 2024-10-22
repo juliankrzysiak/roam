@@ -5,7 +5,6 @@ import { TripLite } from "@/types";
 import { formatDateRange } from "@/utils";
 import { setCookie } from "@/utils/actions/cookies";
 import Link from "next/link";
-import TripOptions from "./TripOptions";
 
 export default function TripCard({
   tripId,
@@ -21,12 +20,6 @@ export default function TripCard({
 
   return (
     <article className="relative flex flex-col items-center justify-between gap-1 rounded-lg bg-slate-100 px-4 py-6 text-center">
-      {/* <TripOptions
-        tripId={tripId}
-        name={name}
-        dateRange={dateRange}
-        currentDate={currentDate}
-      /> */}
       {isSharing && (
         <span className="absolute left-2 top-2 text-sm text-slate-500">
           shared

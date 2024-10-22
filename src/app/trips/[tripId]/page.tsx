@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ShareTrip from "@/features/trips/components/ShareTrip";
+import TripOptions from "@/features/trips/components/TripOptions";
 import { formatDateRange, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { ChevronLeft } from "lucide-react";
@@ -23,8 +24,8 @@ export default async function TripPage({ params }: Props) {
   if (error) throw new Error("Couldn't get trip information.");
   const trip = formatTripData(data).pop();
   if (!trip) throw new Error("Couldn't get trip information");
-  const { name, sharing } = trip;
-  const formattedRange = formatDateRange(trip.dateRange, "EEE, MMM dd");
+  const { name, dateRange, currentDate, sharing } = trip;
+  const formattedRange = formatDateRange(dateRange, "EEE, MMM dd");
 
   return (
     <main className="mx-auto px-6 py-4">
@@ -37,6 +38,12 @@ export default async function TripPage({ params }: Props) {
             <ChevronLeft size={16} /> back
           </span>
         </Link>
+        <TripOptions
+          tripId={tripId}
+          name={name}
+          dateRange={dateRange}
+          currentDate={currentDate}
+        />
         <h2 className="mb-4 text-3xl">{name}</h2>
         <div className="flex flex-col gap-2">
           <span className="text-xl">{formattedRange}</span>

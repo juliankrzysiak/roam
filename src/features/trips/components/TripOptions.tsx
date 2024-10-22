@@ -12,10 +12,8 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {
   Form,
@@ -38,7 +36,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
-import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -61,7 +58,6 @@ export default function TripOptions({
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
-  // TODO: Fix dropdown not opening after using datepicker and clicking outside the modal
   return (
     <>
       <DropdownMenu modal={false}>
@@ -69,27 +65,21 @@ export default function TripOptions({
           className="absolute right-1 top-2"
           aria-label="Open options"
         >
-          <EllipsisVertical size={20} className="text-slate-500" />
+          <EllipsisVertical size={18} className="text-slate-500" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem className="cursor-pointer" asChild>
-            <Link href={`/${tripId}/pdf`}>Print</Link>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setOpenEdit(true)}
+          >
+            <span>Edit</span>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => setOpenEdit(true)}
-            >
-              <span>Edit</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => setOpenDelete(true)}
-            >
-              <span>Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setOpenDelete(true)}
+          >
+            <span>Delete</span>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <EditTrip

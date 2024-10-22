@@ -36,6 +36,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -261,9 +262,11 @@ function DeleteTrip({
   open,
   setOpen,
 }: Pick<EditTripProps, "tripId" | "open" | "setOpen">) {
+  const router = useRouter();
   async function handleSubmit(formData: FormData) {
+    router.back();
     await deleteTrip(formData);
-    setOpen(false);
+    router.refresh();
   }
 
   return (

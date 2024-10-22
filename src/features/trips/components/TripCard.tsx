@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Trip } from "@/types";
+import { TripLite } from "@/types";
 import { formatDateRange } from "@/utils";
 import { setCookie } from "@/utils/actions/cookies";
 import Link from "next/link";
@@ -11,9 +11,8 @@ export default function TripCard({
   tripId,
   name,
   dateRange,
-  currentDate,
-  sharing,
-}: Trip) {
+  isSharing,
+}: TripLite) {
   const formattedRange = formatDateRange(dateRange);
 
   async function handleClick() {
@@ -22,13 +21,13 @@ export default function TripCard({
 
   return (
     <article className="relative flex flex-col items-center justify-between gap-1 rounded-lg bg-slate-100 px-4 py-6 text-center">
-      <TripOptions
+      {/* <TripOptions
         tripId={tripId}
         name={name}
         dateRange={dateRange}
         currentDate={currentDate}
-      />
-      {sharing && (
+      /> */}
+      {isSharing && (
         <span className="absolute left-2 top-2 text-sm text-slate-500">
           shared
         </span>

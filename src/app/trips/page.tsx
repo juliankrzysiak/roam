@@ -1,7 +1,7 @@
 import NewTripForm from "@/features/trips/components/NewTripForm";
 import TripSection from "@/features/trips/components/TripSection";
-import { Trip } from "@/types";
-import { mapDateRange } from "@/utils";
+import { TripLite, Trip, TripData } from "@/types";
+import { calcDateRange, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { isPast } from "date-fns";
 
@@ -12,31 +12,26 @@ export default async function Trips() {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("No authorization.");
 
-  const { data, error } = await supabase
+  const { data: trips, error } = await supabase
     .from("trips")
-    .select(
-      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone, sharing, sharingId:sharing_id",
-    )
+    .select("tripId:id, name, days (date), timezone, isSharing:is_sharing")
     .order("date", { referencedTable: "days" })
     .eq("user_id", user.id);
   if (error) throw new Error(error.message);
 
-  // todo: replace with rpc
-  const trips = mapDateRange(data).sort((a, b) => {
-    const startDateA = a.dateRange.from;
-    const startDateB = b.dateRange.from;
-
-    if (startDateA > startDateB) return 1;
-    if (startDateA < startDateB) return -1;
-    else return 0;
-  });
-
-  type InitialObject = { upcomingTrips: Trip[]; pastTrips: Trip[] };
-  const initialObject: InitialObject = { upcomingTrips: [], pastTrips: [] };
+  const initialObject: {
+    upcomingTrips: TripLite[];
+    pastTrips: TripLite[];
+  } = { upcomingTrips: [], pastTrips: [] };
 
   const { upcomingTrips, pastTrips } = trips.reduce((acc, current) => {
-    if (isPast(current.dateRange.to)) acc.pastTrips.push(current);
-    else acc.upcomingTrips.push(current);
+    const dateRange = calcDateRange(
+      current.days.map((day) => day.date),
+      current.timezone,
+    );
+    const trip = { ...current, dateRange };
+    if (isPast(dateRange.to)) acc.pastTrips.push(trip);
+    else acc.upcomingTrips.push(trip);
     return acc;
   }, initialObject);
 

@@ -51,7 +51,7 @@ export type TripData = {
   }[];
   currentDate: string;
   timezone: string;
-  isSharing: boolean,
+  isSharing: boolean;
   sharingId: string | null;
 };
 
@@ -71,6 +71,11 @@ export type Trip = {
     sharingId: string | null;
   };
 };
+
+export type TripLite = Pick<
+  TripData,
+  "tripId" | "name" | "isSharing" | "timezone"
+> & { dateRange: Trip["dateRange"] } & { days: { date: string }[] };
 
 export type DateRange = {
   from: Date;

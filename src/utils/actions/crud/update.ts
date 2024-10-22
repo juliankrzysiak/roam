@@ -251,10 +251,10 @@ export async function movePlaces({
   }
 }
 
-export async function updateSharing(sharing: boolean, tripId: string) {
+export async function updateSharing(is_sharing: boolean, tripId: string) {
   const supabase = createClient();
   try {
-    await supabase.from("trips").update({ sharing }).eq("id", tripId);
+    await supabase.from("trips").update({ is_sharing }).eq("id", tripId);
     revalidatePath("/trips");
   } catch (error) {
     console.log(error);

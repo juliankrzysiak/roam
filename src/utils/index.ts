@@ -25,6 +25,12 @@ export function formatTravelTime({ hours, minutes }: Args) {
   return `${formattedHours} ${minutes} min`;
 }
 
+export function formatTotalDuration({ hours, minutes }: Args) {
+  const newHours = `${hours} hour${hours !== 1 && "s"}`;
+  const newMinutes = `${minutes} minute${minutes !== 1 && "s"}`;
+  return `${newHours}, ${newMinutes}`;
+}
+
 export function formatPlaceDuration({ hours, minutes }: Args) {
   const formattedMinutes = minutes.toString().padStart(2, "0");
   return hours + ":" + formattedMinutes;

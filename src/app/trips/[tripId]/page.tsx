@@ -1,7 +1,13 @@
 import { Button } from "@/components/ui/button";
 import ShareTrip from "@/features/trips/components/ShareTrip";
 import TripOptions from "@/features/trips/components/TripOptions";
-import { formatDateRange, formatTripData } from "@/utils";
+import {
+  convertTime,
+  formatDateRange,
+  formatTotalDuration,
+  formatTravelTime,
+  formatTripData,
+} from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -24,8 +30,15 @@ export default async function TripPage({ params }: Props) {
     .single();
   if (error) throw new Error("Couldn't get trip information.");
   const trip = formatTripData(data);
-  const { name, dateRange, currentDate, sharing } = trip;
+  const { name, dateRange, currentDate, sharing, days } = trip;
   const formattedRange = formatDateRange(dateRange, "EEE, MMM dd");
+  const totals = {
+    distance: days.reduce((acc, curr) => acc + curr.totals.distance, 0),
+    duration: convertTime({
+      minutes: days.reduce((acc, curr) => acc + curr.totals.duration, 0),
+    }),
+    days: days.length,
+  };
 
   return (
     <main className="mx-auto px-6 py-4">
@@ -64,10 +77,10 @@ export default async function TripPage({ params }: Props) {
         </div>
         <div className="flex w-full flex-col items-center gap-2">
           <h3 className="text-xl">Totals</h3>
-          <div className="flex w-full flex-col items-start gap-1">
-            <span> Distance: </span>
-            <span> Duration: </span>
-            <span> Days: </span>
+          <div className="flex w-full flex-col items-center gap-1">
+            <span> {totals.distance} miles</span>
+            <span> {formatTotalDuration(totals.duration)} </span>
+            <span> {totals.days} days</span>
           </div>
         </div>
       </div>

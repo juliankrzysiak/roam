@@ -31,6 +31,7 @@ export default async function MapPage({ params, searchParams }: Props) {
     name,
     timezone,
     dateRange,
+    days,
     sharing: { isSharing, sharingId },
   } = tripInfo;
   const isShared = isSharing && sharingParamId === sharingId;
@@ -50,6 +51,7 @@ export default async function MapPage({ params, searchParams }: Props) {
       total + (current.travel?.duration || 0) + current.schedule.duration,
     0,
   );
+  const datesWithPlaces= days.flatMap(day => day.orderPlaces.length ? day.date : [])
 
   return (
     <>
@@ -67,6 +69,7 @@ export default async function MapPage({ params, searchParams }: Props) {
           day={day}
           isShared={isShared}
           dateRange={dateRange}
+          datesWithPlaces={datesWithPlaces}
         />
       </main>
       <TogglePlannerButton />

@@ -41,6 +41,9 @@ export default async function TripPage({ params }: Props) {
     }),
     days: days.length,
   };
+  const datesWithPlaces = days.flatMap((day) =>
+    day.orderPlaces.length ? day.date : [],
+  );
 
   return (
     <main className="grid place-items-center px-6 py-4">
@@ -58,6 +61,7 @@ export default async function TripPage({ params }: Props) {
           name={name}
           dateRange={dateRange}
           currentDate={currentDate}
+          datesWithPlaces={datesWithPlaces}
         />
         <h2 className="mb-2 text-3xl">{name}</h2>
         <div className="mb-4 flex flex-col gap-4">

@@ -13,7 +13,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   Form,
@@ -47,6 +47,7 @@ type TripOptionsProps = {
   name: string;
   dateRange: DateRange;
   currentDate: string;
+  datesWithPlaces: Date[];
 };
 
 export default function TripOptions({
@@ -54,6 +55,7 @@ export default function TripOptions({
   name,
   dateRange,
   currentDate,
+  datesWithPlaces,
 }: TripOptionsProps) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -89,6 +91,7 @@ export default function TripOptions({
         initialName={name}
         initialDateRange={dateRange}
         currentDate={currentDate}
+        datesWithPlaces={datesWithPlaces}
       />
       <DeleteTrip open={openDelete} setOpen={setOpenDelete} tripId={tripId} />
     </>
@@ -102,6 +105,7 @@ type EditTripProps = {
   initialName: string;
   initialDateRange: DateRange;
   currentDate: string;
+  datesWithPlaces: Date[];
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
@@ -111,6 +115,7 @@ function EditTrip({
   initialName,
   initialDateRange,
   currentDate,
+  datesWithPlaces,
   open,
   setOpen,
 }: EditTripProps) {
@@ -207,6 +212,7 @@ function EditTrip({
                       <DatePickerWithRange
                         dateRange={field.value}
                         setDateRange={field.onChange}
+                        datesWithPlaces={datesWithPlaces}
                       />
                     </FormControl>
                     <FormMessage />

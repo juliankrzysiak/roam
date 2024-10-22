@@ -13,26 +13,20 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-type PartialDateRange = {
-  from: Date;
-  to?: Date;
-  datesWithPlaces?: Date[];
-};
-
 type Props = {
-  dateRange: PartialDateRange;
-  setDateRange: React.Dispatch<React.SetStateAction<PartialDateRange>>;
+  dateRange: DateRange;
+  setDateRange: React.Dispatch<React.SetStateAction<DateRange>>;
+  datesWithPlaces: Date[];
   className?: React.HTMLAttributes<HTMLDivElement>;
 };
 
 export function DatePickerWithRange({
   dateRange,
   setDateRange,
+  datesWithPlaces,
   className,
 }: Props) {
-  const datesWithPlaces = dateRange.datesWithPlaces ?? [];
-
-  function handleSelect(e: PartialDateRange) {
+  function handleSelect(e: DateRange) {
     const dateRange = { ...e, datesWithPlaces };
     setDateRange(dateRange);
   }

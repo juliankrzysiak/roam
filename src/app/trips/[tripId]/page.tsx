@@ -6,13 +6,13 @@ import {
   convertTime,
   formatDateRange,
   formatTotalDuration,
-  formatTravelTime,
   formatTripData,
 } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { format } from "date-fns";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import GoToDateButton from "../../../features/trips/components/GoTodDateButton";
 
 type Props = {
   params: { tripId: string };
@@ -87,14 +87,14 @@ export default async function TripPage({ params }: Props) {
         </div>
         <div className="flex w-full flex-col items-center gap-2">
           <h3 className="text-2xl">Breakdown</h3>
-          <Days days={trip.days} />
+          <Days tripId={tripId} days={trip.days} />
         </div>
       </div>
     </main>
   );
 }
 
-function Days({ days }: { days: Trip["days"] }) {
+async function Days({ tripId, days }: Pick<Trip, "tripId" | "days">) {
   return (
     <ul className="flex w-full flex-col items-center gap-4">
       {days.map((day, i) => {
@@ -120,7 +120,7 @@ function Days({ days }: { days: Trip["days"] }) {
               <span>{duration}</span>
               <span>{numberOfStops}</span>
             </div>
-            <Button>Go To Date</Button>
+            <GoToDateButton tripId={tripId} date={day.date} />
           </li>
         );
       })}

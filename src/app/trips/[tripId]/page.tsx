@@ -20,10 +20,10 @@ export default async function TripPage({ params }: Props) {
     )
     .eq("id", tripId)
     .order("date", { referencedTable: "days" })
-    .limit(1);
+    .limit(1)
+    .single();
   if (error) throw new Error("Couldn't get trip information.");
-  const trip = formatTripData(data).pop();
-  if (!trip) throw new Error("Couldn't get trip information");
+  const trip = formatTripData(data);
   const { name, dateRange, currentDate, sharing } = trip;
   const formattedRange = formatDateRange(dateRange, "EEE, MMM dd");
 
@@ -44,8 +44,8 @@ export default async function TripPage({ params }: Props) {
           dateRange={dateRange}
           currentDate={currentDate}
         />
-        <h2 className="mb-4 text-3xl">{name}</h2>
-        <div className="flex flex-col gap-2">
+        <h2 className="mb-2 text-3xl">{name}</h2>
+        <div className="mb-4 flex flex-col gap-4">
           <span className="text-xl">{formattedRange}</span>
           <div className="flex gap-2 ">
             <ShareTrip
@@ -62,9 +62,13 @@ export default async function TripPage({ params }: Props) {
             </Button>
           </div>
         </div>
-        <div>
-          <h3>Totals</h3>
-          <span>Duration: </span>
+        <div className="flex w-full flex-col items-center gap-2">
+          <h3 className="text-xl">Totals</h3>
+          <div className="flex w-full flex-col items-start gap-1">
+            <span> Distance: </span>
+            <span> Duration: </span>
+            <span> Days: </span>
+          </div>
         </div>
       </div>
     </main>

@@ -68,36 +68,34 @@ export function formatBulkDates(
 
 /* -------------------------------- dateRange ------------------------------- */
 
-export function formatTripData(tripData: TripData[]): Trip[] {
-  return tripData.map((trip) => {
-    const formattedDays = trip.days.map((day) => {
-      const formattedDate = fromZonedTime(day.date, trip.timezone);
-      const totals = {
-        distance: day.totalDistance,
-        duration: day.totalDuration,
-      };
-      return {
-        date: formattedDate,
-        orderPlaces: day.orderPlaces,
-        totals,
-      };
-    });
-    const dateRange = calcDateRange(
-      trip.days.map((day) => day.date),
-      trip.timezone,
-    );
-    const sharing = {
-      isSharing: trip.isSharing,
-      sharingId: trip.sharingId,
+export function formatTripData(tripData: TripData): Trip {
+  const formattedDays = tripData.days.map((day) => {
+    const formattedDate = fromZonedTime(day.date, tripData.timezone);
+    const totals = {
+      distance: day.totalDistance,
+      duration: day.totalDuration,
     };
-    const { isSharing, sharingId, ...formattedTripData } = {
-      ...trip,
-      days: formattedDays,
-      dateRange,
-      sharing,
+    return {
+      date: formattedDate,
+      orderPlaces: day.orderPlaces,
+      totals,
     };
-    return formattedTripData;
   });
+  const dateRange = calcDateRange(
+    tripData.days.map((day) => day.date),
+    tripData.timezone,
+  );
+  const sharing = {
+    isSharing: tripData.isSharing,
+    sharingId: tripData.sharingId,
+  };
+  const { isSharing, sharingId, ...formattedTripData } = {
+    ...tripData,
+    days: formattedDays,
+    dateRange,
+    sharing,
+  };
+  return formattedTripData;
 }
 
 export function calcDateRange(dates: string[], timezone: string): DateRange {

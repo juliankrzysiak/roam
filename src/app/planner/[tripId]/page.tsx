@@ -8,7 +8,7 @@ import {
   RawPlaceData,
   TotalTravel,
 } from "@/types";
-import { calcDateRange, convertKmToMi, convertSecToMi } from "@/utils";
+import { convertKmToMi, convertSecToMi, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { addMinutes, parseISO } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
@@ -24,11 +24,16 @@ export default async function MapPage({ params, searchParams }: Props) {
     data: { session },
   } = await supabase.auth.getSession();
   const { tripId } = params;
-  const { sharing } = searchParams;
+  const { sharing: sharingParamId } = searchParams;
   const tripInfo = await getTripInfo(tripId);
   if (!tripInfo) throw new Error("Couldn't connect to server.");
-  const { tripName, timezone, dateRange, isTripShared, sharingId } = tripInfo;
-  const isShared = isTripShared && sharing === sharingId;
+  const {
+    name,
+    timezone,
+    dateRange,
+    sharing: { isSharing, sharingId },
+  } = tripInfo;
+  const isShared = isSharing && sharingParamId === sharingId;
   if (!isShared && !session) throw new Error("No authorization.");
 
   const day = await getDay(tripId, timezone);
@@ -52,7 +57,7 @@ export default async function MapPage({ params, searchParams }: Props) {
         <Planner
           day={day}
           tripId={tripId}
-          tripName={tripName}
+          tripName={name}
           totalDuration={totalDuration}
           dateRange={dateRange}
           isShared={isShared}
@@ -236,35 +241,19 @@ export async function getTripInfo(tripId: string) {
   const supabase = createClient();
 
   try {
-    const { data: tripNameData, error: tripNameError } = await supabase
+    const { data, error } = await supabase
       .from("trips")
-      .select("name, timezone, sharing, sharingId:sharing_id")
+      .select(
+        "tripId:id, name, days (date, totalDuration:total_duration, totalDistance:total_distance, orderPlaces:order_places), currentDate:current_date, isSharing: is_sharing, sharingId:sharing_id, timezone",
+      )
       .eq("id", tripId)
+      .order("date", { referencedTable: "days" })
       .limit(1)
       .single();
-    if (tripNameError) throw new Error(`${tripNameError.message}`);
-    const {
-      name: tripName,
-      timezone,
-      sharing: isTripShared,
-      sharingId,
-    } = tripNameData;
+    if (error) throw new Error(`${error.message}`);
+    const trip = formatTripData(data);
 
-    const { data: daysData, error: daysError } = await supabase
-      .from("days")
-      .select("date, orderPlaces:order_places")
-      .eq("trip_id", tripId)
-      .order("date");
-    if (daysError) throw new Error(`${daysError.message}`);
-    const dateRange = calcDateRange(daysData, timezone);
-
-    return {
-      tripName,
-      timezone,
-      dateRange,
-      isTripShared,
-      sharingId,
-    };
+    return trip;
   } catch (error) {
     console.log(error);
   }

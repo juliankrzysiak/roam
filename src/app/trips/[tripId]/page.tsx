@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import ShareTrip from "@/features/trips/components/ShareTrip";
 import { formatDateRange, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
@@ -26,28 +27,38 @@ export default async function TripPage({ params }: Props) {
   const formattedRange = formatDateRange(trip.dateRange, "EEE, MMM dd");
 
   return (
-    <main className="flex flex-col items-center px-6 py-4">
-      <h2 className="mb-4 text-3xl">{name}</h2>
-      <div className="flex flex-col gap-2">
-        <span className="text-xl">{formattedRange}</span>
-        <div className="flex gap-2 ">
-          <ShareTrip
-            tripId={tripId}
-            sharing={sharing.isSharing}
-            sharingId={sharing.sharingId}
-          >
-            <Button variant="outline" className="flex-1">
-              Share
+    <main className="mx-auto px-6 py-4">
+      <div className="relative flex w-fit flex-col items-center rounded-md border-2 border-slate-300 bg-slate-100 px-12 py-4">
+        <Link
+          href="/trips"
+          className="absolute left-2 top-2 text-sm text-slate-500"
+        >
+          <span className="flex items-center">
+            <ChevronLeft size={16} /> back
+          </span>
+        </Link>
+        <h2 className="mb-4 text-3xl">{name}</h2>
+        <div className="flex flex-col gap-2">
+          <span className="text-xl">{formattedRange}</span>
+          <div className="flex gap-2 ">
+            <ShareTrip
+              tripId={tripId}
+              sharing={sharing.isSharing}
+              sharingId={sharing.sharingId}
+            >
+              <Button variant="outline" className="flex-1">
+                Share
+              </Button>
+            </ShareTrip>
+            <Button variant="outline" asChild className="flex-1">
+              <Link href={`/pdf/${tripId}`}>Print</Link>
             </Button>
-          </ShareTrip>
-          <Button variant="outline" asChild className="flex-1">
-            <Link href={`/pdf/${tripId}`}>Print</Link>
-          </Button>
+          </div>
         </div>
-      </div>
-      <div>
-        <h3>Totals</h3>
-        <span>Duration: </span>
+        <div>
+          <h3>Totals</h3>
+          <span>Duration: </span>
+        </div>
       </div>
     </main>
   );

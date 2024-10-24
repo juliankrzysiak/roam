@@ -16,14 +16,14 @@ import { cn } from "@/lib/utils";
 type Props = {
   dateRange: DateRange;
   setDateRange: React.Dispatch<React.SetStateAction<DateRange>>;
-  datesWithPlaces: Date[];
+  datesWithPlaces?: Date[];
   className?: React.HTMLAttributes<HTMLDivElement>;
 };
 
 export function DatePickerWithRange({
   dateRange,
   setDateRange,
-  datesWithPlaces,
+  datesWithPlaces = [],
   className,
 }: Props) {
   function handleSelect(e: DateRange) {

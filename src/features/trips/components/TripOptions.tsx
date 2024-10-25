@@ -42,6 +42,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schema";
 import { getAlertStrings, getIsSameDateRange } from "../utils";
+import { useToast } from "@/components/ui/use-toast";
 
 type TripOptionsProps = {
   tripId: string;
@@ -263,7 +264,9 @@ function DeleteTrip({
   setOpen,
 }: Pick<EditTripProps, "tripId" | "open" | "setOpen">) {
   const router = useRouter();
+  const { toast } = useToast();
   async function handleSubmit(formData: FormData) {
+    toast({ description: "Trip deleted" });
     router.back();
     await deleteTrip(formData);
     router.refresh();

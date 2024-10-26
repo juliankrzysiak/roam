@@ -1,18 +1,25 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { TripLite } from "@/types";
+import { Trip } from "@/types";
 import { formatDateRange } from "@/utils";
 import { setCookie } from "@/utils/actions/cookies";
 import Link from "next/link";
+import TripOptions from "./TripOptions";
 
+// TODO: Add back options to the cards
 export default function TripCard({
   tripId,
   name,
   dateRange,
-  isSharing,
-}: TripLite) {
+  currentDate,
+  days,
+  sharing,
+}: Trip) {
   const formattedRange = formatDateRange(dateRange);
+  const datesWithPlaces = days.flatMap((day) =>
+    day.orderPlaces.length ? day.date : [],
+  );
 
   async function handleClick() {
     setCookie("tripId", tripId);
@@ -20,11 +27,18 @@ export default function TripCard({
 
   return (
     <article className="relative flex flex-col items-center justify-between gap-1 rounded-lg bg-slate-100 px-4 py-6 text-center">
-      {isSharing && (
+      {sharing.isSharing && (
         <span className="absolute left-2 top-2 text-sm text-slate-500">
           shared
         </span>
       )}
+      <TripOptions
+        tripId={tripId}
+        name={name}
+        dateRange={dateRange}
+        currentDate={currentDate}
+        datesWithPlaces={datesWithPlaces}
+      />
       <h3 className="text-2xl font-semibold">{name}</h3>
       <p>{formattedRange}</p>
       <div className="mt-6 flex w-full max-w-sm flex-col items-center gap-3">

@@ -13,6 +13,12 @@ import { format } from "date-fns";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import GoToDateButton from "../../../features/trips/components/GoTodDateButton";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type Props = {
   params: { tripId: string };
@@ -100,34 +106,42 @@ export default async function TripPage({ params }: Props) {
 
 async function Days({ tripId, days }: Pick<Trip, "tripId" | "days">) {
   return (
-    <ul className="flex w-full flex-col items-center gap-4">
-      {days.map((day, i) => {
-        const index = i + 1;
-        const date = format(day.date, "EEE, MMM dd");
-        const numberOfStops = day.orderPlaces.length + " places";
-        const distance = day.totals.distance + " miles";
-        const duration = formatTotalDuration(
-          convertTime({ minutes: day.totals.duration }),
-        );
+    <Accordion type="single" collapsible>
+      <ul className="flex w-full flex-col items-center gap-4">
+        {days.map((day, i) => {
+          const index = i + 1;
+          const date = format(day.date, "EEE, MMM dd");
+          const numberOfStops = day.orderPlaces.length + " places";
+          const distance = day.totals.distance + " miles";
+          const duration = formatTotalDuration(
+            convertTime({ minutes: day.totals.duration }),
+          );
 
-        return (
-          <li
-            key={day.date.toString()}
-            className="relative flex w-full max-w-sm flex-col items-center gap-2 rounded-sm border border-slate-500 px-4 py-2 odd:bg-slate-200"
-          >
-            <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-slate-500 px-1">
-              {index}
-            </span>
-            <h4 className="text-lg font-semibold">{date}</h4>
-            <div className="flex flex-col items-center gap-0">
-              <span>{distance}</span>
-              <span>{duration}</span>
-              <span>{numberOfStops}</span>
-            </div>
-            <GoToDateButton tripId={tripId} date={day.date} />
-          </li>
-        );
-      })}
-    </ul>
+          return (
+            <AccordionItem value={day.date.toISOString()}>
+              <li
+                key={day.date.toString()}
+                className="relative flex w-full max-w-sm flex-col items-center gap-2 rounded-sm border border-slate-500 px-4 py-2 odd:bg-slate-200"
+              >
+                <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-slate-500 px-1">
+                  {index}
+                </span>
+                <AccordionTrigger>
+                  <h4 className="text-lg font-semibold">{date}</h4>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex flex-col items-center gap-0">
+                    <span>{distance}</span>
+                    <span>{duration}</span>
+                    <span>{numberOfStops}</span>
+                  </div>
+                  <GoToDateButton tripId={tripId} date={day.date} />
+                </AccordionContent>
+              </li>
+            </AccordionItem>
+          );
+        })}
+      </ul>
+    </Accordion>
   );
 }

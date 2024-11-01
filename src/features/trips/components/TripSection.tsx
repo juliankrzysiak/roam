@@ -1,8 +1,8 @@
-import { Trip } from "@/types";
+import { TripLite } from "@/types";
 import TripCard from "./TripCard";
 
 type Props = {
-  trips: Trip[];
+  trips: TripLite[];
   title: string;
   defaultMessage?: string;
   children?: React.ReactNode;

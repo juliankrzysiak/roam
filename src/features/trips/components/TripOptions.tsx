@@ -12,7 +12,9 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -35,7 +37,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
-import { EllipsisVertical } from "lucide-react";
+import {
+  Delete,
+  EllipsisVertical,
+  Pencil,
+  Printer,
+  Share,
+  Trash,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -43,6 +52,8 @@ import { z } from "zod";
 import { formSchema } from "../schema";
 import { getAlertStrings, getIsSameDateRange } from "../utils";
 import { useToast } from "@/components/ui/use-toast";
+import ShareTrip from "./ShareTrip";
+import { Trip } from "@/types";
 
 type TripOptionsProps = {
   tripId: string;
@@ -50,6 +61,7 @@ type TripOptionsProps = {
   dateRange: DateRange;
   currentDate: string;
   datesWithPlaces: Date[];
+  sharing: Trip["sharing"];
 };
 
 export default function TripOptions({
@@ -58,6 +70,7 @@ export default function TripOptions({
   dateRange,
   currentDate,
   datesWithPlaces,
+  sharing,
 }: TripOptionsProps) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -72,18 +85,37 @@ export default function TripOptions({
           <EllipsisVertical size={18} className="text-slate-500" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => setOpenEdit(true)}
-          >
-            <span>Edit</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => setOpenDelete(true)}
-          >
-            <span>Delete</span>
-          </DropdownMenuItem>
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <ShareTrip tripId={tripId} sharing={sharing}>
+                <>
+                  <Share />
+                  <span>Share</span>
+                </>
+              </ShareTrip>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Printer />
+              <span>Print</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => setOpenEdit(true)}
+            >
+              <Pencil />
+              <span>Edit</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => setOpenDelete(true)}
+            >
+              <Trash />
+              <span>Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       <EditTrip

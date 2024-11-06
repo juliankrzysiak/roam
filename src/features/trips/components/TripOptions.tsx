@@ -26,7 +26,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { DateRange } from "@/types";
+import { useToast } from "@/components/ui/use-toast";
+import { DateRange, Trip } from "@/types";
 import { calcDateDeltas } from "@/utils";
 import { deleteTrip } from "@/utils/actions/crud/delete";
 import {
@@ -37,23 +38,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
-import {
-  Delete,
-  EllipsisVertical,
-  Pencil,
-  Printer,
-  Share,
-  Trash,
-} from "lucide-react";
+import { EllipsisVertical, Pencil, Printer, Share, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schema";
 import { getAlertStrings, getIsSameDateRange } from "../utils";
-import { useToast } from "@/components/ui/use-toast";
 import ShareTrip from "./ShareTrip";
-import { Trip } from "@/types";
 
 type TripOptionsProps = {
   tripId: string;

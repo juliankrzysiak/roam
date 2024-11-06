@@ -12,27 +12,25 @@ export default async function Trips() {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("No authorization.");
 
-  const { data: trips, error } = await supabase
+  const { data, error } = await supabase
     .from("trips")
-    .select("tripId:id, name, days (date), timezone, isSharing:is_sharing")
-    .order("date", { referencedTable: "days" })
-    .eq("user_id", user.id);
+    .select(
+      "tripId:id, name, days (date, totalDuration:total_duration, totalDistance:total_distance, orderPlaces:order_places), currentDate:current_date, isSharing: is_sharing, sharingId:sharing_id, timezone",
+    )
+    .eq("user_id", user.id)
+    .order("date", { referencedTable: "days" });
   if (error) throw new Error(error.message);
+  const trips = data.map((trip) => formatTripData(trip));
 
   const initialObject: {
-    upcomingTrips: TripLite[];
-    pastTrips: TripLite[];
+    upcomingTrips: Trip[];
+    pastTrips: Trip[];
   } = { upcomingTrips: [], pastTrips: [] };
 
-  const { upcomingTrips, pastTrips } = trips.reduce((acc, current) => {
-    const dateRange = calcDateRange(
-      current.days.map((day) => day.date),
-      current.timezone,
-    );
-    const trip = { ...current, dateRange };
-    if (isPast(dateRange.to)) acc.pastTrips.push(trip);
-    else acc.upcomingTrips.push(trip);
-    return acc;
+  const { upcomingTrips, pastTrips } = trips.reduce((total, trip) => {
+    if (isPast(trip.dateRange.to)) total.pastTrips.push(trip);
+    else total.upcomingTrips.push(trip);
+    return total;
   }, initialObject);
 
   return (

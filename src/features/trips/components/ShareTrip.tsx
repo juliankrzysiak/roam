@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
+import { Trip } from "@/types";
 import { updateSharing, updateSharingId } from "@/utils/actions/crud/update";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
@@ -23,20 +24,15 @@ const host =
     : "https://roam-gamma.vercel.app";
 
 type Props = {
-  sharing: boolean;
-  sharingId: string | null;
+  sharing: Trip["sharing"];
   tripId: string;
   children: ReactNode;
 };
 
-export default function ShareTrip({
-  tripId,
-  sharing,
-  sharingId,
-  children,
-}: Props) {
+export default function ShareTrip({ sharing, tripId, children }: Props) {
+  const {isSharing, sharingId} = sharing
   const { toast } = useToast();
-  const [checked, setChecked] = useState(sharing);
+  const [checked, setChecked] = useState(isSharing);
 
   const [locked, setLocked] = useState(true);
   const sharingLinkBase = `${host}/${tripId}?sharing=`;
@@ -51,7 +47,7 @@ export default function ShareTrip({
   }, []);
 
   async function submitSharingForm() {
-    if (checked === sharing) return;
+    if (checked === isSharing) return;
     await updateSharing(checked, tripId);
   }
 

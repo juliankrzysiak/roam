@@ -29,6 +29,9 @@ importers:
       '@radix-ui/react-checkbox':
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@18.3.0)(@types/react@18.3.5)(react-dom@18.3.0-canary-c5b937576-20231219(react@18.3.0-canary-c5b937576-20231219))(react@18.3.0-canary-c5b937576-20231219)
+      '@radix-ui/react-collapsible':
+        specifier: ^1.1.1
+        version: 1.1.1(@types/react-dom@18.3.0)(@types/react@18.3.5)(react-dom@18.3.0-canary-c5b937576-20231219(react@18.3.0-canary-c5b937576-20231219))(react@18.3.0-canary-c5b937576-20231219)
       '@radix-ui/react-dialog':
         specifier: ^1.0.4
         version: 1.0.4(@types/react-dom@18.3.0)(@types/react@18.3.5)(react-dom@18.3.0-canary-c5b937576-20231219(react@18.3.0-canary-c5b937576-20231219))(react@18.3.0-canary-c5b937576-20231219)

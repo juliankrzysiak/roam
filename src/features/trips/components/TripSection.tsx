@@ -5,6 +5,7 @@ import { formatDateRange } from "@/utils";
 import { setCookie } from "@/utils/actions/cookies";
 import Link from "next/link";
 import TripOptions from "./TripOptions";
+import ShareTrip from "./ShareTrip";
 
 type Props = {
   trips: Trip[];
@@ -33,7 +34,14 @@ export default function TripSection({
   );
 }
 
-function TripCard({ tripId, name, dateRange, sharing, currentDate, days }: Trip) {
+function TripCard({
+  tripId,
+  name,
+  dateRange,
+  sharing,
+  currentDate,
+  days,
+}: Trip) {
   const formattedRange = formatDateRange(dateRange);
   const datesWithPlaces = days.flatMap((day) =>
     day.orderPlaces.length ? day.date : [],
@@ -65,9 +73,11 @@ function TripCard({ tripId, name, dateRange, sharing, currentDate, days }: Trip)
             Start planning
           </Link>
         </Button>
-        <Button variant="outline" className="w-full" asChild>
-          <Link href={`trips/${tripId}`}>See details</Link>
-        </Button>
+        <ShareTrip tripId={tripId} sharing={sharing}>
+          <Button variant="outline" className="w-full">
+            Share trip
+          </Button>
+        </ShareTrip>
       </div>
     </article>
   );

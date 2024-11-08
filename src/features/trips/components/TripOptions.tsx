@@ -38,14 +38,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
-import { EllipsisVertical, Pencil, Printer, Share, Trash } from "lucide-react";
+import { EllipsisVertical, Pencil, Printer, Trash } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schema";
 import { getAlertStrings, getIsSameDateRange } from "../utils";
-import ShareTrip from "./ShareTrip";
 
 type TripOptionsProps = {
   tripId: string;
@@ -77,20 +77,12 @@ export default function TripOptions({
           <EllipsisVertical size={18} className="text-slate-500" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <ShareTrip tripId={tripId} sharing={sharing}>
-                <>
-                  <Share />
-                  <span>Share</span>
-                </>
-              </ShareTrip>
-            </DropdownMenuItem>
+          <Link href={`/pdf/${tripId}`}>
             <DropdownMenuItem>
               <Printer />
               <span>Print</span>
             </DropdownMenuItem>
-          </DropdownMenuGroup>
+          </Link>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem

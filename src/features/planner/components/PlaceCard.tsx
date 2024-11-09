@@ -336,6 +336,7 @@ function TripDetails({
   duration,
   distance,
 }: TripDetailsProps) {
+  const isShared = useContext(IsSharedContext);
   const formRef = useRef<HTMLFormElement>(null);
   const travelTime = formatTravelTime(convertTime({ minutes: duration }));
 
@@ -348,6 +349,7 @@ function TripDetails({
             defaultValue={routingProfile}
             name="routingProfile"
             onChange={() => formRef.current?.requestSubmit()}
+            disabled={isShared}
           >
             <option value="driving">drive</option>
             <option value="walking">walk</option>

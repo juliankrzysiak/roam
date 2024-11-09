@@ -7,9 +7,8 @@ import {
   PlaceNoSchedule,
   RawPlaceData,
   TotalTravel,
-  Travel,
 } from "@/types";
-import { calcDateRange, convertKmToMi, convertSecToMi } from "@/utils";
+import { convertKmToMi, convertSecToMi, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { addMinutes, parseISO } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
@@ -25,19 +24,34 @@ export default async function MapPage({ params, searchParams }: Props) {
     data: { session },
   } = await supabase.auth.getSession();
   const { tripId } = params;
-  const { sharing } = searchParams;
+  const { sharing: sharingParamId } = searchParams;
   const tripInfo = await getTripInfo(tripId);
   if (!tripInfo) throw new Error("Couldn't connect to server.");
-  const { tripName, timezone, dateRange, isTripShared, sharingId } = tripInfo;
-  const isShared = isTripShared && sharing === sharingId;
+  const {
+    name,
+    timezone,
+    dateRange,
+    days,
+    sharing: { isSharing, sharingId },
+  } = tripInfo;
+  const isShared = isSharing && sharingParamId === sharingId;
   if (!isShared && !session) throw new Error("No authorization.");
 
   const day = await getDay(tripId, timezone);
+  const { error } = await supabase
+    .from("days")
+    .update({
+      total_distance: day.travel.distance,
+      total_duration: day.travel.duration,
+    })
+    .eq("id", day.id);
+  if (error) throw new Error("Couldn't update info for the current day.");
   const totalDuration = day.places.reduce(
     (total, current) =>
       total + (current.travel?.duration || 0) + current.schedule.duration,
     0,
   );
+  const datesWithPlaces= days.flatMap(day => day.orderPlaces.length ? day.date : [])
 
   return (
     <>
@@ -45,7 +59,7 @@ export default async function MapPage({ params, searchParams }: Props) {
         <Planner
           day={day}
           tripId={tripId}
-          tripName={tripName}
+          tripName={name}
           totalDuration={totalDuration}
           dateRange={dateRange}
           isShared={isShared}
@@ -55,6 +69,7 @@ export default async function MapPage({ params, searchParams }: Props) {
           day={day}
           isShared={isShared}
           dateRange={dateRange}
+          datesWithPlaces={datesWithPlaces}
         />
       </main>
       <TogglePlannerButton />
@@ -198,6 +213,7 @@ async function getTravelInfo(places: RawPlaceData[]): Promise<{
 
   const totalDistance = trips.reduce((total, trip) => total + trip.distance, 0);
   const totalDuration = trips.reduce((total, trip) => total + trip.duration, 0);
+
   const totalTravel = {
     distance: totalDistance,
     duration: totalDuration,
@@ -228,35 +244,19 @@ export async function getTripInfo(tripId: string) {
   const supabase = createClient();
 
   try {
-    const { data: tripNameData, error: tripNameError } = await supabase
+    const { data, error } = await supabase
       .from("trips")
-      .select("name, timezone, sharing, sharingId:sharing_id")
+      .select(
+        "tripId:id, name, days (date, totalDuration:total_duration, totalDistance:total_distance, orderPlaces:order_places), currentDate:current_date, isSharing: is_sharing, sharingId:sharing_id, timezone",
+      )
       .eq("id", tripId)
+      .order("date", { referencedTable: "days" })
       .limit(1)
       .single();
-    if (tripNameError) throw new Error(`${tripNameError.message}`);
-    const {
-      name: tripName,
-      timezone,
-      sharing: isTripShared,
-      sharingId,
-    } = tripNameData;
+    if (error) throw new Error(`${error.message}`);
+    const trip = formatTripData(data);
 
-    const { data: daysData, error: daysError } = await supabase
-      .from("days")
-      .select("date, orderPlaces:order_places")
-      .eq("trip_id", tripId)
-      .order("date");
-    if (daysError) throw new Error(`${daysError.message}`);
-    const dateRange = calcDateRange(daysData, timezone);
-
-    return {
-      tripName,
-      timezone,
-      dateRange,
-      isTripShared,
-      sharingId,
-    };
+    return trip;
   } catch (error) {
     console.log(error);
   }

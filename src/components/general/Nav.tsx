@@ -29,10 +29,8 @@ export default function Nav({ user, cookieTripId }: Props) {
           </Link>
           {cookieTripId && (
             <Link
-              href={`/${cookieTripId}`}
-              className={clsx(
-                tripId && !pathName.includes("pdf") && "font-semibold",
-              )}
+              href={`/planner/${cookieTripId}`}
+              className={clsx(pathName.includes("planner") && "font-semibold")}
             >
               Planner
             </Link>

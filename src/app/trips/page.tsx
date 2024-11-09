@@ -1,7 +1,7 @@
 import NewTripForm from "@/features/trips/components/NewTripForm";
 import TripSection from "@/features/trips/components/TripSection";
-import { Trip } from "@/types";
-import { mapDateRange } from "@/utils";
+import { TripLite, Trip, TripData } from "@/types";
+import { calcDateRange, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { isPast } from "date-fns";
 
@@ -15,29 +15,22 @@ export default async function Trips() {
   const { data, error } = await supabase
     .from("trips")
     .select(
-      "tripId:id, name, days (date, orderPlaces:order_places), currentDate:current_date, timezone, sharing, sharingId:sharing_id",
+      "tripId:id, name, days (date, totalDuration:total_duration, totalDistance:total_distance, orderPlaces:order_places), currentDate:current_date, isSharing: is_sharing, sharingId:sharing_id, timezone",
     )
-    .order("date", { referencedTable: "days" })
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .order("date", { referencedTable: "days" });
   if (error) throw new Error(error.message);
+  const trips = data.map((trip) => formatTripData(trip));
 
-  // todo: replace with rpc
-  const trips = mapDateRange(data).sort((a, b) => {
-    const startDateA = a.dateRange.from;
-    const startDateB = b.dateRange.from;
+  const initialObject: {
+    upcomingTrips: Trip[];
+    pastTrips: Trip[];
+  } = { upcomingTrips: [], pastTrips: [] };
 
-    if (startDateA > startDateB) return 1;
-    if (startDateA < startDateB) return -1;
-    else return 0;
-  });
-
-  type InitialObject = { upcomingTrips: Trip[]; pastTrips: Trip[] };
-  const initialObject: InitialObject = { upcomingTrips: [], pastTrips: [] };
-
-  const { upcomingTrips, pastTrips } = trips.reduce((previous, current) => {
-    if (isPast(current.dateRange.to)) previous.pastTrips.push(current);
-    else previous.upcomingTrips.push(current);
-    return previous;
+  const { upcomingTrips, pastTrips } = trips.reduce((total, trip) => {
+    if (isPast(trip.dateRange.to)) total.pastTrips.push(trip);
+    else total.upcomingTrips.push(trip);
+    return total;
   }, initialObject);
 
   return (

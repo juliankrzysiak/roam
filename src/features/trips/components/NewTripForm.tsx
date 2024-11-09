@@ -26,17 +26,17 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { newTripFormSchema } from "../schema";
 import { getEachDateInRange } from "../utils";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function NewTripForm() {
   const [open, setOpen] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof newTripFormSchema>>({
     resolver: zodResolver(newTripFormSchema),
     defaultValues: {
       name: "",
-      dateRange: {
-        datesWithPlaces: [],
-      },
+      dateRange: {},
     },
   });
 
@@ -45,6 +45,7 @@ export default function NewTripForm() {
     const dates = getEachDateInRange(dateRange.from, dateRange.to);
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     await createTrip(name, dates, timezone);
+    toast({ description: "New trip created" });
     setOpen(false);
   }
 

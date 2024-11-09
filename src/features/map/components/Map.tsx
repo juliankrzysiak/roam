@@ -34,9 +34,16 @@ type MapProps = {
   day: Day;
   isShared: boolean;
   dateRange: DateRange;
+  datesWithPlaces: Date[];
 };
 
-export default function Map({ tripId, day, isShared, dateRange }: MapProps) {
+export default function Map({
+  tripId,
+  day,
+  isShared,
+  dateRange,
+  datesWithPlaces,
+}: MapProps) {
   const { places } = day;
   const [currentPlace, setCurrentPlace] = useAtom(currentPlaceAtom);
   const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>(
@@ -93,7 +100,12 @@ export default function Map({ tripId, day, isShared, dateRange }: MapProps) {
           reuseMaps
         >
           <MapControls path={showPath} handlePath={handlePath} />
-          <MapDatePicker tripId={tripId} day={day} dateRange={dateRange} />
+          <MapDatePicker
+            tripId={tripId}
+            day={day}
+            dateRange={dateRange}
+            datesWithPlaces={datesWithPlaces}
+          />
           <Markers places={places} />
           {currentPlace && (
             <InfoWindow date={day.date} dayId={day.id} places={places} />

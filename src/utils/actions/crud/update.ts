@@ -5,7 +5,7 @@ import { convertTime, formatBulkDates, mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { format } from "date-fns";
 import { revalidatePath } from "next/cache";
-import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "nanoid";
 
 export async function updateTrip(id: string, name: string) {
   const supabase = createClient();
@@ -251,10 +251,10 @@ export async function movePlaces({
   }
 }
 
-export async function updateSharing(sharing: boolean, tripId: string) {
+export async function updateSharing(is_sharing: boolean, tripId: string) {
   const supabase = createClient();
   try {
-    await supabase.from("trips").update({ sharing }).eq("id", tripId);
+    await supabase.from("trips").update({ is_sharing }).eq("id", tripId);
     revalidatePath("/trips");
   } catch (error) {
     console.log(error);
@@ -263,7 +263,7 @@ export async function updateSharing(sharing: boolean, tripId: string) {
 
 export async function updateSharingId(tripId: string) {
   const supabase = createClient();
-  const sharing_id = uuidv4();
+  const sharing_id = nanoid(10);
 
   try {
     const { data, error } = await supabase

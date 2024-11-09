@@ -19,9 +19,15 @@ type Props = {
   tripId: string;
   initialDate: Date;
   dateRange: DateRange;
+  datesWithPlaces: Date[];
 };
 
-export function DatePicker({ tripId, initialDate, dateRange }: Props) {
+export function DatePicker({
+  tripId,
+  initialDate,
+  dateRange,
+  datesWithPlaces,
+}: Props) {
   const [isPending, startTransition] = useTransition();
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [optimisticDate, setOptimisticDate] = useOptimistic<Date | undefined>(
@@ -29,7 +35,6 @@ export function DatePicker({ tripId, initialDate, dateRange }: Props) {
     // @ts-expect-error
     (_state, newDate) => newDate,
   );
-  const { datesWithPlaces } = dateRange;
 
   const dateMatcher = {
     before: dateRange.from,

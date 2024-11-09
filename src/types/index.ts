@@ -40,18 +40,44 @@ export type Day = {
   path?: string;
 };
 
+export type TripData = {
+  tripId: string;
+  name: string;
+  days: {
+    date: string;
+    orderPlaces: string[];
+    totalDistance: number;
+    totalDuration: number;
+  }[];
+  currentDate: string;
+  timezone: string;
+  isSharing: boolean;
+  sharingId: string | null;
+};
+
 export type Trip = {
   tripId: string;
   name: string;
-  dateRange: DateRange;
+  days: {
+    date: Date;
+    orderPlaces: string[];
+    totals: { distance: number; duration: number };
+  }[];
   currentDate: string;
+  dateRange: DateRange;
   timezone: string;
-  sharing: boolean;
-  sharingId: string | null;
+  sharing: {
+    isSharing: boolean;
+    sharingId: string | null;
+  };
 };
+
+export type TripLite = Pick<
+  TripData,
+  "tripId" | "name" | "isSharing" | "timezone"
+> & { dateRange: Trip["dateRange"] } & { days: { date: string }[] };
 
 export type DateRange = {
   from: Date;
   to: Date;
-  datesWithPlaces: Date[];
 };

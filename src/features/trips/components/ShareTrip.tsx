@@ -13,77 +13,29 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { Trip } from "@/types";
-import { setCookie } from "@/utils/actions/cookies";
 import { updateSharing, updateSharingId } from "@/utils/actions/crud/update";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { format, isEqual } from "date-fns";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import TripOptions from "./TripOptions";
-
-const dateFormat = "MMM dd";
+import { ReactNode, useEffect, useState } from "react";
 
 const host =
   process.env.NODE_ENV === "development"
     ? "localhost:3000"
     : "https://roam-gamma.vercel.app";
 
-export default function TripCard({
-  tripId,
-  name,
-  dateRange,
-  currentDate,
-  sharing,
-  sharingId,
-}: Trip) {
-  let range = format(dateRange.from, dateFormat);
-  if (!isEqual(dateRange.from, dateRange.to))
-    range += ` - ${format(dateRange.to, dateFormat)}`;
-
-  async function handleClick() {
-    setCookie("tripId", tripId);
-  }
-
-  return (
-    <article className="relative flex flex-col items-center justify-between gap-1 rounded-lg bg-slate-100 px-4 py-6 text-center">
-      <TripOptions
-        tripId={tripId}
-        name={name}
-        dateRange={dateRange}
-        currentDate={currentDate}
-      />
-      {sharing && (
-        <span className="absolute left-2 top-2 text-sm text-slate-500">
-          shared
-        </span>
-      )}
-      <h3 className="text-2xl font-semibold">{name}</h3>
-      <p>{range}</p>
-      <div className="mt-6 flex w-full max-w-sm flex-col items-center gap-3">
-        <Button variant="default" className="w-full" asChild>
-          <Link href={`/${tripId}`} onClick={handleClick}>
-            Start planning
-          </Link>
-        </Button>
-        <ShareTrip sharing={sharing} sharingId={sharingId} tripId={tripId} />
-      </div>
-    </article>
-  );
-}
-
-type ShareTripProps = {
-  sharing: boolean;
-  sharingId: string | null;
+type Props = {
+  sharing: Trip["sharing"];
   tripId: string;
+  children: ReactNode;
 };
 
-function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
+export default function ShareTrip({ sharing, tripId, children }: Props) {
+  const { isSharing, sharingId } = sharing;
   const { toast } = useToast();
-  const [checked, setChecked] = useState(sharing);
+  const [checked, setChecked] = useState(isSharing);
 
   const [locked, setLocked] = useState(true);
-  const sharingLinkBase = `${host}/${tripId}?sharing=`;
+  const sharingLinkBase = `${host}/planner/${tripId}?sharing=`;
   const defaultSharingLink = sharingId ? sharingLinkBase + sharingId : "";
   const [sharingLink, setSharingLink] = useState(defaultSharingLink);
 
@@ -95,7 +47,7 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
   }, []);
 
   async function submitSharingForm() {
-    if (checked === sharing) return;
+    if (checked === isSharing) return;
     await updateSharing(checked, tripId);
   }
 
@@ -119,11 +71,7 @@ function ShareTrip({ tripId, sharing, sharingId }: ShareTripProps) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="w-full max-w-xs">
-          Share trip
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <div className="flex flex-col gap-12">
           <div className="flex flex-col gap-4">

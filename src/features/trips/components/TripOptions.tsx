@@ -26,7 +26,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { DateRange } from "@/types";
+import { useToast } from "@/components/ui/use-toast";
+import { DateRange, Trip } from "@/types";
 import { calcDateDeltas } from "@/utils";
 import { deleteTrip } from "@/utils/actions/crud/delete";
 import {
@@ -37,8 +38,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Pencil, Printer, Trash } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -50,6 +52,8 @@ type TripOptionsProps = {
   name: string;
   dateRange: DateRange;
   currentDate: string;
+  datesWithPlaces: Date[];
+  sharing: Trip["sharing"];
 };
 
 export default function TripOptions({
@@ -57,11 +61,12 @@ export default function TripOptions({
   name,
   dateRange,
   currentDate,
+  datesWithPlaces,
+  sharing,
 }: TripOptionsProps) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
-  // TODO: Fix dropdown not opening after using datepicker and clicking outside the modal
   return (
     <>
       <DropdownMenu modal={false}>
@@ -69,24 +74,29 @@ export default function TripOptions({
           className="absolute right-1 top-2"
           aria-label="Open options"
         >
-          <EllipsisVertical size={20} className="text-slate-500" />
+          <EllipsisVertical size={18} className="text-slate-500" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem className="cursor-pointer" asChild>
-            <Link href={`/${tripId}/pdf`}>Print</Link>
-          </DropdownMenuItem>
+          <Link href={`/pdf/${tripId}`}>
+            <DropdownMenuItem>
+              <Printer />
+              <span>Print</span>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => setOpenEdit(true)}
             >
+              <Pencil />
               <span>Edit</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => setOpenDelete(true)}
             >
+              <Trash />
               <span>Delete</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
@@ -99,6 +109,7 @@ export default function TripOptions({
         initialName={name}
         initialDateRange={dateRange}
         currentDate={currentDate}
+        datesWithPlaces={datesWithPlaces}
       />
       <DeleteTrip open={openDelete} setOpen={setOpenDelete} tripId={tripId} />
     </>
@@ -112,6 +123,7 @@ type EditTripProps = {
   initialName: string;
   initialDateRange: DateRange;
   currentDate: string;
+  datesWithPlaces: Date[];
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
@@ -121,6 +133,7 @@ function EditTrip({
   initialName,
   initialDateRange,
   currentDate,
+  datesWithPlaces,
   open,
   setOpen,
 }: EditTripProps) {
@@ -217,6 +230,7 @@ function EditTrip({
                       <DatePickerWithRange
                         dateRange={field.value}
                         setDateRange={field.onChange}
+                        datesWithPlaces={datesWithPlaces}
                       />
                     </FormControl>
                     <FormMessage />
@@ -265,9 +279,13 @@ function DeleteTrip({
   open,
   setOpen,
 }: Pick<EditTripProps, "tripId" | "open" | "setOpen">) {
+  const router = useRouter();
+  const { toast } = useToast();
   async function handleSubmit(formData: FormData) {
+    toast({ description: "Trip deleted" });
+    router.back();
     await deleteTrip(formData);
-    setOpen(false);
+    router.refresh();
   }
 
   return (

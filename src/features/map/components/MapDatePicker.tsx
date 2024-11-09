@@ -9,12 +9,14 @@ type MapControlsProps = {
   tripId: string;
   day: Day;
   dateRange: DateRange;
+  datesWithPlaces: Date[];
 };
 
 export default function MapDatePicker({
   tripId,
   day,
   dateRange,
+  datesWithPlaces,
 }: MapControlsProps) {
   const map = useMap();
 
@@ -28,9 +30,10 @@ export default function MapDatePicker({
     <MapControl position={ControlPosition.BOTTOM_CENTER}>
       <div className="mb-4 rounded-lg border-2 border-emerald-800">
         <DatePicker
+          tripId={tripId}
           initialDate={day.date}
           dateRange={dateRange}
-          tripId={tripId}
+          datesWithPlaces={datesWithPlaces}
         />
       </div>
     </MapControl>

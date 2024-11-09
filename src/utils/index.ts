@@ -1,5 +1,5 @@
-import { DateRange, Place, Trip } from "@/types";
-import { format, formatISO, parse } from "date-fns";
+import { DateRange, Place, Trip, TripData } from "@/types";
+import { format, formatISO, isEqual, parse } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 
 export function mapId(places: Place[]) {
@@ -23,6 +23,12 @@ export function convertTime({ hours, minutes }: Args) {
 export function formatTravelTime({ hours, minutes }: Args) {
   const formattedHours = hours ? hours + " hr" : "";
   return `${formattedHours} ${minutes} min`;
+}
+
+export function formatTotalDuration({ hours, minutes }: Args) {
+  const newHours = `${hours} hour${hours !== 1 && "s"}`;
+  const newMinutes = `${minutes} minute${minutes !== 1 && "s"}`;
+  return `${newHours}, ${newMinutes}`;
 }
 
 export function formatPlaceDuration({ hours, minutes }: Args) {
@@ -54,7 +60,11 @@ function calcDateDelta(arr1: Date[], arr2: Date[]) {
   );
 }
 
-export function formatBulkDates(trip_id: string, dates: Date[], timezone: string) {
+export function formatBulkDates(
+  trip_id: string,
+  dates: Date[],
+  timezone: string,
+) {
   return dates.map((date) => ({
     trip_id,
     date: format(date, "yyyy-MM-dd"),
@@ -63,35 +73,54 @@ export function formatBulkDates(trip_id: string, dates: Date[], timezone: string
 }
 
 /* -------------------------------- dateRange ------------------------------- */
-type TripNoDateRange = Omit<Trip, "dateRange"> & {
-  days: { date: string; orderPlaces: string[] }[];
-};
 
-export function mapDateRange(trips: TripNoDateRange[]): Trip[] {
-  return trips.map((trip) => {
-    const dateRange = calcDateRange(trip.days, trip.timezone);
-    // Remove a property and add a property
-    const { days, ...newTrip } = { ...trip, dateRange };
-    return newTrip;
+export function formatTripData(tripData: TripData): Trip {
+  const formattedDays = tripData.days.map((day) => {
+    const formattedDate = fromZonedTime(day.date, tripData.timezone);
+    const totals = {
+      distance: day.totalDistance,
+      duration: day.totalDuration,
+    };
+    return {
+      date: formattedDate,
+      orderPlaces: day.orderPlaces,
+      totals,
+    };
   });
+  const dateRange = calcDateRange(
+    tripData.days.map((day) => day.date),
+    tripData.timezone,
+  );
+  const sharing = {
+    isSharing: tripData.isSharing,
+    sharingId: tripData.sharingId,
+  };
+  const { isSharing, sharingId, ...formattedTripData } = {
+    ...tripData,
+    days: formattedDays,
+    dateRange,
+    sharing,
+  };
+  return formattedTripData;
 }
 
-type calcDateRangesParam = { date: string; orderPlaces: string[] }[];
+export function calcDateRange(dates: string[], timezone: string): DateRange {
+  const from = fromZonedTime(dates[0], timezone);
+  const to = fromZonedTime(dates[dates.length - 1], timezone);
 
-export function calcDateRange(dates: calcDateRangesParam, timezone: string) {
-  const from = fromZonedTime(dates[0].date, timezone);
-  const to = fromZonedTime(dates[dates.length - 1].date, timezone);
-  const datesWithPlaces = dates.flatMap((date) =>
-    date.orderPlaces.length ? fromZonedTime(date.date, timezone) : [],
-  );
-
-  const dateRange: DateRange = {
+  return {
     from,
     to,
-    datesWithPlaces,
   };
+}
 
-  return dateRange;
+function calcDatesWithPlaces() {}
+
+export function formatDateRange(dateRange: DateRange, dateFormat = "MMM dd") {
+  let range = format(dateRange.from, dateFormat);
+  if (!isEqual(dateRange.from, dateRange.to))
+    range += ` - ${format(dateRange.to, dateFormat)}`;
+  return range;
 }
 
 /* --------------------------------- Convert -------------------------------- */

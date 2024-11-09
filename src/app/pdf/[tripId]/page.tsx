@@ -1,7 +1,7 @@
+import { getDay } from "@/app/planner/[tripId]/page";
 import { createClient } from "@/utils/supabase/server";
 import { FileText } from "lucide-react";
 import dynamic from "next/dynamic";
-import { getDay } from "../page";
 
 const PDFDeviceCheck = dynamic(
   () => import("@/features/pdf/components/PDFDeviceCheck"),

@@ -30,12 +30,12 @@ type Props = {
 };
 
 export default function ShareTrip({ sharing, tripId, children }: Props) {
-  const {isSharing, sharingId} = sharing
+  const { isSharing, sharingId } = sharing;
   const { toast } = useToast();
   const [checked, setChecked] = useState(isSharing);
 
   const [locked, setLocked] = useState(true);
-  const sharingLinkBase = `${host}/${tripId}?sharing=`;
+  const sharingLinkBase = `${host}/planner/${tripId}?sharing=`;
   const defaultSharingLink = sharingId ? sharingLinkBase + sharingId : "";
   const [sharingLink, setSharingLink] = useState(defaultSharingLink);
 

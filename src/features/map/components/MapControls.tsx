@@ -97,7 +97,7 @@ function TogglePathButton({ path, handlePath }: Props) {
       onClick={handlePath}
       aria-label="Toggle route lines"
     >
-      {path ? <RouteOff /> : <Route />}
+      {path ? <Route /> : <RouteOff />}
     </button>
   );
 }

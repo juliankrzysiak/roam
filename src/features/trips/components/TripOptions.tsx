@@ -40,7 +40,6 @@ import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
 import { EllipsisVertical, Pencil, Printer, Trash } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -156,7 +155,8 @@ function EditTrip({
     const isSameDate = getIsSameDateRange(initialDateRange, newDateRange);
 
     const [initialDates, newDates] = [initialDateRange, newDateRange].map(
-      (range) => eachDayOfInterval({ start: range.from, end: range.to }),
+      (range) =>
+        eachDayOfInterval({ start: range.from, end: range.to || range.from }),
     );
     const [datesToAdd, datesToRemove] = calcDateDeltas(initialDates, newDates);
 
@@ -279,13 +279,10 @@ function DeleteTrip({
   open,
   setOpen,
 }: Pick<EditTripProps, "tripId" | "open" | "setOpen">) {
-  const router = useRouter();
   const { toast } = useToast();
   async function handleSubmit(formData: FormData) {
-    toast({ description: "Trip deleted" });
-    router.back();
     await deleteTrip(formData);
-    router.refresh();
+    toast({ description: "Trip deleted" });
   }
 
   return (

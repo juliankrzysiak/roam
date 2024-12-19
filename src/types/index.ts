@@ -79,5 +79,5 @@ export type TripLite = Pick<
 
 export type DateRange = {
   from: Date;
-  to: Date;
+  to?: Date;
 };

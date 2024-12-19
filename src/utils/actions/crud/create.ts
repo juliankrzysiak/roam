@@ -3,6 +3,7 @@
 import { Place } from "@/types";
 import { formatBulkDates, mapId } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
+import { nanoid } from "nanoid";
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
 
@@ -18,12 +19,14 @@ export async function createTrip(
     const bulkDates = formatBulkDates(tripId, dates, timezone);
     // Saving the first date as the current date of the trip
     const firstDate = bulkDates[0].date;
+    const sharing_id = nanoid(10);
 
     const payload = {
       id: tripId,
       name,
       current_date: firstDate,
       timezone,
+      sharing_id,
     };
 
     const { error } = await supabase

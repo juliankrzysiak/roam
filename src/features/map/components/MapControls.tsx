@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { useExit } from "@/features/planner/hooks";
+import { useExit, useShortcut } from "@/features/planner/hooks";
 import { currentPlaceAtom } from "@/lib/atom";
 import {
   ControlPosition,
@@ -36,6 +36,7 @@ function MapSearch() {
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
   const [open, setOpen] = useState(false);
   useExit(inputRef, () => setOpen(false));
+  useShortcut(["Control", "Shift", "S"], () => setOpen((e) => !e));
 
   useEffect(() => {
     if (!places || !inputRef.current) return;

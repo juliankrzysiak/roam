@@ -24,5 +24,27 @@ export function useExit(
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscapeKey);
     };
-  });
+  }, []);
+}
+
+export function useShortcut(shortcut: string[], callback: () => void) {
+  const pressedKeys = new Set();
+  const handleShortcut = (e: KeyboardEvent) => {
+    pressedKeys.add(e.key);
+    const hasShortcut = shortcut.every((e) => pressedKeys.has(e));
+    if (hasShortcut) {
+      callback();
+    }
+  };
+  const removeKey = (e: KeyboardEvent) => {
+    pressedKeys.delete(e.key);
+  };
+  useEffect(() => {
+    document.addEventListener("keydown", handleShortcut);
+    document.addEventListener("keyup", removeKey);
+    return () => {
+      document.removeEventListener("keydown", handleShortcut);
+      document.removeEventListener("keyup", removeKey);
+    };
+  }, []);
 }

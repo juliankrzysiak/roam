@@ -76,7 +76,7 @@ export default function NewTripForm() {
                 <FormItem>
                   <FormLabel>Trip Name *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Antelope Valley" {...field} />
+                    <Input placeholder="Los Angeles" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

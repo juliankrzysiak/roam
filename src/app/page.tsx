@@ -1,10 +1,12 @@
 import Footer from "@/components/general/Footer";
+import { Button } from "@/components/ui/button";
 import Demo from "@/features/auth/components/Demo";
 import SignUp from "@/features/auth/components/StartPlanning";
 import Features from "@/features/landing/components/Features";
 import MovingCar from "@/features/landing/components/MovingCar";
 import Reviews from "@/features/landing/components/Reviews";
 import { ChevronDown, Flag, MapPin } from "lucide-react";
+import Link from "next/link";
 
 const features = [
   "Quickly create a scheduled itinerary for a fun day trip or an exciting journey across the states.",
@@ -94,12 +96,12 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {/* <Button
+          <Button
+            asChild
             className="h-full w-full max-w-lg bg-emerald-800  py-2 text-2xl text-slate-100"
-            onClick={() => setOpen(true)}
           >
-            Start planning today
-          </Button> */}
+            <Link href="#">Start planning today</Link>
+          </Button>
         </section>
       </main>
       <Footer />

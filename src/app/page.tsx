@@ -67,7 +67,7 @@ export default function Home() {
                 "flex flex-col gap-4 font-display text-5xl text-emerald-950 md:text-6xl lg:gap-6"
               }
             >
-              <p>Simple.</p>
+              <p>Detailed.</p>
               <p>Fast.</p>
               <p>Fun!</p>
             </div>

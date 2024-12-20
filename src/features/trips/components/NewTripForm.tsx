@@ -89,6 +89,7 @@ export default function NewTripForm() {
                 <FormItem>
                   <FormLabel>Dates *</FormLabel>
                   <DatePickerWithRange
+                    // @ts-expect-error
                     dateRange={field.value}
                     setDateRange={field.onChange}
                   />

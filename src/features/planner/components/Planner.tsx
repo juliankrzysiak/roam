@@ -272,7 +272,11 @@ function SelectOptions({
   const initialDateString = formatInTimeZone(date, timezone, dateFormat);
   const [dateString, setDateString] = useState(initialDateString);
   const minDateString = formatInTimeZone(dateRange.from, timezone, dateFormat);
-  const maxDateString = formatInTimeZone(dateRange.to, timezone, dateFormat);
+  const maxDateString = formatInTimeZone(
+    dateRange.to || dateRange.from,
+    timezone,
+    dateFormat,
+  );
 
   async function handleSubmit() {
     if (dateString === initialDateString) setOpen(false);

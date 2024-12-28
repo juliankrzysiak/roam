@@ -143,12 +143,7 @@ export default function PlaceCard({
           </span>
           <div className=" flex items-stretch justify-between gap-1">
             <div className="flex h-full w-full gap-4">
-              <PlaceDuration
-                arrival={schedule.arrival}
-                placeDuration={schedule.duration}
-                id={id}
-                timezone={timezone}
-              />
+              <PlaceDuration schedule={schedule} id={id} timezone={timezone} />
               <Separator orientation="vertical" />
               <Notes id={id} notes={notes} />
             </div>
@@ -180,31 +175,24 @@ export default function PlaceCard({
 const timeFormat = "h:mm aaa";
 
 type PlaceDurationProps = {
-  arrival: Date;
-  placeDuration: number;
   id: string;
+  schedule: Place["schedule"];
   timezone: string;
 };
 
-function PlaceDuration({
-  arrival,
-  placeDuration,
-  id,
-  timezone,
-}: PlaceDurationProps) {
+function PlaceDuration({ id, schedule, timezone }: PlaceDurationProps) {
   const isShared = useContext(IsSharedContext);
   const formRef = useRef<HTMLFormElement | null>(null);
   useExit(formRef, handleClickOutside);
   const [isFormVisible, setIsFormVisible] = useState(false);
-
-  const { hours, minutes } = convertTime({ minutes: placeDuration });
+  const { hours, minutes } = convertTime({ minutes: schedule.duration });
   const [hourDuration, setHourDuration] = useState(hours);
   const [minuteDuration, setMinuteDuration] = useState(minutes);
-  const formattedPlaceDuration = formatPlaceDuration({ hours, minutes });
-  const departure = add(arrival, {
+  const calculatedDeparture = add(schedule.arrival, {
     hours: hourDuration,
     minutes: minuteDuration,
   });
+  const formattedPlaceDuration = formatPlaceDuration({ hours, minutes });
 
   function handleClickOutside() {
     setIsFormVisible(false);
@@ -216,8 +204,8 @@ function PlaceDuration({
   return (
     <div className="flex flex-shrink-0 flex-col gap-1">
       <span className="flex items-center gap-2">
-        <ArrowRight size={svgSize} />{" "}
-        {formatInTimeZone(arrival, timezone, timeFormat)}
+        <ArrowRight size={svgSize} />
+        {formatInTimeZone(schedule.arrival, timezone, timeFormat)}
       </span>
       <form
         className="flex gap-2"
@@ -283,7 +271,13 @@ function PlaceDuration({
       </form>
       <span className="flex items-center gap-2">
         <ArrowLeft size={svgSize} />
-        <output>{formatInTimeZone(departure, timezone, timeFormat)}</output>
+        <output>
+          {formatInTimeZone(
+            isFormVisible ? calculatedDeparture : schedule.departure,
+            timezone,
+            timeFormat,
+          )}
+        </output>
       </span>
     </div>
   );

@@ -104,7 +104,7 @@ export default function PlaceCard({
     >
       {insertBeforeId === id && (
         <div className="mb-2 flex items-center justify-between rounded-md bg-emerald-700 font-semibold text-slate-100">
-          <p className="flex-1 text-center">Insert New Place Before</p>
+          <p className="flex-1 text-center">New Places Go Here</p>
           <Button onClick={() => setInsertBeforeId(null)}>
             <X size={16} />
           </Button>

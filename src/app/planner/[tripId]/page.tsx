@@ -18,7 +18,7 @@ type Props = {
   searchParams: { sharing?: string };
 };
 
-export default async function MapPage({ params, searchParams }: Props) {
+export default async function PlannerPage({ params, searchParams }: Props) {
   const supabase = createClient();
   const {
     data: { session },
@@ -51,7 +51,9 @@ export default async function MapPage({ params, searchParams }: Props) {
       total + (current.travel?.duration || 0) + current.schedule.duration,
     0,
   );
-  const datesWithPlaces= days.flatMap(day => day.orderPlaces.length ? day.date : [])
+  const datesWithPlaces = days.flatMap((day) =>
+    day.orderPlaces.length ? day.date : [],
+  );
 
   return (
     <>

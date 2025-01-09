@@ -3,22 +3,22 @@
 import { User } from "@supabase/supabase-js";
 import clsx from "clsx";
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 type Props = {
   user: User | null;
-  cookieTripId?: string;
 };
 
-export default function Nav({ user, cookieTripId }: Props) {
+export default function Nav({ user}: Props) {
   const pathName = usePathname();
-  const { tripId } = useParams<{ tripId: string }>();
-
+  const lastTripId = localStorage.getItem("tripId");
   return (
     <nav className="flex items-baseline gap-6">
-      <Link href="/" className="font-display text-3xl text-slate-100">
-        roam
-      </Link>
+      <h1>
+        <Link href="/" className="font-display text-3xl text-slate-100">
+          roam
+        </Link>
+      </h1>
       {user && (
         <div className="flex gap-4 text-xl font-light text-slate-100">
           <Link
@@ -27,9 +27,9 @@ export default function Nav({ user, cookieTripId }: Props) {
           >
             Trips
           </Link>
-          {cookieTripId && (
+          {lastTripId && (
             <Link
-              href={`/planner/${cookieTripId}`}
+              href={`/planner/${lastTripId}`}
               className={clsx(pathName.includes("planner") && "font-semibold")}
             >
               Planner

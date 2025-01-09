@@ -52,9 +52,6 @@ function TripCard({
   const datesWithPlaces = days.flatMap((day) =>
     day.orderPlaces.length ? day.date : [],
   );
-  async function handleClick() {
-    setCookie("tripId", tripId);
-  }
 
   const distance = days.reduce((acc, cur) => acc + cur.totals.distance, 0);
   const duration = convertTime({
@@ -80,12 +77,8 @@ function TripCard({
         <h3 className="text-2xl font-semibold">{name}</h3>
         <p>{formattedRange}</p>
       </div>
-      <div className=" flex w-full max-w-sm flex-col items-center gap-3">
-        <Button variant="default" className="w-full" asChild>
-          <Link href={`/planner/${tripId}`} onClick={handleClick}>
-            Start planning
-          </Link>
-        </Button>
+      <div className="flex w-full max-w-sm flex-col items-center gap-3">
+        <PlannerLink tripId={tripId} />
         <ShareTrip tripId={tripId} sharing={sharing}>
           <Button variant="outline" className="w-full">
             Share trip

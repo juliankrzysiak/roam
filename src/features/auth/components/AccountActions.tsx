@@ -7,10 +7,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import LoginForm from "./Forms/LoginForm";
 import { useState } from "react";
+import LoginForm from "./Forms/LoginForm";
+import { isSignUpFormVisibleAtom } from "@/lib/atom";
+import { useSetAtom } from "jotai";
 
-export default function Login() {
+export default function AccountActions() {
+  return (
+    <div className="flex gap-4 text-slate-100">
+      <Login />
+      <Signup />
+    </div>
+  );
+}
+
+function Login() {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -23,4 +34,10 @@ export default function Login() {
       </DialogContent>
     </Dialog>
   );
+}
+
+function Signup() {
+  const setOpen = useSetAtom(isSignUpFormVisibleAtom);
+
+  return <button onClick={() => setOpen(true)}>sign up</button>;
 }

@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { DateRange, Trip } from "@/types";
+import { DateRange } from "@/types";
 import { calcDateDeltas } from "@/utils";
 import { deleteTrip } from "@/utils/actions/crud/delete";
 import {
@@ -52,7 +52,6 @@ type TripOptionsProps = {
   dateRange: DateRange;
   currentDate: string;
   datesWithPlaces: Date[];
-  sharing: Trip["sharing"];
 };
 
 export default function TripOptions({
@@ -61,7 +60,6 @@ export default function TripOptions({
   dateRange,
   currentDate,
   datesWithPlaces,
-  sharing,
 }: TripOptionsProps) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -76,29 +74,20 @@ export default function TripOptions({
           <EllipsisVertical size={16} className="text-slate-600" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <Link href={`/pdf/${tripId}`}>
-            <DropdownMenuItem>
-              <Printer />
-              <span>Print</span>
-            </DropdownMenuItem>
-          </Link>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => setOpenEdit(true)}
-            >
-              <Pencil />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => setOpenDelete(true)}
-            >
-              <Trash />
-              <span>Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setOpenEdit(true)}
+          >
+            <Pencil />
+            <span>Edit</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setOpenDelete(true)}
+          >
+            <Trash />
+            <span>Delete</span>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <EditTrip

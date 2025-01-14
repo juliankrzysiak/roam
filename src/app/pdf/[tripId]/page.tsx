@@ -22,6 +22,7 @@ export default async function PDFPage({ params }: Props) {
     data: { session },
   } = await supabase.auth.getSession();
   if (!session) throw new Error("No authorization.");
+
   const { data, error } = await supabase
     .from("days")
     .select("id, date, timezone")
@@ -36,9 +37,17 @@ export default async function PDFPage({ params }: Props) {
     }),
   );
 
+  const { data: tripName, error: tripNameError } = await supabase
+    .from("trips")
+    .select("name")
+    .eq("id", tripId)
+    .limit(1)
+    .single();
+  if (tripNameError) throw new Error(tripNameError.message);
+
   return (
     <main className="grid flex-1 place-items-center">
-      <PDFDeviceCheck days={days} />
+      <PDFDeviceCheck days={days} tripName={tripName.name} />
     </main>
   );
 }

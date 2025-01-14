@@ -9,6 +9,7 @@ import { convertTime, formatDateRange, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { isPast } from "date-fns";
 import { LoaderCircle } from "lucide-react";
+import Link from "next/link";
 import { Suspense } from "react";
 
 export default async function TripsPage() {
@@ -161,8 +162,12 @@ function Trip({
             </Button>
           </ShareTrip>
           <div className="h-full w-[1px] bg-emerald-950/25"></div>
-          <Button variant="outline" className="h-fit w-full border-none">
-            Print
+          <Button
+            variant="outline"
+            className="h-fit w-full border-none"
+            asChild
+          >
+            <Link href={`/pdf/${tripId}`}>Print</Link>
           </Button>
         </div>
       </div>

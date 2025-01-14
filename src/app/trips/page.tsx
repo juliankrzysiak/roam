@@ -19,7 +19,7 @@ export default async function TripsPage() {
         defaultValue="upcoming"
         className="flex w-full flex-col items-center"
       >
-        <TabsList>
+        <TabsList className="h-10 rounded-b-none bg-slate-200">
           <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
           <TabsTrigger value="past">Past</TabsTrigger>
         </TabsList>
@@ -68,11 +68,11 @@ async function TripContent() {
   }, initialObject);
 
   return (
-    <section className="w-full  p-6">
-      <TabsContent value="upcoming">
+    <section className="-z-20 w-full max-w-4xl rounded-md bg-slate-200 p-6">
+      <TabsContent value="upcoming" className="m-0">
         <Trips trips={upcomingTrips} />
       </TabsContent>
-      <TabsContent value="past">
+      <TabsContent value="past" className="m-0">
         <Trips trips={pastTrips} />
       </TabsContent>
     </section>
@@ -85,13 +85,13 @@ type TripsProps = {
 
 function Trips({ trips }: TripsProps) {
   return (
-    <div className="grid w-full grid-cols-magic gap-6">
+    <div className="grid w-full grid-cols-magic gap-6 text-center">
       {trips.length ? (
         trips.map((trip) => {
           return <Trip key={trip.tripId} {...trip} />;
         })
       ) : (
-        <p className="text-slate-600">A bit empty here...</p>
+        <p className="text-sm text-slate-700/50">A bit empty here...</p>
       )}
     </div>
   );
@@ -119,7 +119,7 @@ function Trip({
     .padStart(2, "0")}`;
 
   return (
-    <article className="relative flex flex-col items-center rounded-md border border-emerald-950/25 bg-slate-50 text-center shadow-md">
+    <article className="relative flex flex-col items-center justify-between rounded-md border border-emerald-950/25 bg-slate-50 text-center shadow-md">
       {sharing.isSharing && (
         <span className="absolute -top-4 left-2 -z-10 rounded-t-md border border-emerald-950/25 bg-slate-50 px-2 text-xs">
           shared
@@ -133,7 +133,7 @@ function Trip({
         currentDate={currentDate}
         datesWithPlaces={datesWithPlaces}
       />
-      <div className="flex-1 p-2">
+      <div className="p-2">
         <h3 className="text-2xl font-semibold">{name}</h3>
         <p className="text-lg">{formattedRange}</p>
       </div>

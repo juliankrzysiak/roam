@@ -13,8 +13,13 @@ export default function PlannerLink({ tripId }: Props) {
   }
 
   return (
-    <Button variant="default" className="w-full" asChild onClick={handleClick}>
-      <Link href={`/planner/${tripId}`}>Start planning</Link>
+    <Button
+      className="text-md w-full rounded-none rounded-t"
+      size="lg"
+      asChild
+      onClick={handleClick}
+    >
+      <Link href={`/planner/${tripId}`}>Start Planning</Link>
     </Button>
   );
 }

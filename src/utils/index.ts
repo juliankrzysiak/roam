@@ -116,7 +116,7 @@ export function calcDateRange(dates: string[], timezone: string): DateRange {
 
 function calcDatesWithPlaces() {}
 
-export function formatDateRange(dateRange: DateRange, dateFormat = "MMM dd") {
+export function formatDateRange(dateRange: DateRange, dateFormat = "MMM d") {
   let range = format(dateRange.from, dateFormat);
   if (!isEqual(dateRange.from, dateRange.to))
     range += ` - ${format(dateRange.to, dateFormat)}`;

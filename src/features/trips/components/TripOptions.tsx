@@ -70,10 +70,10 @@ export default function TripOptions({
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
-          className="absolute right-1 top-2"
+          className="absolute right-0 top-1"
           aria-label="Open options"
         >
-          <EllipsisVertical size={18} className="text-slate-500" />
+          <EllipsisVertical size={16} className="text-slate-600" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <Link href={`/pdf/${tripId}`}>

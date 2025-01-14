@@ -57,7 +57,9 @@ export default function NewTripForm() {
   return (
     <Dialog open={open} onOpenChange={handleOnOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create New Trip</Button>
+        <Button variant="outline" className="bg-slate-100">
+          Create New Trip
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

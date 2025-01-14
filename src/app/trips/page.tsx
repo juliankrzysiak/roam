@@ -68,7 +68,7 @@ async function TripContent() {
   }, initialObject);
 
   return (
-    <section className="-z-20 w-full max-w-4xl rounded-md bg-slate-200 p-6">
+    <section className="w-full max-w-4xl rounded-md bg-slate-200 p-6">
       <TabsContent value="upcoming" className="m-0">
         <Trips trips={upcomingTrips} />
       </TabsContent>
@@ -85,7 +85,7 @@ type TripsProps = {
 
 function Trips({ trips }: TripsProps) {
   return (
-    <div className="grid w-full grid-cols-magic gap-6 text-center">
+    <div className="isolate grid w-full grid-cols-magic gap-6 text-center">
       {trips.length ? (
         trips.map((trip) => {
           return <Trip key={trip.tripId} {...trip} />;
@@ -129,7 +129,6 @@ function Trip({
         tripId={tripId}
         name={name}
         dateRange={dateRange}
-        sharing={sharing}
         currentDate={currentDate}
         datesWithPlaces={datesWithPlaces}
       />

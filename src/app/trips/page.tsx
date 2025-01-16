@@ -137,23 +137,23 @@ function Trip({
         <h3 className="text-2xl font-semibold">{name}</h3>
         <p className="text-lg">{formattedRange}</p>
       </div>
-      <div className="flex w-full items-center justify-center gap-3 pb-2">
+      <div className="flex w-full items-stretch justify-center gap-3 pb-2">
         <div className="flex flex-col items-center">
           <span>{days.length}</span>
           <span className="text-sm text-slate-600">days</span>
         </div>
-        <div className="h-1/2 w-[1px] bg-slate-300" />
+        <div className="my-2 w-[1px] bg-slate-300" />
         <div className="flex flex-col items-center">
           <span>{distance}</span>
           <span className="text-sm text-slate-600">miles</span>
         </div>
-        <div className="h-1/2 w-[1px] bg-slate-300" />
+        <div className="my-2 w-[1px] bg-slate-300" />
         <div className="flex flex-col items-center">
           <span>{formattedDuration}</span>
           <span className="text-sm text-slate-600">travel</span>
         </div>
       </div>
-      <div className="flex h-fit w-full flex-col items-center">
+      <div className="flex w-full flex-col items-stretch">
         <PlannerLink tripId={tripId} />
         <div className="flex w-full">
           <ShareTrip tripId={tripId} sharing={sharing}>
@@ -161,7 +161,7 @@ function Trip({
               Share
             </Button>
           </ShareTrip>
-          <div className="h-full w-[1px] bg-emerald-950/25"></div>
+          <div className="w-[1px] bg-emerald-950/25"></div>
           <Button
             variant="outline"
             className="h-fit w-full border-none"

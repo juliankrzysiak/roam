@@ -12,9 +12,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -38,8 +36,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
-import { EllipsisVertical, Pencil, Printer, Trash } from "lucide-react";
-import Link from "next/link";
+import { EllipsisVertical, Pencil, Trash } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -271,6 +268,7 @@ function DeleteTrip({
   const { toast } = useToast();
   async function handleSubmit(formData: FormData) {
     await deleteTrip(formData);
+    setOpen(false);
     toast({ description: "Trip deleted" });
   }
 

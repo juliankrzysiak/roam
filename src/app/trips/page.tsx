@@ -86,7 +86,7 @@ type TripsProps = {
 
 function Trips({ trips }: TripsProps) {
   return (
-    <div className="isolate grid w-full grid-cols-magic gap-6 text-center">
+    <div className="isolate grid w-full grid-cols-magic place-items-center gap-6 text-center">
       {trips.length ? (
         trips.map((trip) => {
           return <Trip key={trip.tripId} {...trip} />;
@@ -120,7 +120,7 @@ function Trip({
     .padStart(2, "0")}`;
 
   return (
-    <article className="relative flex flex-col items-center justify-between rounded-md border border-emerald-950/25 bg-slate-50 text-center shadow-md">
+    <article className="relative flex w-full max-w-sm flex-col items-center justify-between rounded-md border border-emerald-950/25 bg-slate-50 text-center shadow-md">
       {sharing.isSharing && (
         <span className="absolute -top-4 left-2 -z-10 rounded-t-md border border-emerald-950/25 bg-slate-50 px-2 text-xs">
           shared

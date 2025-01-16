@@ -12,9 +12,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -27,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { DateRange, Trip } from "@/types";
+import { DateRange } from "@/types";
 import { calcDateDeltas } from "@/utils";
 import { deleteTrip } from "@/utils/actions/crud/delete";
 import {
@@ -38,8 +36,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
-import { EllipsisVertical, Pencil, Printer, Trash } from "lucide-react";
-import Link from "next/link";
+import { EllipsisVertical, Pencil, Trash } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -52,7 +49,6 @@ type TripOptionsProps = {
   dateRange: DateRange;
   currentDate: string;
   datesWithPlaces: Date[];
-  sharing: Trip["sharing"];
 };
 
 export default function TripOptions({
@@ -61,7 +57,6 @@ export default function TripOptions({
   dateRange,
   currentDate,
   datesWithPlaces,
-  sharing,
 }: TripOptionsProps) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -70,35 +65,26 @@ export default function TripOptions({
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
-          className="absolute right-1 top-2"
+          className="absolute right-0 top-1"
           aria-label="Open options"
         >
-          <EllipsisVertical size={18} className="text-slate-500" />
+          <EllipsisVertical size={16} className="text-slate-600" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <Link href={`/pdf/${tripId}`}>
-            <DropdownMenuItem>
-              <Printer />
-              <span>Print</span>
-            </DropdownMenuItem>
-          </Link>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => setOpenEdit(true)}
-            >
-              <Pencil />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => setOpenDelete(true)}
-            >
-              <Trash />
-              <span>Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setOpenEdit(true)}
+          >
+            <Pencil />
+            <span>Edit</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setOpenDelete(true)}
+          >
+            <Trash />
+            <span>Delete</span>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <EditTrip
@@ -282,6 +268,7 @@ function DeleteTrip({
   const { toast } = useToast();
   async function handleSubmit(formData: FormData) {
     await deleteTrip(formData);
+    setOpen(false);
     toast({ description: "Trip deleted" });
   }
 

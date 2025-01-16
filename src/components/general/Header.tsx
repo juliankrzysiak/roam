@@ -5,8 +5,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Login from "@/features/auth/components/Login";
-import Signup from "@/features/auth/components/SignUp";
+import AccountActions from "@/features/auth/components/AccountActions";
 import { signOut } from "@/utils/actions/auth";
 import { createClient } from "@/utils/supabase/server";
 import { LogOut, UserIcon } from "lucide-react";
@@ -19,20 +18,12 @@ export default async function Header() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   const cookieTripId = cookies().get("tripId")?.value;
 
   return (
     <header className="flex justify-between bg-emerald-900 p-4">
-      <Nav user={user} cookieTripId={cookieTripId}  />
-      {user ? (
-        <User name={user.user_metadata.name} />
-      ) : (
-        <div className="flex gap-4 text-slate-100">
-          <Login />
-          <Signup />
-        </div>
-      )}
+      <Nav user={user} cookieTripId={cookieTripId} />
+      {user ? <User name={user.user_metadata.name} /> : <AccountActions />}
     </header>
   );
 }

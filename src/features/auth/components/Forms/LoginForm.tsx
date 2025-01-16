@@ -12,8 +12,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import clsx from "clsx";
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -27,6 +30,7 @@ interface Props {
 }
 
 export default function LoginForm({ setOpen }: Props) {
+  const [loading, setLoading] = useState(false);
   const supabase = createClient();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,7 +55,7 @@ export default function LoginForm({ setOpen }: Props) {
     }
 
     if (data && !error) {
-      setOpen(false);
+      setLoading(true);
       router.push("/trips");
       router.refresh();
     }
@@ -97,7 +101,18 @@ export default function LoginForm({ setOpen }: Props) {
           )}
         />
         <div className="flex items-center space-x-8">
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="loading-button">
+            <span className={clsx(!loading ? "visible" : "invisible")}>
+              Submit
+            </span>
+            <LoaderCircle
+              aria-label="Loading trips"
+              className={clsx(
+                loading ? "visible" : "invisible",
+                "animate-spin",
+              )}
+            />
+          </Button>
           {form.formState.errors.root && (
             <p className="text-sm font-medium text-destructive">
               {form.formState.errors.root.message}

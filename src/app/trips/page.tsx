@@ -9,8 +9,13 @@ import { convertTime, formatDateRange, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { isPast } from "date-fns";
 import { LoaderCircle } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Trips",
+};
 
 export default async function TripsPage() {
   return (

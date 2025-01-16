@@ -1,25 +1,25 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { setCookie } from "@/utils/actions/cookies";
+import { useRouter } from "next/navigation";
 
 type Props = {
   tripId: string;
 };
 
 export default function PlannerLink({ tripId }: Props) {
-  function handleClick() {
-    localStorage.setItem("tripId", tripId);
-  }
-
+  const router = useRouter();
   return (
-    <Button
-      className="text-md w-full rounded-none rounded-t"
-      size="lg"
-      asChild
-      onClick={handleClick}
+    <form
+      action={async () => {
+        setCookie("tripId", tripId);
+        router.push(`/planner/${tripId}`);
+      }}
     >
-      <Link href={`/planner/${tripId}`}>Start Planning</Link>
-    </Button>
+      <Button className="text-md w-full rounded-none rounded-t" size="lg">
+        Start Planning
+      </Button>
+    </form>
   );
 }

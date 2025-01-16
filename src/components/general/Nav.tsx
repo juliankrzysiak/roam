@@ -4,21 +4,14 @@ import { User } from "@supabase/supabase-js";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 type Props = {
   user: User | null;
+  cookieTripId?: string;
 };
 
-export default function Nav({ user }: Props) {
+export default function Nav({ user, cookieTripId }: Props) {
   const pathName = usePathname();
-  const [lastTripId, setLastTripId] = useState("");
-
-  useEffect(() => {
-    const tripId = localStorage.getItem("tripId");
-    if (!tripId) return;
-    setLastTripId(tripId);
-  }, []);
 
   return (
     <nav className="flex items-baseline gap-6">
@@ -35,9 +28,9 @@ export default function Nav({ user }: Props) {
           >
             Trips
           </Link>
-          {lastTripId && (
+          {cookieTripId && (
             <Link
-              href={`/planner/${lastTripId}`}
+              href={`/planner/${cookieTripId}`}
               className={clsx(pathName.includes("planner") && "font-semibold")}
             >
               Planner

@@ -12,6 +12,11 @@ import { convertKmToMi, convertSecToMi, formatTripData } from "@/utils";
 import { createClient } from "@/utils/supabase/server";
 import { addMinutes, parseISO } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
+import type { Metadata, ResolvingMetadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Planner",
+};
 
 type Props = {
   params: { tripId: string };

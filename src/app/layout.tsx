@@ -6,7 +6,10 @@ import type { Metadata } from "next";
 import { vollkorn, workSans } from "./fonts";
 
 export const metadata: Metadata = {
-  title: "roam",
+  title: {
+    template: "%s | roam",
+    default: "roam",
+  },
   description: "Plan your next roadtrip adventure.",
 };
 

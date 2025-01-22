@@ -9,7 +9,7 @@ export default function Features({ features }: Props) {
         return (
           <li
             key={feature}
-            className="topography flex max-w-md items-center rounded-lg bg-slate-100 px-6 py-4 text-slate-900 shadow-inner"
+            className=" flex max-w-md items-center rounded-lg bg-slate-100 px-6 py-4 text-slate-900 shadow-inner"
           >
             <p className="text-center">{feature}</p>
           </li>

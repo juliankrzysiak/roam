@@ -1,10 +1,12 @@
-import { Vollkorn, Work_Sans } from "next/font/google";
+import { Averia_Serif_Libre, Inter } from "next/font/google";
 
-export const workSans = Work_Sans({
+export const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-work-sans",
+  variable: "--font-inter",
 });
-export const vollkorn = Vollkorn({
+export const averiaSerifLibre = Averia_Serif_Libre({
   subsets: ["latin"],
-  variable: "--font-vollkorn",
+  weight: ["300", "400", "700"],
+  variable: "--font-averia-serif-libre",
+  display: "swap",
 });

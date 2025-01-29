@@ -17,7 +17,7 @@ export default function SignUp() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Button asChild className="bg-emerald-800 py-6 text-lg xl:text-xl">
+      <Button asChild className=" bg-emerald-900 py-8 text-xl lg:text-2xl">
         <DialogTrigger>Start planning</DialogTrigger>
       </Button>
       <DialogContent className="flex flex-col gap-8">

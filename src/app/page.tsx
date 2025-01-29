@@ -35,22 +35,15 @@ const reviews = [
 export default function Home() {
   return (
     <>
-      <main className="topography flex w-full flex-col items-center overflow-clip">
-        <section className="my-12 flex w-full flex-col items-center justify-center gap-12 px-8">
-          <div className="flex w-full flex-col text-center">
-            <h1 className="mb-2 text-center font-display text-7xl text-emerald-950 min-[425px]:text-8xl lg:text-9xl ">
-              Explore <br /> the <br /> World
-            </h1>
-            <div className="mb-8 flex w-full">
-              <MapPin size={36} />
-              <MovingCar />
-              <Flag size={36} />
-            </div>
-            <h2 className="text-4xl">Map out your next roadtrip with ease</h2>
-          </div>
-          <div className="flex flex-col items-center gap-2">
+      <main className="flex w-full flex-col items-center overflow-clip">
+        <section className="flex min-h-[75vh] w-full flex-col justify-between bg-[url('/roadtrip.jpg')] bg-cover bg-top p-4">
+          <h2 className=" font-display text-4xl min-[400px]:text-5xl  sm:text-6xl lg:text-7xl xl:text-8xl">
+            Plan your dream
+            <br />
+            <i className="inline-block text-emerald-900">road trip</i> today
+          </h2>
+          <div className="flex w-fit flex-col items-center gap-6 self-center rounded-lg px-12 py-8">
             <SignUp />
-            or
             <Demo />
           </div>
         </section>

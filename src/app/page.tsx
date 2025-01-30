@@ -37,10 +37,13 @@ export default function Home() {
     <>
       <main className="flex w-full flex-col items-center overflow-clip">
         <section className="flex min-h-[75vh] w-full flex-col justify-between bg-[url('/roadtrip.jpg')] bg-cover bg-top p-4">
-          <h2 className=" font-display text-4xl min-[400px]:text-5xl  sm:text-6xl lg:text-7xl xl:text-8xl">
+          <h2 className="font-display text-4xl min-[400px]:text-5xl  sm:text-6xl lg:text-7xl xl:text-8xl">
             Plan your dream
             <br />
-            <i className="inline-block text-emerald-900">road trip</i> today
+            <i className="inline-block text-emerald-900 fade-in">
+              road trip
+            </i>{" "}
+            today
           </h2>
           <div className="flex w-fit flex-col items-center gap-6 self-center rounded-lg px-12 py-8">
             <SignUp />

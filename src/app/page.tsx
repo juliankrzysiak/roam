@@ -2,33 +2,48 @@ import Footer from "@/components/general/Footer";
 import { Button } from "@/components/ui/button";
 import Demo from "@/features/auth/components/Demo";
 import SignUp from "@/features/auth/components/StartPlanning";
-import Features from "@/features/landing/components/Features";
-import MovingCar from "@/features/landing/components/MovingCar";
-import Reviews from "@/features/landing/components/Reviews";
-import { ChevronDown, Flag, MapPin } from "lucide-react";
+import { CornerRightUp, MapPin } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
-const features = [
-  "Quickly create a scheduled itinerary for a fun day trip or an exciting journey across the states.",
-  "Get a bird's eye view of your trip. See all your stops on a map, know when your day will end, and see how many miles you'll go.",
-  "Print our trip details when you're done for those remote destinations.",
-  "Enjoy planning your trips for free... for now!",
+const features: { title: string; content: string }[] = [
+  {
+    title: "Detailed Planning",
+    content:
+      "Schedule out start and end times for each location and day of your trip",
+  },
+  {
+    title: "Realtime Updates",
+    content:
+      "Times and distances are automatically updated between each place - feel free to rearrange your plan as you please",
+  },
+  {
+    title: "Share with Others",
+    content:
+      "Share your trip ideas with others. Don't worry, they won't be able to mess up your hard work",
+  },
+  {
+    title: "Take it Offline",
+    content: "Print our your itinerary for those backcountry hikes and drives",
+  },
 ];
 
-const reviews = [
+const reviews: { name: string; content: string; imagePath: string }[] = [
   {
     name: "Julian K.",
-    content: "So easy to use!",
+    content: "Really good app, I use it every time I need to plan a trip.",
+    imagePath: "/selfie.jpg",
+  },
+  {
+    name: "Julian K.",
+    content: "Used this to plan out my vacation to the Hollywood Walk of Fame!",
+    imagePath: "/selfie3.jpg",
   },
   {
     name: "Julian K.",
     content:
-      "Used this to plan out my vacation. I planned out every single detail, got to see so many things!",
-  },
-  {
-    name: "Julian K.",
-    content:
-      "What a service, you gotta try it out! Whoever made this did a good job!",
+      "What a service, you gotta try it out! Whoever made this did a really good job!",
+    imagePath: "/selfie2.jpg",
   },
 ];
 
@@ -36,11 +51,11 @@ export default function Home() {
   return (
     <>
       <main className="flex w-full flex-col items-center overflow-clip">
-        <section className="flex min-h-[75vh] w-full flex-col justify-between bg-[url('/roadtrip.jpg')] bg-cover bg-top p-4">
+        <div className="flex min-h-[75vh] w-full flex-col justify-between bg-[url('/roadtrip.jpg')] bg-cover bg-top p-4">
           <h2 className="font-display text-4xl min-[400px]:text-5xl  sm:text-6xl lg:text-7xl xl:text-8xl">
             Plan your dream
             <br />
-            <i className="inline-block text-emerald-900 fade-in">
+            <i className="fade-in-right inline-block text-emerald-900">
               road trip
             </i>{" "}
             today
@@ -49,39 +64,57 @@ export default function Home() {
             <SignUp />
             <Demo />
           </div>
-        </section>
-        <section className="noise flex w-full flex-col items-center gap-8 bg-emerald-900 px-8 py-12 shadow-lg">
-          <h3 className="text-center font-display text-4xl text-slate-100 md:text-5xl">
-            with <span className="font-bold">roam</span> you can
-          </h3>
-          <Features features={features} />
-        </section>
-        <section className="mt-12 flex w-full flex-col items-center px-8">
-          <div className="mb-4 flex w-full max-w-2xl justify-evenly xl:mb-12">
-            <div
-              className={
-                "flex flex-col gap-4 font-display text-5xl text-emerald-950 md:text-6xl lg:gap-6"
-              }
-            >
-              <p>Detailed.</p>
-              <p>Fast.</p>
-              <p>Fun!</p>
+        </div>
+        <Features features={features} />
+        <div className="flex flex-col items-center px-4 py-8">
+          <h3 className="mb-8 font-display text-4xl">Plans & Pricing</h3>
+          <div className="topography max-w-sm rounded-md border-2 border-t-8 border-slate-900 border-t-emerald-900 px-4 py-2 shadow-lg">
+            <div className="mb-8 flex flex-col gap-1">
+              <h4 className="font-display text-4xl">Simple</h4>
+              <p className="text-slate-700">
+                Plan out a single road trip and check if you enjoy our process.
+              </p>
             </div>
-            <div className="-mt-24 flex flex-col items-center text-emerald-900">
-              <hr className="h-96 border-l-2 border-dashed border-emerald-900"></hr>
-              <ChevronDown size={24} className="-mt-2 " />
+            <div className="mb-4 flex w-full flex-col gap-2">
+              <span className="font-display text-4xl text-emerald-900">
+                $0/mo
+              </span>
+              <Button className="w-full">Create Account</Button>
             </div>
+            <p className="mb-2">Plan details:</p>
+            <ul className="flex flex-col gap-2">
+              <li>
+                <span className="flex items-baseline gap-2 font-light">
+                  <MapPin size={16} />
+                  Plan out one road trip
+                </span>
+              </li>
+              <li>
+                <span className="flex items-baseline gap-2 font-light">
+                  <MapPin size={16} />
+                  Use google maps to plan your locations
+                </span>
+              </li>
+              <li>
+                <span className="flex items-baseline gap-2 font-light">
+                  <MapPin size={16} />
+                  Do some cool shit and stuff
+                </span>
+              </li>
+            </ul>
           </div>
-          <h2 className="mb-12 text-center font-display text-4xl md:text-5xl xl:mb-16">
-            What do people love about us?
-          </h2>
-          <Reviews reviews={reviews} />
-        </section>
-        <section className="mb-12 flex flex-col items-center justify-center gap-8 px-8 py-36 text-center xl:py-52">
-          <div className="relative flex flex-col items-center gap-4">
-            <h2 className="font-display text-6xl text-emerald-950 lg:text-7xl">
-              All Roads Lead to <br />
-              <span className="text-8xl font-medium lg:text-9xl">roam</span>
+          <div className="mt-8 flex items-center gap-2">
+            <p className=" font-silly text-3xl">Thats all we got for now</p>
+            <CornerRightUp />
+          </div>
+        </div>
+        <div className="mb-12 flex flex-col items-center justify-center gap-4 px-4 py-12 text-center">
+          <div className="relative flex flex-col items-center ">
+            <h2 className="font-display text-4xl  lg:text-7xl">
+              all roads lead to <br />
+              <b className="text-8xl tracking-widest text-emerald-900 lg:text-9xl">
+                ROAM
+              </b>
             </h2>
             <div className="absolute top-1/2 -z-10 flex w-[3000px] rotate-45 flex-col gap-4 opacity-25 blur-[1px]">
               <div className="flex h-12 w-full items-center border-y-2 border-slate-900">
@@ -92,15 +125,77 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <Button
-            asChild
-            className="h-full w-full max-w-lg bg-emerald-800  py-2 text-2xl text-slate-100"
-          >
-            <Link href="#">Start planning today</Link>
+          <Button asChild className=" bg-emerald-900 py-2 text-xl">
+            <Link href="#">Try it out Today</Link>
           </Button>
-        </section>
+        </div>
+        <Reviews reviews={reviews} />
       </main>
       <Footer />
     </>
+  );
+}
+
+type FeaturesProps = {
+  features: { title: string; content: string }[];
+};
+
+export function Features({ features }: FeaturesProps) {
+  return (
+    <div className="w-full bg-emerald-950 px-4 py-12">
+      <ul className="mx-auto grid w-full place-content-center place-items-center gap-12 sm:grid-cols-2">
+        {features.map(({ title, content }, i) => {
+          return (
+            <li
+              key={title}
+              className="flex h-full max-w-2xl flex-col gap-2 text-center text-emerald-50"
+            >
+              <h3 className="font-display text-5xl font-bold sm:text-6xl">
+                {title}
+              </h3>
+              <p className="text-emerald-100 lg:text-xl">{content}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+type ReviewsProps = {
+  reviews: {
+    name: string;
+    content: string;
+    imagePath: string;
+  }[];
+};
+
+function Reviews({ reviews }: ReviewsProps) {
+  return (
+    <ul className="mb-16 flex w-full flex-wrap justify-center gap-8 px-4">
+      {reviews.map(({ name, content, imagePath }, i) => {
+        return (
+          <li
+            key={i}
+            className="relative flex w-full max-w-sm flex-col items-center gap-4 overflow-hidden rounded-lg px-4 py-6 text-center text-emerald-50"
+          >
+            <div className="noise absolute -z-10 mt-16 h-full w-full rounded-lg bg-emerald-900"></div>
+            <div className="item-center flex flex-col gap-1">
+              <Image
+                className="relative w-36 rounded-xl border border-emerald-900"
+                src={imagePath}
+                width={640}
+                height={640}
+                alt="Selfie of Julian Krzysiak"
+              />
+              <h4 className="font-display font-light opacity-75">{name}</h4>
+            </div>
+            <blockquote className="text-xl before:content-['\201C'] after:content-['\201D']">
+              {content}
+            </blockquote>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

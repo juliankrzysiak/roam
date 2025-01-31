@@ -30,7 +30,7 @@ export default function Demo() {
 
   return (
     <form action={submitForm}>
-      <Submit text="Try it out" />
+      <Submit text="Try the Demo" />
     </form>
   );
 }

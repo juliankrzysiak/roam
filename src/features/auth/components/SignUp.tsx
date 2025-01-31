@@ -29,7 +29,10 @@ export default function SignUp({ isUser }: Props) {
           <DialogTrigger>Start planning</DialogTrigger>
         )}
       </Button>
-      <DialogContent className="flex flex-col gap-8">
+      <DialogContent
+        className="flex flex-col gap-8"
+        onCloseAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="text-2xl">Create a new account</DialogTitle>
         </DialogHeader>

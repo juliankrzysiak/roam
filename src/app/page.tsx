@@ -1,11 +1,10 @@
 import Footer from "@/components/general/Footer";
-import { Button } from "@/components/ui/button";
 import Demo from "@/features/auth/components/Demo";
 import SignUp from "@/features/auth/components/SignUp";
+import SignUpButton from "@/features/landing/components/SignUpButton";
 import { createClient } from "@/utils/supabase/server";
 import { CornerRightUp, MapPin } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 
 const features: { title: string; content: string }[] = [
   {
@@ -86,7 +85,7 @@ export default async function Home() {
               <span className="font-display text-4xl text-emerald-900">
                 $0/mo
               </span>
-              <Button className="w-full">Create Account</Button>
+              <SignUpButton text="Create Account" className="w-full" />
             </div>
             <p className="mb-2">Plan details:</p>
             <ul className="flex flex-col gap-2">
@@ -132,9 +131,10 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          <Button asChild className=" bg-emerald-900 py-2 text-xl">
-            <Link href="#">Try it out Today</Link>
-          </Button>
+          <SignUpButton
+            text="Start Planning Today"
+            className="h-full w-full max-w-lg bg-emerald-800 py-2 text-2xl text-slate-100"
+          />
         </div>
         <Reviews reviews={reviews} />
       </main>

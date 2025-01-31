@@ -64,6 +64,7 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-inter)", ...fontFamily.sans],
         display: ["var(--font-averia-serif-libre)"],
+        silly: ["var(--font-caveat)"],
       },
       keyframes: {
         "accordion-down": {
@@ -89,5 +90,4 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
 };

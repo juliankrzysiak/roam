@@ -3,7 +3,7 @@ import Header from "@/components/general/Header";
 import { Toaster } from "@/components/ui/toaster";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Metadata } from "next";
-import { inter, averiaSerifLibre } from "./fonts";
+import { inter, averiaSerifLibre, caveat } from "./fonts";
 
 export const metadata: Metadata = {
   title: "roam",
@@ -18,9 +18,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${averiaSerifLibre.variable}`}
+      className={`${inter.variable} ${averiaSerifLibre.variable} ${caveat.variable}`}
     >
-      <body className="flex min-h-full flex-col bg-slate-100 text-slate-900">
+      <body className="flex min-h-full flex-col bg-emerald-50 text-slate-900">
         <Header />
         {children}
         <Toaster />

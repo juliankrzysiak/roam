@@ -1,4 +1,4 @@
-import { Averia_Serif_Libre, Inter } from "next/font/google";
+import { Averia_Serif_Libre, Inter, Caveat } from "next/font/google";
 
 export const inter = Inter({
   subsets: ["latin"],
@@ -9,4 +9,8 @@ export const averiaSerifLibre = Averia_Serif_Libre({
   weight: ["300", "400", "700"],
   variable: "--font-averia-serif-libre",
   display: "swap",
+});
+export const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
 });

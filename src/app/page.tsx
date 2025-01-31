@@ -1,7 +1,8 @@
 import Footer from "@/components/general/Footer";
 import { Button } from "@/components/ui/button";
 import Demo from "@/features/auth/components/Demo";
-import SignUp from "@/features/auth/components/StartPlanning";
+import SignUp from "@/features/auth/components/SignUp";
+import { createClient } from "@/utils/supabase/server";
 import { CornerRightUp, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,7 +48,13 @@ const reviews: { name: string; content: string; imagePath: string }[] = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isUser = Boolean(user);
+
   return (
     <>
       <main className="flex w-full flex-col items-center overflow-clip">
@@ -61,7 +68,7 @@ export default function Home() {
             today
           </h2>
           <div className="flex w-fit flex-col items-center gap-6 self-center rounded-lg px-12 py-8">
-            <SignUp />
+            <SignUp isUser={isUser} />
             <Demo />
           </div>
         </div>

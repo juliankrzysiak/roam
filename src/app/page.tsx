@@ -98,13 +98,19 @@ export default async function Home() {
               <li>
                 <span className="flex items-baseline gap-2 font-light">
                   <MapPin size={16} />
+                  Map out with one or multiple days
+                </span>
+              </li>
+              <li>
+                <span className="flex items-baseline gap-2 font-light">
+                  <MapPin size={16} />
                   Use google maps to plan your locations
                 </span>
               </li>
               <li>
                 <span className="flex items-baseline gap-2 font-light">
                   <MapPin size={16} />
-                  Do some cool shit and stuff
+                  And much more
                 </span>
               </li>
             </ul>
@@ -114,11 +120,11 @@ export default async function Home() {
             <CornerRightUp />
           </div>
         </div>
-        <div className="mb-12 flex flex-col items-center justify-center gap-4 px-4 py-12 text-center">
+        <div className="my-24 flex flex-col items-center justify-center gap-4 px-4 py-12 text-center">
           <div className="relative flex flex-col items-center ">
             <h2 className="font-display text-4xl  lg:text-7xl">
               all roads lead to <br />
-              <b className="text-8xl tracking-widest text-emerald-900 lg:text-9xl">
+              <b className="text-7xl tracking-widest text-emerald-900 min-[375px]:text-8xl lg:text-9xl">
                 ROAM
               </b>
             </h2>

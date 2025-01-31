@@ -6,9 +6,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AccountActions from "@/features/auth/components/AccountActions";
-import { signOut } from "@/utils/actions/auth";
+import SignOut from "@/features/auth/components/SignOut";
 import { createClient } from "@/utils/supabase/server";
-import { LogOut, UserIcon } from "lucide-react";
+import { UserIcon } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import Nav from "./Nav";
@@ -53,14 +53,7 @@ function User({ name }: UserProps) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <form action={signOut}>
-            <button className="flex items-center justify-between gap-2">
-              <LogOut size={18} />
-              Sign Out
-            </button>
-          </form>
-        </DropdownMenuItem>
+        <SignOut />
       </DropdownMenuContent>
     </DropdownMenu>
   );

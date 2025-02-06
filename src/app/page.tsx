@@ -1,6 +1,7 @@
 import Footer from "@/components/general/Footer";
 import Demo from "@/features/auth/components/Demo";
 import SignUp from "@/features/auth/components/SignUp";
+import { Features } from "@/features/landing/components/Features";
 import SignUpButton from "@/features/landing/components/SignUpButton";
 import { createClient } from "@/utils/supabase/server";
 import { CornerRightUp, MapPin } from "lucide-react";
@@ -146,32 +147,6 @@ export default async function Home() {
       </main>
       <Footer />
     </>
-  );
-}
-
-type FeaturesProps = {
-  features: { title: string; content: string }[];
-};
-
-export function Features({ features }: FeaturesProps) {
-  return (
-    <div className="w-full bg-emerald-950 px-4 py-12">
-      <ul className="mx-auto grid w-full place-content-center place-items-center gap-12 sm:grid-cols-2">
-        {features.map(({ title, content }, i) => {
-          return (
-            <li
-              key={title}
-              className="flex h-full max-w-2xl flex-col gap-2 text-center text-emerald-50"
-            >
-              <h3 className="font-display text-5xl font-bold sm:text-6xl">
-                {title}
-              </h3>
-              <p className="text-emerald-100 lg:text-xl">{content}</p>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
   );
 }
 

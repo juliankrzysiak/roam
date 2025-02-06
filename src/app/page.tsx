@@ -2,6 +2,7 @@ import Footer from "@/components/general/Footer";
 import Demo from "@/features/auth/components/Demo";
 import SignUp from "@/features/auth/components/SignUp";
 import { Features } from "@/features/landing/components/Features";
+import Roam from "@/features/landing/components/Roam";
 import SignUpButton from "@/features/landing/components/SignUpButton";
 import { createClient } from "@/utils/supabase/server";
 import { CornerRightUp, MapPin } from "lucide-react";
@@ -122,22 +123,7 @@ export default async function Home() {
           </div>
         </div>
         <div className="my-24 flex flex-col items-center justify-center gap-4 px-4 py-12 text-center">
-          <div className="relative flex flex-col items-center ">
-            <h2 className="font-display text-4xl  lg:text-7xl">
-              all roads lead to <br />
-              <b className="text-7xl tracking-widest text-emerald-900 min-[375px]:text-8xl lg:text-9xl">
-                ROAM
-              </b>
-            </h2>
-            <div className="absolute top-1/2 -z-10 flex w-[3000px] rotate-45 flex-col gap-4 opacity-25 blur-[1px]">
-              <div className="flex h-12 w-full items-center border-y-2 border-slate-900">
-                <hr className="w-full  border-2 border-dashed border-slate-900" />
-              </div>
-              <div className="flex h-12 w-full items-center border-y-2 border-slate-900">
-                <hr className="w-full  border-2 border-dashed border-slate-900" />
-              </div>
-            </div>
-          </div>
+          <Roam />
           <SignUpButton
             text="Start Planning Today"
             className="h-full w-full max-w-lg bg-emerald-800 py-2 text-2xl text-slate-100"

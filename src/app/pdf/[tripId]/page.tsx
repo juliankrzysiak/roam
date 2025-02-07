@@ -1,7 +1,12 @@
 import { getDay } from "@/app/planner/[tripId]/page";
 import { createClient } from "@/utils/supabase/server";
 import { FileText } from "lucide-react";
+import { Metadata } from "next";
 import dynamic from "next/dynamic";
+
+export const metadata: Metadata = {
+  title: "Print",
+};
 
 const PDFDeviceCheck = dynamic(
   () => import("@/features/pdf/components/PDFDeviceCheck"),

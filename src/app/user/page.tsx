@@ -1,7 +1,12 @@
 import AccountTabs from "@/features/user/components/AccountTabs";
 import SignUpButton from "@/features/user/components/SignUpButton";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "User",
+};
 
 export default async function User() {
   const supabase = createClient();

@@ -6,8 +6,11 @@ import type { Metadata } from "next";
 import { inter, averiaSerifLibre, caveat } from "./fonts";
 
 export const metadata: Metadata = {
-  title: "roam",
-  description: "Plan your dream road trip today.",
+  title: {
+    template: "%s | roam",
+    default: "roam",
+  },
+  description: "Plan your next roadtrip adventure.",
 };
 
 export default function RootLayout({

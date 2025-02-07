@@ -155,9 +155,6 @@ importers:
       tailwindcss:
         specifier: 3.4.13
         version: 3.4.13
-      tailwindcss-animate:
-        specifier: ^1.0.6
-        version: 1.0.6(tailwindcss@3.4.13)
       typescript:
         specifier: 5.1.6
         version: 5.1.6
@@ -3980,11 +3977,6 @@ packages:
   tailwind-merge@1.14.0:
     resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
 
-  tailwindcss-animate@1.0.6:
-    resolution: {integrity: sha512-4WigSGMvbl3gCCact62ZvOngA+PRqhAn7si3TQ3/ZuPuQZcIEtVap+ENSXbzWhpojKB8CpvnIsrwBu8/RnHtuw==}
-    peerDependencies:
-      tailwindcss: '>=3.0.0 || insiders'
-
   tailwindcss@3.4.13:
     resolution: {integrity: sha512-KqjHOJKogOUt5Bs752ykCeiwvi0fKVkr5oqsFNt/8px/tA8scFPIlkygsf6jXrfCqGHz7VflA6+yytWuM+XhFw==}
     engines: {node: '>=14.0.0'}
@@ -6175,7 +6167,7 @@ snapshots:
   '@swc/helpers@0.4.36':
     dependencies:
       legacy-swc-helpers: '@swc/helpers@0.4.14'
-      tslib: 2.6.1
+      tslib: 2.6.3
 
   '@swc/helpers@0.5.5':
     dependencies:
@@ -6718,7 +6710,7 @@ snapshots:
   dot-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.1
+      tslib: 2.6.3
 
   earcut@2.2.4: {}
 
@@ -7952,7 +7944,7 @@ snapshots:
     dependencies:
       react: 18.3.0-canary-c5b937576-20231219
       react-style-singleton: 2.2.1(@types/react@18.3.5)(react@18.3.0-canary-c5b937576-20231219)
-      tslib: 2.6.1
+      tslib: 2.6.3
     optionalDependencies:
       '@types/react': 18.3.5
 
@@ -7972,7 +7964,7 @@ snapshots:
       get-nonce: 1.0.1
       invariant: 2.2.4
       react: 18.3.0-canary-c5b937576-20231219
-      tslib: 2.6.1
+      tslib: 2.6.3
     optionalDependencies:
       '@types/react': 18.3.5
 
@@ -8127,7 +8119,7 @@ snapshots:
   snake-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.6.1
+      tslib: 2.6.3
 
   sort-asc@0.2.0: {}
 
@@ -8276,13 +8268,9 @@ snapshots:
   synckit@0.8.5:
     dependencies:
       '@pkgr/utils': 2.4.2
-      tslib: 2.6.1
+      tslib: 2.6.3
 
   tailwind-merge@1.14.0: {}
-
-  tailwindcss-animate@1.0.6(tailwindcss@3.4.13):
-    dependencies:
-      tailwindcss: 3.4.13
 
   tailwindcss@3.4.13:
     dependencies:
@@ -8469,7 +8457,7 @@ snapshots:
   use-callback-ref@1.3.0(@types/react@18.3.5)(react@18.3.0-canary-c5b937576-20231219):
     dependencies:
       react: 18.3.0-canary-c5b937576-20231219
-      tslib: 2.6.1
+      tslib: 2.6.3
     optionalDependencies:
       '@types/react': 18.3.5
 
@@ -8477,7 +8465,7 @@ snapshots:
     dependencies:
       detect-node-es: 1.1.0
       react: 18.3.0-canary-c5b937576-20231219
-      tslib: 2.6.1
+      tslib: 2.6.3
     optionalDependencies:
       '@types/react': 18.3.5
 

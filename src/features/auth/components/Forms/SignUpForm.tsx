@@ -77,7 +77,11 @@ export default function SignUpForm({ setOpen }: Props) {
             <FormItem>
               <FormLabel className="font-light">Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your name" {...field} />
+                <Input
+                  placeholder="Enter your name"
+                  {...field}
+                  autoComplete="name"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -92,6 +96,7 @@ export default function SignUpForm({ setOpen }: Props) {
               <FormControl>
                 <Input
                   placeholder="Enter your email address"
+                  autoComplete="username"
                   required
                   {...field}
                 />
@@ -111,6 +116,7 @@ export default function SignUpForm({ setOpen }: Props) {
                 <Input
                   placeholder="At least six characters"
                   type="password"
+                  autoComplete="new-password"
                   required
                   min={6}
                   {...field}

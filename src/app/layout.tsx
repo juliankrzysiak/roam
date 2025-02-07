@@ -3,7 +3,7 @@ import Header from "@/components/general/Header";
 import { Toaster } from "@/components/ui/toaster";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Metadata } from "next";
-import { vollkorn, workSans } from "./fonts";
+import { inter, averiaSerifLibre, caveat } from "./fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -19,8 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${vollkorn.variable} ${workSans.variable}`}>
-      <body className="flex min-h-full flex-col bg-slate-100 text-slate-900">
+    <html
+      lang="en"
+      className={`${inter.variable} ${averiaSerifLibre.variable} ${caveat.variable}`}
+    >
+      <body className="flex min-h-full flex-col bg-emerald-50 text-slate-900">
         <Header />
         {children}
         <Toaster />

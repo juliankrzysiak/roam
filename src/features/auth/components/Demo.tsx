@@ -30,7 +30,7 @@ export default function Demo() {
 
   return (
     <form action={submitForm}>
-      <Submit text="Try it out" />
+      <Submit text="Try the Demo" />
     </form>
   );
 }
@@ -42,7 +42,10 @@ type SubmitProps = {
 function Submit({ text }: SubmitProps) {
   const { pending } = useFormStatus();
   return (
-    <Button variant="outline" className="text-sm">
+    <Button
+      variant="outline"
+      className="border-emerald-50 text-sm text-emerald-50 opacity-75 lg:bg-emerald-100 lg:text-emerald-950 lg:opacity-100"
+    >
       {pending ? <LoaderCircle className="animate-spin" /> : text}
     </Button>
   );

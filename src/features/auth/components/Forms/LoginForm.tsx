@@ -69,10 +69,11 @@ export default function LoginForm({ setOpen }: Props) {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Email *</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter your email address"
+                  autoComplete="username"
                   type="email"
                   required
                   {...field}
@@ -87,11 +88,12 @@ export default function LoginForm({ setOpen }: Props) {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Password *</FormLabel>
 
               <FormControl>
                 <Input
                   placeholder="Enter your password"
+                  autoComplete="current-password"
                   type="password"
                   {...field}
                 />

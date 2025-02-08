@@ -140,7 +140,7 @@ Julian Krzysiak - jkrzysiak13@gmail.com
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 [desktop-url]: https://i.imgur.com/zOaQA5Z.png
-[mobile-url]: https://i.imgur.com/fxR0bZx.png
+[mobile-url]: https://github.com/user-attachments/assets/f8765142-13ff-4c34-85d7-6960cee54689
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [Tailwind]: https://img.shields.io/badge/tailwind-0b1121?style=for-the-badge&logo=tailwindcss&logoColor=3abcf7

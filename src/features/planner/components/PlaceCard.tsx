@@ -136,7 +136,13 @@ export default function PlaceCard({
                 {name}
               </h2>
             </button>
-            <PlaceOptions id={id} dayId={dayId} name={name} places={places} />
+            <PlaceOptions
+              id={id}
+              dayId={dayId}
+              name={name}
+              travel={travel}
+              places={places}
+            />
           </div>
           <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-emerald-900 pl-1 pr-1 text-xs text-slate-900">
             {index + 1}

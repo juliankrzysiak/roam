@@ -21,9 +21,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { IsSharedContext } from "@/context/IsSharedContext";
 import { insertBeforeIdAtom } from "@/lib/atom";
-import { Place } from "@/types";
+import { Place, Travel } from "@/types";
+import { convertTime } from "@/utils";
 import { deletePlaces } from "@/utils/actions/crud/delete";
 import { updateName } from "@/utils/actions/crud/update";
+import { DialogDescription } from "@radix-ui/react-dialog";
 import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import { SetStateAction, useAtom } from "jotai";
 import { EllipsisVertical } from "lucide-react";
@@ -31,12 +33,19 @@ import { Dispatch, useContext, useState } from "react";
 
 type Props = {
   id: string;
-  name: string;
   dayId: string;
+  name: string;
+  travel: Place["travel"];
   places: Place[];
 };
 
-export default function PlaceOptions({ id, dayId, name, places }: Props) {
+export default function PlaceOptions({
+  id,
+  dayId,
+  name,
+  travel,
+  places,
+}: Props) {
   const isShared = useContext(IsSharedContext);
   const [insertBeforeId, setInsertBeforeId] = useAtom(insertBeforeIdAtom);
   const [isNameFormOpen, setIsNameFormOpen] = useState(false);
@@ -75,23 +84,26 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
             <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
               <span>Edit Name</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <span>Edit Travel</span>
+            <DropdownMenuItem
+              onClick={() => setIsTripFormOpen(true)}
+              disabled={!Boolean(travel)}
+            >
+              <span>Edit Travel Info</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <span>Delete Place</span>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent>
-                  <DropdownMenuItem onClick={handleDeletePlace}>
-                    <span>Confirm Delete</span>
-                  </DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <span>Delete Place</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem onClick={handleDeletePlace}>
+                  <span>Confirm Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>
       <EditNameForm
@@ -100,6 +112,14 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
         open={isNameFormOpen}
         setOpen={setIsNameFormOpen}
       />
+      {travel && (
+        <EditTravelForm
+          id={id}
+          travel={travel}
+          open={isTripFormOpen}
+          setOpen={setIsTripFormOpen}
+        />
+      )}
     </>
   );
 }
@@ -130,6 +150,79 @@ function EditNameForm({ id, name, open, setOpen }: EditNameFormProps) {
         <DialogFooter>
           <DialogClose asChild>
             <Button type="submit" form="editNameForm">
+              Submit
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+type EditTravelFormProps = Pick<Props, "id"> & { travel: Travel } & State;
+
+function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
+  const { minutes, hours } = convertTime({ minutes: travel.duration });
+
+  async function handleSubmit(formData: FormData) {
+    await updateName(formData);
+    setOpen(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Travel Information</DialogTitle>
+          <DialogDescription>
+            Manually change info if inaccurate
+          </DialogDescription>
+        </DialogHeader>
+        <form id="editTripForm" action={handleSubmit} className="flex flex-col">
+          <label className="flex gap-1">
+            Duration
+            <div className="flex gap-1">
+              <input
+                aria-label="hours"
+                className="w-12 rounded-md border border-slate-500 pl-1"
+                name="hours"
+                type="number"
+                min="0"
+                max="12"
+                defaultValue={hours}
+                // value={hourDuration}
+                // onChange={(e) => setHourDuration(Number(e.target.value))}
+              />
+              :
+              <input
+                aria-label="minutes"
+                className="w-12 rounded-md border border-slate-500 pl-1"
+                name="minutes"
+                type="number"
+                min="0"
+                max="59"
+                defaultValue={minutes}
+                // value={minuteDuration.toString().padStart(2, "0")}
+                // onChange={(e) => setMinuteDuration(Number(e.target.value))}
+              />
+            </div>
+          </label>
+          <label className="flex items-center gap-2">
+            Distance
+            <input
+              type="number"
+              min={0}
+              max={1000}
+              className="pl-1"
+              defaultValue={travel?.distance}
+            />
+            mi
+          </label>
+        </form>
+        <DialogFooter className="flex gap-2">
+          <Button variant="outline">Reset</Button>
+          <DialogClose asChild>
+            <Button type="submit" form="editTripForm">
               Submit
             </Button>
           </DialogClose>

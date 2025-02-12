@@ -17,15 +17,19 @@ export type Travel = {
   distance: number;
   duration: number;
   routingProfile: RoutingProfile;
+  isManual: boolean;
 };
 
-export type TotalTravel = Omit<Travel, "routingProfile">;
+export type TotalTravel = Omit<Travel, "routingProfile" | "isManual">;
 
 type RoutingProfile = "driving" | "walking" | "cycling";
 
 export type RawPlaceData = Omit<Place, "schedule" | "travel"> & {
   placeDuration: number;
   routingProfile: RoutingProfile;
+  isManual: boolean;
+  travelDuration: number | null;
+  travelDistance: number | null;
 };
 export type PlaceNoSchedule = Omit<Place, "schedule"> & {
   placeDuration: number;

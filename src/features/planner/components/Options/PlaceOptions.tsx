@@ -24,7 +24,7 @@ import { insertBeforeIdAtom } from "@/lib/atom";
 import { Place, Travel } from "@/types";
 import { convertTime } from "@/utils";
 import { deletePlaces } from "@/utils/actions/crud/delete";
-import { updateName } from "@/utils/actions/crud/update";
+import { updateName, updateTravelInfo } from "@/utils/actions/crud/update";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import { SetStateAction, useAtom } from "jotai";
@@ -165,7 +165,7 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
   const { minutes, hours } = convertTime({ minutes: travel.duration });
 
   async function handleSubmit(formData: FormData) {
-    await updateName(formData);
+    await updateTravelInfo(formData);
     setOpen(false);
   }
 
@@ -211,6 +211,7 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
             Distance
             <input
               type="number"
+              name="distance"
               min={0}
               max={1000}
               className="pl-1"
@@ -218,14 +219,13 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
             />
             mi
           </label>
+          <input type="hidden" name="id" defaultValue={id} />
         </form>
         <DialogFooter className="flex gap-2">
           <Button variant="outline">Reset</Button>
-          <DialogClose asChild>
-            <Button type="submit" form="editTripForm">
-              Submit
-            </Button>
-          </DialogClose>
+          <Button type="submit" form="editTripForm">
+            Submit
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

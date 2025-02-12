@@ -116,7 +116,7 @@ export async function getDay(
   const { data: placesData, error } = await supabase
     .from("places")
     .select(
-      "id, name, lat, lng, placeDuration:place_duration, placeId:place_id, address, notes, routingProfile:routing_profile",
+      "id, name, lat, lng, placeDuration:place_duration, placeId:place_id, address, notes, routingProfile:routing_profile, travelDuration:travel_duration, travelDistance:travel_distance, isManual:is_travel_manual",
     )
     .eq("day_id", dayData.id);
   if (error) throw new Error(`Supabase error: ${error.message}`);
@@ -153,6 +153,18 @@ export async function getDay(
   };
 }
 
+type TravelResponse = {
+  routes: {
+    legs: {
+      distance: number;
+      duration: number;
+    }[];
+    distance: number;
+    duration: number;
+    geometry: string;
+  }[];
+};
+
 async function getTravelInfo(places: RawPlaceData[]): Promise<{
   totalTravel: TotalTravel;
   trips?: TotalTravel[];
@@ -174,17 +186,6 @@ async function getTravelInfo(places: RawPlaceData[]): Promise<{
   );
   const drivingTravelInfo = await drivingRes.json();
 
-  type TravelResponse = {
-    routes: {
-      legs: {
-        distance: number;
-        duration: number;
-      }[];
-      distance: number;
-      duration: number;
-      geometry: string;
-    }[];
-  };
   let walkingTravelInfo = {} as TravelResponse;
   let cyclingTravelInfo = {} as TravelResponse;
   if (places.some((place) => place.routingProfile === "walking")) {
@@ -202,6 +203,14 @@ async function getTravelInfo(places: RawPlaceData[]): Promise<{
 
   const trips: TotalTravel[] = drivingTravelInfo.routes[0].legs.map(
     (leg: { distance: number; duration: number }, i: number) => {
+      const hasTravelInfo =
+        places[i].travelDistance && places[i].travelDuration;
+      if (hasTravelInfo) {
+        return {
+          distance: places[i].travelDistance,
+          duration: places[i].travelDuration,
+        };
+      }
       let { distance, duration } = leg;
       if (places[i].routingProfile === "walking") {
         distance = walkingTravelInfo.routes[0].legs[i].distance;
@@ -241,8 +250,8 @@ async function mapTravelInfo(
   if (!trips) return places;
   else
     return places.map((place, i) => {
-      const { routingProfile, ...placeProps } = place;
-      const travel = trips[i] && { ...trips[i], routingProfile };
+      const { routingProfile, isManual, ...placeProps } = place;
+      const travel = trips[i] && { ...trips[i], routingProfile, isManual };
       return { ...placeProps, travel };
     });
 }

@@ -59,6 +59,7 @@ export type Database = {
           created_at: string
           day_id: string
           id: string
+          is_travel_manual: boolean
           lat: number
           lng: number
           name: string
@@ -74,6 +75,7 @@ export type Database = {
           created_at?: string
           day_id: string
           id?: string
+          is_travel_manual?: boolean
           lat: number
           lng: number
           name: string
@@ -89,6 +91,7 @@ export type Database = {
           created_at?: string
           day_id?: string
           id?: string
+          is_travel_manual?: boolean
           lat?: number
           lng?: number
           name?: string
@@ -177,6 +180,7 @@ export type Database = {
           created_at: string
           day_id: string
           id: string
+          is_travel_manual: boolean
           lat: number
           lng: number
           name: string

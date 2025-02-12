@@ -224,6 +224,7 @@ function PlaceDuration({ id, schedule, timezone }: PlaceDurationProps) {
             <>
               <div className="flex gap-1">
                 <input
+                  aria-label="hours"
                   className="w-12 rounded-md border border-slate-500 pl-1"
                   name="hours"
                   type="number"
@@ -238,6 +239,7 @@ function PlaceDuration({ id, schedule, timezone }: PlaceDurationProps) {
                 />
                 :
                 <input
+                  aria-label="minutes"
                   className="w-12 rounded-md border border-slate-500 pl-1"
                   name="minutes"
                   type="number"

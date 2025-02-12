@@ -40,6 +40,7 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
   const isShared = useContext(IsSharedContext);
   const [insertBeforeId, setInsertBeforeId] = useAtom(insertBeforeIdAtom);
   const [isNameFormOpen, setIsNameFormOpen] = useState(false);
+  const [isTripFormOpen, setIsTripFormOpen] = useState(false);
 
   function handleDeletePlace() {
     const placesToDelete = [id];
@@ -74,6 +75,11 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
             <DropdownMenuItem onClick={() => setIsNameFormOpen(true)}>
               <span>Edit Name</span>
             </DropdownMenuItem>
+            <DropdownMenuItem>
+              <span>Edit Travel</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <span>Delete Place</span>
@@ -86,7 +92,6 @@ export default function PlaceOptions({ id, dayId, name, places }: Props) {
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
-          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       <EditNameForm

@@ -164,14 +164,7 @@ export default function PlaceCard({
           </div>
         </article>
       </div>
-      {travel && (
-        <TripDetails
-          id={id}
-          routingProfile={travel.routingProfile}
-          duration={travel.duration}
-          distance={travel.distance}
-        />
-      )}
+      {travel && <TripDetails id={id} travel={travel} />}
     </Reorder.Item>
   );
 }
@@ -335,17 +328,11 @@ export function Notes({ id, notes }: NotesProps) {
 
 type TripDetailsProps = {
   id: string;
-  routingProfile: Travel["routingProfile"];
-  duration: number;
-  distance: number;
+  travel: Travel;
 };
 
-function TripDetails({
-  id,
-  routingProfile,
-  duration,
-  distance,
-}: TripDetailsProps) {
+function TripDetails({ id, travel }: TripDetailsProps) {
+  const { distance, duration, routingProfile, isManual } = travel;
   const isShared = useContext(IsSharedContext);
   const formRef = useRef<HTMLFormElement>(null);
   const travelTime = formatTravelTime(convertTime({ minutes: duration }));
@@ -355,6 +342,7 @@ function TripDetails({
       <form action={updateRoutingProfile} ref={formRef}>
         <label className="flex gap-1">
           {travelTime}
+          {isManual && "*"}
           <select
             defaultValue={routingProfile}
             name="routingProfile"

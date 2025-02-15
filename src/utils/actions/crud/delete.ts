@@ -67,3 +67,25 @@ export async function deleteDay(dayId: string) {
     console.log(error);
   }
 }
+
+export async function resetTravelInfo(formData: FormData) {
+  const supabase = createClient();
+
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+
+  try {
+    const { error } = await supabase
+      .from("places")
+      .update({
+        travel_duration: null,
+        travel_distance: null,
+        is_travel_manual: false,
+      })
+      .eq("id", id);
+    if (error) throw new Error(`Supabase error: ${error.message}`);
+    revalidatePath("/planner/[tripId]", "page");
+  } catch (error) {
+    console.log(error);
+  }
+}

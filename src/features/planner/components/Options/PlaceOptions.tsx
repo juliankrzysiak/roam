@@ -23,7 +23,7 @@ import { IsSharedContext } from "@/context/IsSharedContext";
 import { insertBeforeIdAtom } from "@/lib/atom";
 import { Place, Travel } from "@/types";
 import { convertTime } from "@/utils";
-import { deletePlaces } from "@/utils/actions/crud/delete";
+import { deletePlaces, resetTravelInfo } from "@/utils/actions/crud/delete";
 import { updateName, updateTravelInfo } from "@/utils/actions/crud/update";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
@@ -169,6 +169,11 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
     setOpen(false);
   }
 
+  async function handleReset(formData: FormData) {
+    await resetTravelInfo(formData);
+    setOpen(false);
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -190,8 +195,6 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
                 min="0"
                 max="12"
                 defaultValue={hours}
-                // value={hourDuration}
-                // onChange={(e) => setHourDuration(Number(e.target.value))}
               />
               :
               <input
@@ -202,8 +205,6 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
                 min="0"
                 max="59"
                 defaultValue={minutes}
-                // value={minuteDuration.toString().padStart(2, "0")}
-                // onChange={(e) => setMinuteDuration(Number(e.target.value))}
               />
             </div>
           </label>
@@ -222,7 +223,10 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
           <input type="hidden" name="id" defaultValue={id} />
         </form>
         <DialogFooter className="flex gap-2">
-          <Button variant="outline">Reset</Button>
+          <form action={handleReset}>
+            <Button variant="outline">Reset</Button>
+            <input type="hidden" name="id" defaultValue={id} />
+          </form>
           <Button type="submit" form="editTripForm">
             Submit
           </Button>

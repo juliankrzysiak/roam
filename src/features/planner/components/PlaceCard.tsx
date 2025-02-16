@@ -230,7 +230,11 @@ function PlaceDuration({ id, schedule, timezone }: PlaceDurationProps) {
                   min="0"
                   max="12"
                   value={hourDuration}
-                  onChange={(e) => setHourDuration(Number(e.target.value))}
+                  onChange={(e) => {
+                    const num = Number(e.target.value);
+                    if (num > 12) return;
+                    else setHourDuration(num);
+                  }}
                 />
                 :
                 <input
@@ -240,7 +244,11 @@ function PlaceDuration({ id, schedule, timezone }: PlaceDurationProps) {
                   min="0"
                   max="59"
                   value={minuteDuration.toString().padStart(2, "0")}
-                  onChange={(e) => setMinuteDuration(Number(e.target.value))}
+                  onChange={(e) => {
+                    const num = Number(e.target.value);
+                    if (num > 59) return;
+                    else setMinuteDuration(num);
+                  }}
                 />
               </div>
               <Button

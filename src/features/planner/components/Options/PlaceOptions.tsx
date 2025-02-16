@@ -183,13 +183,17 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
             Manually change info if inaccurate
           </DialogDescription>
         </DialogHeader>
-        <form id="editTripForm" action={handleSubmit} className="flex flex-col">
-          <label className="flex gap-1">
-            Duration
+        <form
+          id="editTripForm"
+          action={handleSubmit}
+          className="flex flex-col gap-2"
+        >
+          <label className="flex gap-2">
+            <span className="font-medium">Duration</span>
             <div className="flex gap-1">
               <input
                 aria-label="hours"
-                className="w-12 rounded-md border border-slate-500 pl-1"
+                className="w-8 rounded-md border border-slate-400 pl-1"
                 name="hours"
                 type="number"
                 min="0"
@@ -199,7 +203,7 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
               :
               <input
                 aria-label="minutes"
-                className="w-12 rounded-md border border-slate-500 pl-1"
+                className="w-8 rounded-md border border-slate-400 pl-1"
                 name="minutes"
                 type="number"
                 min="0"
@@ -209,13 +213,13 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
             </div>
           </label>
           <label className="flex items-center gap-2">
-            Distance
+            <span className="font-medium">Distance</span>
             <input
               type="number"
               name="distance"
               min={0}
               max={1000}
-              className="pl-1"
+              className="w-8 rounded-md border border-slate-400 pl-1"
               defaultValue={travel?.distance}
             />
             mi
@@ -224,7 +228,7 @@ function EditTravelForm({ id, travel, open, setOpen }: EditTravelFormProps) {
         </form>
         <DialogFooter className="flex gap-2">
           <form action={handleReset}>
-            <Button variant="outline">Reset</Button>
+            <Button variant="outline">Reset to Default</Button>
             <input type="hidden" name="id" defaultValue={id} />
           </form>
           <Button type="submit" form="editTripForm">

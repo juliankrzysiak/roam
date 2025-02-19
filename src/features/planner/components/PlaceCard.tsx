@@ -136,7 +136,13 @@ export default function PlaceCard({
                 {name}
               </h2>
             </button>
-            <PlaceOptions id={id} dayId={dayId} name={name} places={places} />
+            <PlaceOptions
+              id={id}
+              dayId={dayId}
+              name={name}
+              travel={travel}
+              places={places}
+            />
           </div>
           <span className="absolute left-0 top-0 rounded-br-md border-b border-r border-emerald-900 pl-1 pr-1 text-xs text-slate-900">
             {index + 1}
@@ -158,14 +164,7 @@ export default function PlaceCard({
           </div>
         </article>
       </div>
-      {travel && (
-        <TripDetails
-          id={id}
-          routingProfile={travel.routingProfile}
-          duration={travel.duration}
-          distance={travel.distance}
-        />
-      )}
+      {travel && <TripDetails id={id} travel={travel} />}
     </Reorder.Item>
   );
 }
@@ -224,6 +223,7 @@ function PlaceDuration({ id, schedule, timezone }: PlaceDurationProps) {
             <>
               <div className="flex gap-1">
                 <input
+                  aria-label="hours"
                   className="w-12 rounded-md border border-slate-500 pl-1"
                   name="hours"
                   type="number"
@@ -238,6 +238,7 @@ function PlaceDuration({ id, schedule, timezone }: PlaceDurationProps) {
                 />
                 :
                 <input
+                  aria-label="minutes"
                   className="w-12 rounded-md border border-slate-500 pl-1"
                   name="minutes"
                   type="number"
@@ -327,17 +328,11 @@ export function Notes({ id, notes }: NotesProps) {
 
 type TripDetailsProps = {
   id: string;
-  routingProfile: Travel["routingProfile"];
-  duration: number;
-  distance: number;
+  travel: Travel;
 };
 
-function TripDetails({
-  id,
-  routingProfile,
-  duration,
-  distance,
-}: TripDetailsProps) {
+function TripDetails({ id, travel }: TripDetailsProps) {
+  const { distance, duration, routingProfile, isManual } = travel;
   const isShared = useContext(IsSharedContext);
   const formRef = useRef<HTMLFormElement>(null);
   const travelTime = formatTravelTime(convertTime({ minutes: duration }));
@@ -347,6 +342,7 @@ function TripDetails({
       <form action={updateRoutingProfile} ref={formRef}>
         <label className="flex gap-1">
           {travelTime}
+          {isManual && "*"}
           <select
             defaultValue={routingProfile}
             name="routingProfile"

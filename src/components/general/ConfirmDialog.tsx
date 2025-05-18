@@ -3,33 +3,38 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
 import { Button } from "../ui/button";
 
 type Props = {
   children: React.ReactNode;
-  handleSubmit: (formData: FormData) => void;
+  handleSubmit: () => Promise<void>;
 };
 
 export default function ConfirmDialog({ children, handleSubmit }: Props) {
+  const [open, setOpen] = useState(false);
+
+  async function handleConfirmDelete() {
+    await handleSubmit();
+    setOpen(false);
+  }
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger onClick={() => setOpen(true)} asChild>
+        {children}
+      </DialogTrigger>
       <DialogContent className="flex flex-col gap-8">
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>This action cannot be undone.</DialogDescription>
         </DialogHeader>
-        <form className="flex justify-between" action={handleSubmit}>
-          <DialogClose asChild>
-            <Button variant="destructive" type="submit">
-              Delete
-            </Button>
-          </DialogClose>
+        <form className="flex justify-between" action={handleConfirmDelete}>
+          <Button variant="destructive">Delete</Button>
           <DialogClose asChild>
             <Button variant="secondary" type="button">
               Go Back

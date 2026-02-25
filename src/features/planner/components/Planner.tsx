@@ -329,11 +329,9 @@ function SelectOptions({
             <input name="dayId" type="hidden" defaultValue={dayId} />
           </form>
           <DialogFooter>
-            <DialogClose asChild>
-              <Button type="submit" form="moveDateForm">
-                Submit
-              </Button>
-            </DialogClose>
+            <Button type="submit" form="moveDateForm">
+              Submit
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

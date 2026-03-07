@@ -34,7 +34,7 @@ function MapSearch() {
     useState<google.maps.places.Autocomplete | null>(null);
   const places = useMapsLibrary("places");
   const setCurrentPlace = useSetAtom(currentPlaceAtom);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   useExit(inputRef, () => setOpen(false));
   useShortcut(["Control", "Shift", "S"], () => setOpen((e) => !e));
 

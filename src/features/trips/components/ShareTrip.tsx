@@ -21,7 +21,7 @@ import { ReactNode, useEffect, useState } from "react";
 const host =
   process.env.NODE_ENV === "development"
     ? "localhost:3000"
-    : "https://roam-gamma.vercel.app";
+    : "https://roam.juliankrzysiak.com";
 
 type Props = {
   sharing: Trip["sharing"];

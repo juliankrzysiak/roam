@@ -127,11 +127,9 @@ export default function ShareTrip({ sharing, tripId, children }: Props) {
           </div>
         </div>
         <DialogFooter className="mt-4">
-          <DialogClose asChild>
-            <Button type="submit" form="sharingForm">
-              Save Changes
-            </Button>
-          </DialogClose>
+          <Button type="submit" form="sharingForm">
+            Save Changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
